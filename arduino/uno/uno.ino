@@ -27,7 +27,14 @@ void setup() {
   Serial.begin(9600);
   Serial.println("Arduino Macros");
   Serial.println("UNO 0.0.1");
+  loadEEPROM();
+}
 
+void loop() {
+  handleSerialCommands();
+}
+
+void loadEEPROM(){
   int read;
   // Load button config from EEPROM
   for (int i = 0; i < 12; i++){
@@ -61,15 +68,11 @@ void setup() {
       Serial.println("MEMRESET");
       break;
     }
-    analogConfig[i] = read;
+    analogConfig[i-12] = read;
     // Configure analog pins (14-19/A0-A5)
     configureAnalogPin(i+2);
   }
   Serial.println(intArrayToString(analogConfig, 6));
-}
-
-void loop() {
-  handleSerialCommands();
 }
 
 String intArrayToString(int arr[], int size) {
@@ -118,6 +121,29 @@ void handleSerialCommands(){
             Serial.println("DIGITAL PIN " + String(pin) + " IS NOW MODE " + String(mode));
           }
         }
+      }
+      else if (serialBuffer.substring(0, 5) == "APIN "){
+        if (serialBuffer.substring(5, 7)  == "S "){
+          // Usage - "APIN S <PIN (one digit)> <MODE (two digits)>"
+          int pin = serialBuffer.substring(7, 8).toInt();
+          int mode = serialBuffer.substring(9, 11).toInt();
+          if (pin < 0 || pin > 5){
+            Serial.println("Malfored command. Invalid pin.");
+          }
+          else{
+            analogConfig[pin] = mode;
+            EEPROM.update(pin + 12, mode);
+            configureAnalogPin(pin + 14);
+            Serial.println("ANALOG PIN " + String(pin) + " IS NOW MODE " + String(mode));
+          }
+        }
+      }
+      else if (serialBuffer == "EEPROM"){
+        loadEEPROM();
+      }
+      else if (serialBuffer == "CONFIGSTATE"){
+        Serial.println(intArrayToString(digitalConfig, 12));
+        Serial.println(intArrayToString(analogConfig, 6));
       }
       else{
         Serial.println("Malformed command.");
