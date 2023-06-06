@@ -1,4 +1,21 @@
 const { SerialPort } = require('serialport')
+const Avrgirl = require("@sienci/avrgirl-arduino");
+
+// var avrgirl = new Avrgirl(
+//     {
+//         board: "uno",
+//         port: "COM5"
+//     }
+// );
+
+// avrgirl.flash("./arduino/test/build/arduino.avr.uno/test.ino.hex", function(e){
+//     if (e){
+//         console.log(e);
+//     }
+//     else{
+//         console.log("Flash complete.");
+//     }
+// });
 
 SerialPort.list().then(
     (ports) => {

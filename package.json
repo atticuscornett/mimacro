@@ -10,9 +10,11 @@
   "author": "",
   "license": "GPL-3.0",
   "dependencies": {
+    "@sienci/avrgirl-arduino": "^5.0.3",
     "serialport": "^11.0.0"
   },
   "devDependencies": {
+    "@electron/rebuild": "^3.2.13",
     "electron": "^24.3.0"
   }
 }
