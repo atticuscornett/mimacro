@@ -9,17 +9,18 @@
 int digitalConfig[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 int digitalTimeout[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 bool digitalLastState[] = {false, false, false, false, false, false, false, false, false, false, false, false};
+unsigned long digitalLastStateChange[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // Analog Pins A0-A5 Setup
 /*
   0 - Empty
-  1 - Button
 */
 
 int analogConfig[] = {0, 0, 0, 0, 0, 0};
 int analogTimeout[] = {0, 0, 0, 0, 0, 0};
 int analogLastState[] = {0, 0, 0, 0, 0, 0};
 int analogChangeMin[] = {0, 0, 0, 0, 0, 0};
+unsigned long analogLastStateChange[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 String serialBuffer = "";
 
@@ -32,6 +33,12 @@ void setup() {
 
 void loop() {
   handleSerialCommands();
+  for (int i = 2; i < 14; i++){
+    handleDigitalPin(i);
+  }
+  for (int i = 14; i < 20; i++){
+    handleAnalogPin(i);
+  }
 }
 
 void loadEEPROM(){
@@ -90,14 +97,11 @@ void configureDigitalPin(int pin){
   // 1 - Button to ground
   if (digitalConfig[pin-2] == 1){
     pinMode(pin, INPUT_PULLUP);
+    digitalLastState[pin-2] = (digitalRead(pin) == HIGH);
   }
 }
 
 void configureAnalogPin(int pin){
-  // 1 - Button to ground
-  if (analogConfig[pin-14] == 1){
-    pinMode(pin, INPUT_PULLUP);
-  }
 }
 
 void handleSerialCommands(){
@@ -155,4 +159,57 @@ void handleSerialCommands(){
       serialBuffer.concat(serialChar);
     }
   }
+}
+
+void handleDigitalPin(int pin){
+  if (digitalConfig[pin-2] == 1){
+    bool state = (digitalRead(pin) == HIGH);
+    if ((state != digitalLastState[pin-2]) && pastTimeoutDigital(pin)){
+      if (!state){
+        Serial.println("BUTTON " + String(pin) + " DOWN");
+      }
+      else{
+        Serial.println("BUTTON " + String(pin) + " UP");
+      }
+      updateDigitalPinState(pin, state);
+    }
+  }
+}
+
+void handleAnalogPin(int pin){
+
+}
+
+void updateDigitalPinState(int pin, bool state){
+  digitalLastStateChange[pin-2] = millis();
+  digitalLastState[pin-2] = state;
+}
+
+void updateAnalogPinState(int pin, int state){
+  analogLastStateChange[pin-14] = millis();
+  analogLastState[pin-14] = state;
+}
+
+bool pastTimeoutDigital(int pin){
+  long lastChange = digitalLastStateChange[pin-2];
+  long time = millis();
+  if (time < lastChange){
+    return true;
+  }
+  else if (time > (lastChange + digitalTimeout[pin-2])){
+    return true;
+  }
+  return false;
+}
+
+bool pastTimeoutAnalog(int pin){
+  long lastChange = analogLastStateChange[pin-14];
+  long time = millis();
+  if (time < lastChange){
+    return true;
+  }
+  else if (time > (lastChange + analogLastStateChange[pin-14])){
+    return true;
+  }
+  return false;
 }
