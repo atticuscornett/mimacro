@@ -7,7 +7,7 @@
 */
 
 int digitalConfig[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-int digitalTimeout[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int digitalTimeout[] = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
 bool digitalLastState[] = {false, false, false, false, false, false, false, false, false, false, false, false};
 unsigned long digitalLastStateChange[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -17,17 +17,18 @@ unsigned long digitalLastStateChange[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 */
 
 int analogConfig[] = {0, 0, 0, 0, 0, 0};
-int analogTimeout[] = {0, 0, 0, 0, 0, 0};
+int analogTimeout[] = {20, 20, 20, 20, 20, 20};
 int analogLastState[] = {0, 0, 0, 0, 0, 0};
-int analogChangeMin[] = {0, 0, 0, 0, 0, 0};
-unsigned long analogLastStateChange[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int analogChangeMin[] = {10, 10, 10, 10, 10, 10};
+unsigned long analogLastStateChange[] = {0, 0, 0, 0, 0, 0};
 
 String serialBuffer = "";
+String version = "UNO 0.0.1";
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("Arduino Macros");
-  Serial.println("UNO 0.0.1");
+  Serial.println("mimacro");
+  Serial.println(version);
   loadEEPROM();
 }
 
@@ -41,6 +42,16 @@ void loop() {
   }
 }
 
+
+/*
+  Memory Addresses
+  0-11 - Digital Pin Modes
+  12-17 - Analog Pin Modes
+  18-29 - Digital Pin Timeouts
+  30-35 - Analog Pin Timeouts
+  36-41 - Analog Pin Minimum Reported Changes
+*/
+
 void loadEEPROM(){
   int read;
   // Load button config from EEPROM
@@ -49,11 +60,7 @@ void loadEEPROM(){
     // Check validity
     if (read > 1){
       // Memory is invalid, reset memory;
-      for (int j = 0; j < 12; j++){
-        digitalConfig[j] = 0;
-        EEPROM.update(j, 0);
-      }
-      Serial.println("MEMRESET");
+      EEPROMReset();
       break;
     }
     digitalConfig[i] = read;
@@ -68,11 +75,7 @@ void loadEEPROM(){
     // Check validity
     if (read > 1){
       // Memory is invalid, reset memory;
-      for (int j = 12; j < 18; j++){
-        analogConfig[j] = 0;
-        EEPROM.update(j, 0);
-      }
-      Serial.println("MEMRESET");
+      EEPROMReset();
       break;
     }
     analogConfig[i-12] = read;
@@ -80,6 +83,45 @@ void loadEEPROM(){
     configureAnalogPin(i+2);
   }
   Serial.println(intArrayToString(analogConfig, 6));
+
+  for (int i = 18; i < 30; i++){
+    digitalTimeout[i-18] = EEPROM.read(i);
+  }
+  Serial.println(intArrayToString(digitalTimeout, 12));
+
+  for (int i = 30; i < 36; i++){
+    analogTimeout[i-30] = EEPROM.read(i);
+  }
+  Serial.println(intArrayToString(analogTimeout, 6));
+
+  for (int i = 36; i < 42; i++){
+    analogChangeMin[i-36] = EEPROM.read(i);
+  }
+  Serial.println(intArrayToString(analogChangeMin, 6));
+}
+
+void EEPROMReset(){
+  for (int j = 0; j < 12; j++){
+    digitalConfig[j] = 0;
+    EEPROM.update(j, 0);
+  }
+  for (int j = 12; j < 18; j++){
+    analogConfig[j-12] = 0;
+    EEPROM.update(j, 0);
+  }
+  for (int j = 18; j < 30; j++){
+    digitalTimeout[j-18] = 20;
+    EEPROM.update(j, 20);
+  }
+  for (int j = 30; j < 36; j++){
+    analogTimeout[j-30] = 20;
+    EEPROM.update(j, 20);
+  }
+  for (int j = 36; j < 42; j++){
+    analogChangeMin[j-36] = 10;
+    EEPROM.update(j, 10);
+  }
+  Serial.println("MEMRESET");
 }
 
 String intArrayToString(int arr[], int size) {
@@ -112,9 +154,9 @@ void handleSerialCommands(){
       if (serialBuffer.substring(0, 5) == "DPIN "){
         // Set digital pin config
         if (serialBuffer.substring(5, 7)  == "S "){
-          // Usage - "DPIN S <PIN (two digits)> <MODE (two digits)>"
+          // Usage - "DPIN S <PIN (two digits)> <MODE>"
           int pin = serialBuffer.substring(7, 9).toInt();
-          int mode = serialBuffer.substring(10, 12).toInt();
+          int mode = serialBuffer.substring(10).toInt();
           if (pin < 2 || pin > 13){
             Serial.println("Malfored command. Invalid pin.");
           }
@@ -125,12 +167,27 @@ void handleSerialCommands(){
             Serial.println("DIGITAL PIN " + String(pin) + " IS NOW MODE " + String(mode));
           }
         }
+        else if (serialBuffer.substring(5, 7) == "T "){
+          int pin = serialBuffer.substring(7, 9).toInt();
+          int time = serialBuffer.substring(10).toInt();
+          if (pin < 2 || pin > 13){
+            Serial.println("Malfored command. Invalid pin.");
+          }
+          else if (time > 255){
+            Serial.println("Malformed command. Time above max (255).");
+          }
+          else{
+            digitalTimeout[pin-2] = time;
+            EEPROM.update(pin+16, time);
+            Serial.println("DIGITAL PIN " + String(pin) + " NOW HAS TIMEOUT OF " + String(time));
+          }
+        }
       }
       else if (serialBuffer.substring(0, 5) == "APIN "){
         if (serialBuffer.substring(5, 7)  == "S "){
-          // Usage - "APIN S <PIN (one digit)> <MODE (two digits)>"
+          // Usage - "APIN S <PIN (one digit)> <MODE>"
           int pin = serialBuffer.substring(7, 8).toInt();
-          int mode = serialBuffer.substring(9, 11).toInt();
+          int mode = serialBuffer.substring(9).toInt();
           if (pin < 0 || pin > 5){
             Serial.println("Malfored command. Invalid pin.");
           }
@@ -141,6 +198,36 @@ void handleSerialCommands(){
             Serial.println("ANALOG PIN " + String(pin) + " IS NOW MODE " + String(mode));
           }
         }
+        else if (serialBuffer.substring(5, 7) == "T "){
+          int pin = serialBuffer.substring(7, 8).toInt();
+          int time = serialBuffer.substring(9).toInt();
+          if (pin < 0 || pin > 5){
+            Serial.println("Malfored command. Invalid pin.");
+          }
+          else if (time > 255){
+            Serial.println("Malformed command. Time above max (255).");
+          }
+          else{
+            analogTimeout[pin] = time;
+            EEPROM.update(pin+30, time);
+            Serial.println("ANALOG PIN " + String(pin) + " NOW HAS TIMEOUT OF " + String(time));
+          }
+        }
+        else if (serialBuffer.substring(5, 7) == "V "){
+          int pin = serialBuffer.substring(7, 8).toInt();
+          int val = serialBuffer.substring(9).toInt();
+          if (pin < 0 || pin > 5){
+            Serial.println("Malfored command. Invalid pin.");
+          }
+          else if (val > 255){
+            Serial.println("Malformed command. Time above max (255).");
+          }
+          else{
+            analogChangeMin[pin] = val;
+            EEPROM.update(pin+36, val);
+            Serial.println("ANALOG PIN " + String(pin) + " HAS VALUE CHANGE MINIMUM OF " + String(val));
+          }
+        }
       }
       else if (serialBuffer == "EEPROM"){
         loadEEPROM();
@@ -148,11 +235,19 @@ void handleSerialCommands(){
       else if (serialBuffer == "CONFIGSTATE"){
         Serial.println(intArrayToString(digitalConfig, 12));
         Serial.println(intArrayToString(analogConfig, 6));
+        Serial.println(intArrayToString(digitalTimeout, 12));
+        Serial.println(intArrayToString(analogTimeout, 6));
+        Serial.println(intArrayToString(analogChangeMin, 6));
+      }
+      else if (serialBuffer == "MEMRESET"){
+        EEPROMReset();
+      }
+      else if (serialBuffer == "VERSION"){
+        Serial.println(version);
       }
       else{
         Serial.println("Malformed command.");
       }
-      Serial.println(serialBuffer);
       serialBuffer = "";
     }
     else{
