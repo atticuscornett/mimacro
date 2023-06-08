@@ -1,10 +1,11 @@
 <script>
 	export let name;
+	import ImageTile from "./ImageTile.svelte";
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<!-- Just a test, don't load from pixabay! -->
+	<ImageTile src={"https://cdn.pixabay.com/photo/2017/03/23/12/32/arduino-2168193_1280.png"} text="Arduino Name"></ImageTile>
 </main>
 
 <style>

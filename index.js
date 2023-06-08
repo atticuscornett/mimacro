@@ -27,7 +27,7 @@ SerialPort.list().then(
     }
 )
 
-const serialport = new SerialPort({path: "COM5", baudRate: 9600});
+const serialport = new SerialPort({path: "COM8", baudRate: 9600});
 
 let dataString = "";
 
