@@ -14,6 +14,8 @@ unsigned long digitalLastStateChange[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 // Analog Pins A0-A5 Setup
 /*
   0 - Empty
+  1 - Button
+  40 - Potentiometer
 */
 
 int analogConfig[] = {0, 0, 0, 0, 0, 0};
@@ -144,6 +146,11 @@ void configureDigitalPin(int pin){
 }
 
 void configureAnalogPin(int pin){
+  // 1 - Button to ground
+  if (analogConfig[pin-14] == 1){
+    pinMode(pin, INPUT_PULLUP);
+    analogLastState[pin-14] = (digitalRead(pin) == HIGH);
+  }
 }
 
 void handleSerialCommands(){
@@ -272,7 +279,21 @@ void handleDigitalPin(int pin){
 }
 
 void handleAnalogPin(int pin){
-
+  if (analogConfig[pin-14] == 1){
+    bool state = (digitalRead(pin) == HIGH);
+    if ((state != analogLastState[pin-14]) && pastTimeoutAnalog(pin)){
+      if (!state){
+        Serial.println("BUTTON " + String(pin) + " DOWN");
+      }
+      else{
+        Serial.println("BUTTON " + String(pin) + " UP");
+      }
+      updateAnalogPinState(pin, state);
+    }
+  }
+  if (analogConfig[pin-14] == 40){
+    Serial.println(analogRead(pin));
+  }
 }
 
 void updateDigitalPinState(int pin, bool state){
@@ -303,7 +324,7 @@ bool pastTimeoutAnalog(int pin){
   if (time < lastChange){
     return true;
   }
-  else if (time > (lastChange + analogLastStateChange[pin-14])){
+  else if (time > (lastChange + analogTimeout[pin-14])){
     return true;
   }
   return false;
