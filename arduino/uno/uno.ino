@@ -21,7 +21,7 @@ unsigned long digitalLastStateChange[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 int analogConfig[] = {0, 0, 0, 0, 0, 0};
 int analogTimeout[] = {20, 20, 20, 20, 20, 20};
 int analogLastState[] = {0, 0, 0, 0, 0, 0};
-int analogChangeMin[] = {10, 10, 10, 10, 10, 10};
+int analogChangeMin[] = {25, 25, 25, 25, 25, 25};
 unsigned long analogLastStateChange[] = {0, 0, 0, 0, 0, 0};
 
 String serialBuffer = "";
@@ -75,7 +75,7 @@ void loadEEPROM(){
   for (int i = 12; i < 18; i++){
     read = EEPROM.read(i);
     // Check validity
-    if (read > 1){
+    if (read > 100){
       // Memory is invalid, reset memory;
       EEPROMReset();
       break;
@@ -292,7 +292,14 @@ void handleAnalogPin(int pin){
     }
   }
   if (analogConfig[pin-14] == 40){
-    Serial.println(analogRead(pin));
+    // Check if past timeout first to prevent reading too fast
+    if (pastTimeoutAnalog(pin)){
+      int state = analogRead(pin);
+      if (minDifference(analogLastState[pin-14], state, analogChangeMin[pin-14])){
+        Serial.println("POTENT " + String(pin) + " " + String(state));
+        analogLastState[pin-14] = state;
+      }
+    }
   }
 }
 
@@ -328,4 +335,16 @@ bool pastTimeoutAnalog(int pin){
     return true;
   }
   return false;
+}
+
+bool minDifference(int original, int newVal, int minimumDifference){
+  if (newVal >= (original + minimumDifference)){
+    return true;
+  }
+  else if (newVal <= (original - minimumDifference)){
+    return true;
+  }
+  else{
+    return false;
+  }
 }
