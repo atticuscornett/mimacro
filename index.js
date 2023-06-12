@@ -29,7 +29,7 @@ function autoDetectPorts(callback, timeout){
             ports.forEach((port) => {
                 if (port.friendlyName.includes("Uno")){
                     detectedPorts["arduino"].push(port);
-                    autoDetectListener(port, detectedPorts);
+                    autoDetectListener(port, detectedPorts, closePorts);
                 }
                 else{
                     detectedPorts["other"].push(port);
@@ -51,7 +51,7 @@ function autoDetectPorts(callback, timeout){
 }
 
 // Checks if arduino at port has mimacro software flashed.
-function autoDetectListener(port, detectedPorts){
+function autoDetectListener(port, detectedPorts, closePorts){
     let sp = new SerialPort({path: port.path, baudRate: 9600});
     let temp = "";
     sp.on("data", function (data){
@@ -68,6 +68,7 @@ function autoDetectListener(port, detectedPorts){
             temp = data.toString().split("\n")[1];
         }
     });
+    closePorts.push(sp);
 }
 
 autoDetectPorts((ports) => {console.log(ports)}, 5000);
