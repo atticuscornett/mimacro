@@ -87,9 +87,6 @@ function sendAutoPorts(ports){
     mainWindow.webContents.send("autoDetectResult", ports)
 }
 
-autoDetectPorts((ports) => {console.log(ports)}, 5000);
-
-
 app.on("ready", () => {
   mainWindow = new BrowserWindow({
     webPreferences: {
