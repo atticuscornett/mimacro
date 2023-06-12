@@ -1,5 +1,9 @@
 const { SerialPort } = require('serialport')
 const Avrgirl = require("@sienci/avrgirl-arduino");
+const { app, BrowserWindow, ipcMain } = require("electron");
+const path = require("path");
+
+let mainWindow;
 
 // var avrgirl = new Avrgirl(
 //     {
@@ -17,6 +21,7 @@ const Avrgirl = require("@sienci/avrgirl-arduino");
 //     }
 // });
 
+// Detect mimacro and Arduino devices.
 function autoDetectPorts(callback, timeout){
     let detectedPorts = {
         "mimacro": [],
@@ -54,16 +59,23 @@ function autoDetectPorts(callback, timeout){
 function autoDetectListener(port, detectedPorts, closePorts){
     let sp = new SerialPort({path: port.path, baudRate: 9600});
     let temp = "";
+    let isMimacro = false;
+    let line = 0;
+    let index = 0;
     sp.on("data", function (data){
         temp += data.toString();
         // Runs when data is done being received
         if (data.toString().includes("\n")){
-            temp = temp.split("\n")[0];
-            console.log(temp);
-            if (temp.includes("mimacro")){
-                console.log("testing");
+            line++;
+            temp = temp.split("\n")[0].replace("\r", "");
+            if (temp == "mimacro" && line == 1){
+                isMimacro = true;
                 detectedPorts["arduino"].splice(detectedPorts["arduino"].indexOf(port), 1);
                 detectedPorts["mimacro"].push(port);
+                index = detectedPorts["mimacro"].indexOf(port);
+            }
+            if (isMimacro && line == 2){
+                detectedPorts["mimacro"][index].mimacroVersion = temp;
             }
             temp = data.toString().split("\n")[1];
         }
@@ -71,28 +83,20 @@ function autoDetectListener(port, detectedPorts, closePorts){
     closePorts.push(sp);
 }
 
+function sendAutoPorts(ports){
+    mainWindow.webContents.send("autoDetectResult", ports)
+}
+
 autoDetectPorts((ports) => {console.log(ports)}, 5000);
 
-// const serialport = new SerialPort({path: "COM8", baudRate: 9600});
-
-// let dataString = "";
-
-// serialport.on("data", function (data){
-//     dataString += data.toString();
-
-//     // Runs when data is done being received
-//     if (data.toString().includes("\n")){
-//         dataString = dataString.split("\n")[0];
-//         console.log(dataString);
-//         dataString = data.toString().split("\n")[1];
-//     }
-// });
-
-const { app, BrowserWindow } = require("electron");
-const path = require("path");
 
 app.on("ready", () => {
-  const mainWindow = new BrowserWindow();
+  mainWindow = new BrowserWindow({
+    webPreferences: {
+        preload: path.join(__dirname, "preload.js")
+    }
+  });
   mainWindow.loadFile(path.join(__dirname, "public/index.html"));
   mainWindow.webContents.openDevTools();
+  ipcMain.on("autoDetectDevices", (event) => autoDetectPorts(sendAutoPorts, 5000))
 });
