@@ -2,9 +2,10 @@ const { SerialPort } = require('serialport')
 const Avrgirl = require("@sienci/avrgirl-arduino");
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
+const parts = require("./parts.json")
 
 let mainWindow;
-
+console.log(parts[0]);
 // var avrgirl = new Avrgirl(
 //     {
 //         board: "uno",

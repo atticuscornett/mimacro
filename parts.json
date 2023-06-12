@@ -1,0 +1,26 @@
+[
+    {
+        "id": "0",
+        "name": "Nothing",
+        "type": null,
+        "triggers": null,
+        "trigger_params": null,
+        "trigger_type": null
+    },
+    {
+        "id": "1",
+        "name": "Button",
+        "type": "digital",
+        "triggers": ["Down", "Up", "Hold"],
+        "trigger_params": [null, null, {"Duration": "int"}],
+        "trigger_type": ["static", "static", "static"]
+    },
+    {
+        "id": "40",
+        "name": "Potentiometer",
+        "type": "analog",
+        "triggers": ["Value Change", "Above", "Below", "Between"],
+        "trigger_params": [null, [{"name": "Value", "type": "analogInt"}], [{"name": "Value", "type": "analogInt"}], [{"name":"Low", "type":"analogInt"}, {"name":"High", "type": "analogInt"}]],
+        "trigger_type": ["variable", "static", "static"]
+    }
+]
