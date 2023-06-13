@@ -26,7 +26,7 @@ console.log(parts[0]);
 function autoDetectPorts(callback, timeout){
     let detectedPorts = {
         "mimacro": [],
-        "arduino": [],
+        "uno": [],
         "other": []
     }
     let closePorts = [];
@@ -34,8 +34,8 @@ function autoDetectPorts(callback, timeout){
         (ports) => {
             ports.forEach((port) => {
                 if (port.friendlyName.includes("Uno")){
-                    detectedPorts["arduino"].push(port);
-                    autoDetectListener(port, detectedPorts, closePorts);
+                    detectedPorts["uno"].push(port);
+                    autoDetectListener(port, detectedPorts, closePorts, "uno");
                 }
                 else{
                     detectedPorts["other"].push(port);
@@ -57,7 +57,7 @@ function autoDetectPorts(callback, timeout){
 }
 
 // Checks if arduino at port has mimacro software flashed.
-function autoDetectListener(port, detectedPorts, closePorts){
+function autoDetectListener(port, detectedPorts, closePorts, deviceType){
     let sp = new SerialPort({path: port.path, baudRate: 9600});
     let temp = "";
     let isMimacro = false;
@@ -71,7 +71,7 @@ function autoDetectListener(port, detectedPorts, closePorts){
             temp = temp.split("\n")[0].replace("\r", "");
             if (temp == "mimacro" && line == 1){
                 isMimacro = true;
-                detectedPorts["arduino"].splice(detectedPorts["arduino"].indexOf(port), 1);
+                detectedPorts[deviceType].splice(detectedPorts[deviceType].indexOf(port), 1);
                 detectedPorts["mimacro"].push(port);
                 index = detectedPorts["mimacro"].indexOf(port);
             }
