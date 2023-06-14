@@ -1,11 +1,17 @@
 const { SerialPort } = require('serialport')
 const Avrgirl = require("@sienci/avrgirl-arduino");
 const { app, BrowserWindow, ipcMain } = require("electron");
+const Store = require('electron-store');
+const store = new Store();
 const path = require("path");
 const parts = require("./parts.json")
 
 let mainWindow;
-let devices = [];
+
+if (!store.has("devices")){
+    store.set("devices", []);
+}
+let devices = store.get("devices");
 console.log(parts[0]);
 // var avrgirl = new Avrgirl(
 //     {
@@ -99,6 +105,7 @@ function sendAutoPorts(ports){
 
 function addDevice(device){
     devices.push(device);
+    store.set("devices", devices)
 }
 
 function getDevices(){

@@ -13,6 +13,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@sienci/avrgirl-arduino": "^5.0.3",
+    "electron-store": "^8.1.0",
     "serialport": "^11.0.0",
     "sirv-cli": "^2.0.0"
   },
