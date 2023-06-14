@@ -5,16 +5,13 @@
 	let page = "Devices";
 
 	window.setPage = (pageName) => {page = pageName};
+
+	const components = {Devices, DeviceSetup}
 </script>
 
 <main>
 	<NavBar bind:page={page}></NavBar>
-	{#if page == "Devices"}
-		<Devices></Devices>
-	{/if}
-	{#if page == "DeviceSetup"}
-		<DeviceSetup></DeviceSetup>
-	{/if}
+	<svelte:component this={components[page]}></svelte:component>
 </main>
 
 <style>
