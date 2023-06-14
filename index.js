@@ -34,10 +34,14 @@ function autoDetectPorts(callback, timeout){
         (ports) => {
             ports.forEach((port) => {
                 if (port.friendlyName.includes("Uno")){
+                    port.looksCompatible = true;
+                    port.flashed = false;
                     detectedPorts["uno"].push(port);
                     autoDetectListener(port, detectedPorts, closePorts, "uno");
                 }
                 else{
+                    port.looksCompatible = false;
+                    port.flashed = false;
                     detectedPorts["other"].push(port);
                 }
             });
@@ -70,6 +74,7 @@ function autoDetectListener(port, detectedPorts, closePorts, deviceType){
             line++;
             temp = temp.split("\n")[0].replace("\r", "");
             if (temp == "mimacro" && line == 1){
+                port.flashed = true;
                 isMimacro = true;
                 detectedPorts[deviceType].splice(detectedPorts[deviceType].indexOf(port), 1);
                 detectedPorts["mimacro"].push(port);

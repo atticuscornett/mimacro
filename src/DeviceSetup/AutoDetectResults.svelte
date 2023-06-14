@@ -11,8 +11,20 @@
         electronAPI.autoDetectDevices();
     });
 
+    function getSelection(name){
+        let group = document.getElementsByName(name);
+        for (let i = 0; i < group.length; i++){
+            if (group[i].checked){
+                return group[i].value;
+            }
+        }
+        return false;
+    }
+
     function nextStep(){
-        page = "NameDevice";
+        if (getSelection("autoDeviceSelect")){
+            page = "NameDevice";
+        }
     }
 </script>
 
