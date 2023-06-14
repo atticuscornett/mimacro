@@ -5,6 +5,7 @@ const path = require("path");
 const parts = require("./parts.json")
 
 let mainWindow;
+let devices = [];
 console.log(parts[0]);
 // var avrgirl = new Avrgirl(
 //     {
@@ -33,8 +34,10 @@ function autoDetectPorts(callback, timeout){
     SerialPort.list().then(
         (ports) => {
             ports.forEach((port) => {
+                port.mimacroVersion = "Not installed."
                 if (port.friendlyName.includes("Uno")){
                     port.looksCompatible = true;
+                    port.mimacroType = "Arduino Uno";
                     port.flashed = false;
                     detectedPorts["uno"].push(port);
                     autoDetectListener(port, detectedPorts, closePorts, "uno");
@@ -42,6 +45,7 @@ function autoDetectPorts(callback, timeout){
                 else{
                     port.looksCompatible = false;
                     port.flashed = false;
+                    port.mimacroType = "Unknown";
                     detectedPorts["other"].push(port);
                 }
             });
@@ -93,6 +97,14 @@ function sendAutoPorts(ports){
     mainWindow.webContents.send("autoDetectResult", ports)
 }
 
+function addDevice(device){
+    devices.push(device);
+}
+
+function getDevices(){
+    return devices;
+}
+
 app.on("ready", () => {
   mainWindow = new BrowserWindow({
     webPreferences: {
@@ -102,4 +114,6 @@ app.on("ready", () => {
   mainWindow.loadFile(path.join(__dirname, "public/index.html"));
   mainWindow.webContents.openDevTools();
   ipcMain.on("autoDetectDevices", (event) => autoDetectPorts(sendAutoPorts, 5000))
+  ipcMain.on("addDevice", (event, device) => addDevice(device));
+  ipcMain.handle("getDevices", getDevices);
 });

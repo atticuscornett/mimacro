@@ -4,10 +4,8 @@
     export let label;
 </script>
 
-<main>
-    <input type="radio" value={id} id={id} name={name}>
-    <label for={id}><div>{label}</div></label>
-</main>
+<input type="radio" value={id} id={id} name={name}>
+<label for={id}><div>{label}</div></label>
 
 <style>
     input {
@@ -21,7 +19,7 @@
 
     input + label > div{
         border: 2px gray solid;
-        border-radius: 10px;
+        border-radius: 15px;
         padding: 10px;
         margin: 10px;
         color: black;

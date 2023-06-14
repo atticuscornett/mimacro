@@ -23,7 +23,18 @@
 
     function nextStep(){
         if (getSelection("autoDeviceSelect")){
-            page = "NameDevice";
+            let deviceSelected = getSelection("autoDeviceSelect").split("-");
+            device = detected[deviceSelected[0]][Number(deviceSelected[1])];
+            if (device.flashed){
+                page = "NameDevice";
+            }
+            else if (device.looksCompatible){
+                page = "FlashDevice";
+            }
+            else{
+                page = "CompatibilityWarn";
+            }
+            
         }
     }
 </script>
