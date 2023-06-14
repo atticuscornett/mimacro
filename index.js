@@ -40,6 +40,9 @@ function autoDetectPorts(callback, timeout){
     SerialPort.list().then(
         (ports) => {
             ports.forEach((port) => {
+                if (deviceExists(port.serialNumber)){
+                    return;
+                }
                 port.mimacroVersion = "Not installed."
                 if (port.friendlyName.includes("Uno")){
                     port.looksCompatible = true;
@@ -68,6 +71,15 @@ function autoDetectPorts(callback, timeout){
         }
         callback(detectedPorts);
     }, timeout);
+}
+
+function deviceExists(serial){
+    for (let i = 0; i < devices.length; i++){
+        if (devices[i].serialNumber == serial){
+            return true;
+        }
+    }
+    return false;
 }
 
 // Checks if arduino at port has mimacro software flashed.
