@@ -1,6 +1,4 @@
 <script>
-	export let name;
-	import ImageTile from "./ImageTile.svelte";
 	import DeviceSetup from "./DeviceSetup.svelte";
     import Devices from "./Devices.svelte";
     import NavBar from "./Components/NavBar.svelte";

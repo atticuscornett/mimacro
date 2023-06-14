@@ -131,7 +131,6 @@ app.on("ready", () => {
     }
   });
   mainWindow.loadFile(path.join(__dirname, "public/index.html"));
-  mainWindow.webContents.openDevTools();
   ipcMain.on("autoDetectDevices", (event) => autoDetectPorts(sendAutoPorts, 5000))
   ipcMain.on("addDevice", (event, device) => addDevice(device));
   ipcMain.handle("getDevices", getDevices);
