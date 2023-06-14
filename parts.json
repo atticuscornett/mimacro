@@ -3,24 +3,87 @@
         "id": "0",
         "name": "Nothing",
         "type": null,
-        "triggers": null,
-        "trigger_params": null,
-        "trigger_type": null
+        "triggers": null
     },
+
     {
         "id": "1",
         "name": "Button",
         "type": "digital",
-        "triggers": ["Down", "Up", "Hold"],
-        "trigger_params": [null, null, {"Duration": "int"}],
-        "trigger_type": ["static", "static", "static"]
+        "triggers": [
+            {
+                "name": "Down",
+                "type": "static"
+            },
+
+            {
+                "name": "Up",
+                "type": "static"
+            },
+
+            {
+                "name": "Hold",
+                "type": "static",
+                "parameters": [
+                    {
+                        "name": "Duration",
+                        "type": "int"
+                    }
+                ]
+            }
+        ]
     },
+
     {
         "id": "40",
         "name": "Potentiometer",
         "type": "analog",
-        "triggers": ["Value Change", "Above", "Below", "Between"],
-        "trigger_params": [null, [{"name": "Value", "type": "analogInt"}], [{"name": "Value", "type": "analogInt"}], [{"name":"Low", "type":"analogInt"}, {"name":"High", "type": "analogInt"}]],
-        "trigger_type": ["variable", "static", "static"]
+        "triggers": [
+            {
+                "name": "Value Change",
+                "type": "variable"
+            },
+
+            {
+                "name": "Above",
+                "type": "static",
+
+                "parameters": [
+                    {
+                        "name": "Value",
+                        "type": "analogInt"
+                    }
+                ]
+            },
+
+            {
+                "name": "Below",
+                "type": "static",
+
+                "parameters": [
+                    {
+                        "name": "Value",
+                        "type": "analogInt"
+                    }
+                ]
+            },
+
+            {
+                "name": "Between",
+                "type": "static",
+
+                "parameters": [
+                    {
+                        "name": "Low",
+                        "type": "analogInt"
+                    },
+
+                    {
+                        "name": "High",
+                        "type": "analogInt"
+                    }
+                ]
+            }
+        ]
     }
 ]
