@@ -9,7 +9,6 @@
     }
 
     function uncheck(page){
-        console.log("test");
         if (page != id){
             checked = false;
         }
@@ -42,5 +41,15 @@
 
     input:checked + label > div {
         border-bottom: black 2px solid;
+    }
+
+    @media (prefers-color-scheme:dark){
+        input + label > div {
+            border-bottom: black 2px solid;
+        }
+
+        input:checked + label > div {
+            border-bottom: white 2px solid;
+        }
     }
 </style>

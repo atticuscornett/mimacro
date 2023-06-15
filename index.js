@@ -1,6 +1,6 @@
 const { SerialPort } = require('serialport')
 const Avrgirl = require("@sienci/avrgirl-arduino");
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, nativeTheme } = require("electron");
 const Store = require('electron-store');
 const store = new Store();
 const path = require("path");
@@ -12,6 +12,12 @@ if (!store.has("devices")){
     store.set("devices", []);
 }
 let devices = store.get("devices");
+
+if (!store.has("colorTheme")){
+    store.set("colorTheme", "system")
+}
+let colorTheme = store.get("colorTheme");
+nativeTheme.themeSource = colorTheme;
 console.log(parts[0]);
 // var avrgirl = new Avrgirl(
 //     {
@@ -124,6 +130,18 @@ function getDevices(){
     return devices;
 }
 
+function setColorTheme(event, mode){
+    colorTheme = mode;
+    store.set("colorTheme", mode);
+    nativeTheme.themeSource = mode;
+}
+
+ipcMain.on("autoDetectDevices", (event) => autoDetectPorts(sendAutoPorts, 5000))
+ipcMain.on("addDevice", (event, device) => addDevice(device));
+ipcMain.handle("getDevices", getDevices);
+ipcMain.handle("setColorTheme", setColorTheme);
+ipcMain.handle("getColorTheme", () => {return colorTheme;})
+
 app.on("ready", () => {
   mainWindow = new BrowserWindow({
     webPreferences: {
@@ -131,7 +149,4 @@ app.on("ready", () => {
     }
   });
   mainWindow.loadFile(path.join(__dirname, "public/index.html"));
-  ipcMain.on("autoDetectDevices", (event) => autoDetectPorts(sendAutoPorts, 5000))
-  ipcMain.on("addDevice", (event, device) => addDevice(device));
-  ipcMain.handle("getDevices", getDevices);
 });
