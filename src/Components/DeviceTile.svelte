@@ -14,10 +14,10 @@
         <h5 style="{(status == "outdated") ? "color: yellow;" : ""}">{mimacroVersion}{(status == "outdated") ? " (outdated)":""}</h5>
     </div>
     {#if status == "disconnected"}
-        <img id="disconnectIcon" src={"../src/Images/Icons/Error.svg"} alt="Device disconnected.">
+        <img id="disconnectIcon" src={"../src/Images/Icons/Error.svg"} alt="Device disconnected." title="Device disconnected.">
     {/if}
     {#if status == "outdated"}
-        <img id="disconnectIcon" src={"../src/Images/Icons/Warning.svg"} alt="Device outdated.">
+        <img id="disconnectIcon" src={"../src/Images/Icons/Warning.svg"} alt="Device outdated." title="Device software outdated.">
     {/if}
 </div>
 

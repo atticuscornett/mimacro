@@ -7,5 +7,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getDevices: () => ipcRenderer.invoke("getDevices"),
   setColorTheme: (color) => ipcRenderer.invoke("setColorTheme", color),
   getColorTheme: () => ipcRenderer.invoke("getColorTheme"),
+  saveMacro: (macro) => ipcRenderer.invoke("saveMacro", macro),
+  getMacros: () => ipcRenderer.invoke("getMacros"),
   onDeviceRefresh: (callback) => ipcRenderer.on("refreshDevices", callback)
 });

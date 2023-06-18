@@ -22,6 +22,12 @@ if (!store.has("colorTheme")){
 }
 let colorTheme = store.get("colorTheme");
 nativeTheme.themeSource = colorTheme;
+
+if (!store.has("userMacros")){
+    store.set("userMacros", []);
+}
+let userMacros = store.get("userMacros");
+
 console.log(parts[0]);
 // var avrgirl = new Avrgirl(
 //     {
@@ -200,6 +206,15 @@ function listenToDevice(index, devicePath){
     });
 }
 
+function saveMacro(event, macro){
+    userMacros.push(macro);
+    store.set("userMacros", userMacros);
+}
+
+function getMacros(){
+    return userMacros;
+}
+
 connectToDevices();
 
 ipcMain.on("autoDetectDevices", (event) => autoDetectPorts(sendAutoPorts, 5000))
@@ -207,6 +222,9 @@ ipcMain.on("addDevice", (event, device) => addDevice(device));
 ipcMain.handle("getDevices", getDevices);
 ipcMain.handle("setColorTheme", setColorTheme);
 ipcMain.handle("getColorTheme", () => {return colorTheme;})
+ipcMain.handle("saveMacro", saveMacro);
+ipcMain.handle("getMacros", getMacros);
+
 
 app.on("ready", () => {
   mainWindow = new BrowserWindow({
