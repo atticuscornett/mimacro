@@ -4,8 +4,10 @@ const { app, BrowserWindow, ipcMain, nativeTheme } = require("electron");
 const Store = require('electron-store');
 const store = new Store();
 const path = require("path");
-const parts = require("./parts.json")
+const parts = require("./parts.json");
+const layouts = require("../layouts.json");
 const supportedVersions = require("./supportedVersions.json");
+const {usb} = require('usb');
 
 let mainWindow;
 
@@ -137,6 +139,11 @@ function addDevice(device){
     store.set("devices", devices)
 }
 
+function removeDevice(deviceIndex){
+    devices.splice(deviceIndex, 1);
+    store.set("devices", devices);
+}
+
 function getDevices(){
     return devices;
 }
@@ -206,6 +213,10 @@ function listenToDevice(index, devicePath){
     });
 }
 
+usb.on('attach', (device) => {
+    console.log(device);
+});
+
 function saveMacro(event, macro){
     userMacros.push(macro);
     store.set("userMacros", userMacros);
@@ -224,6 +235,8 @@ ipcMain.handle("setColorTheme", setColorTheme);
 ipcMain.handle("getColorTheme", () => {return colorTheme;})
 ipcMain.handle("saveMacro", saveMacro);
 ipcMain.handle("getMacros", getMacros);
+ipcMain.handle("getLayouts", ()=>{return layouts;});
+ipcMain.handle("getParts", ()=>{return parts;});
 
 
 app.on("ready", () => {

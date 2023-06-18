@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
+
 contextBridge.exposeInMainWorld('electronAPI', {
   autoDetectDevices: () => ipcRenderer.send('autoDetectDevices'),
   onAutoDetect: (callback) => ipcRenderer.on("autoDetectResult", callback),
@@ -9,5 +10,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getColorTheme: () => ipcRenderer.invoke("getColorTheme"),
   saveMacro: (macro) => ipcRenderer.invoke("saveMacro", macro),
   getMacros: () => ipcRenderer.invoke("getMacros"),
-  onDeviceRefresh: (callback) => ipcRenderer.on("refreshDevices", callback)
+  onDeviceRefresh: (callback) => ipcRenderer.on("refreshDevices", callback),
+  getLayouts: () => {ipcRenderer.invoke("getLayouts")},
+  getParts: () => {ipcRenderer.invoke("getParts")}
 });
