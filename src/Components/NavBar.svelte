@@ -30,3 +30,15 @@
     <NavButton id={pageTo} name={name} checked={name=="Devices"} bind:page={page}></NavButton>
 {/each}
 <hr>
+
+<style>
+    hr {
+        color: var(--background-gray);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        hr {
+            color: white;
+        }
+    }
+</style>

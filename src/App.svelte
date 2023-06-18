@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import DeviceSetup from "./DeviceSetup.svelte";
     import Devices from "./Devices.svelte";
     import NavBar from "./Components/NavBar.svelte";
@@ -24,10 +24,11 @@
 			--secondary-blue: #48BEFF;
 			--primary-green: #399E5A;
 			--secondary-green: #23CE6B;
+			--background-gray: #242424;
 		}
 		:global(body) {
 			color: white;
-			background-color: black;
+			background-color: var(--background-gray);
 		}
 	}
 </style>

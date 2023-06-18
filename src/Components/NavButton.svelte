@@ -45,7 +45,7 @@
 
     @media (prefers-color-scheme:dark){
         input + label > div {
-            border-bottom: black 2px solid;
+            border-bottom: var(--background-gray) 2px solid;
         }
 
         input:checked + label > div {
