@@ -214,13 +214,12 @@ function listenToDevice(index, devicePath){
 }
 
 function deviceOpen(device){
-    for (let i = 0; i < devices.length; i++){
-        if (device.serialNumber == devices[i].serialNumber){
-            if (devices[i].status == "connected"){
+    for (let j = 0; j < devices.length; j++){
+        if (device.serialNumber == devices[j].serialNumber){
+            console.log(devices[j].status)
+            if (devices[j].status == "connected"){
+                console.log("yes yes")
                 return true;
-            }
-            else{
-                return false;
             }
         }
     }
@@ -228,11 +227,17 @@ function deviceOpen(device){
 }
 
 usb.on('attach', (device) => {
-    console.log(device);
     SerialPort.list().then((ports) => {
+        serialNumbers = [];
+        for (let i = 0; i < devices.length; i++){
+            serialNumbers.push(devices[i].serialNumber);
+        }
         for (let i = 0; i < ports.length; i++){
-            if (serialNumbers.includes(ports[i].serialNumber)){
-                listenToDevice(serialNumbers.indexOf(ports[i].serialNumber), ports[i].path);
+            if (!deviceOpen(ports[i])){
+                if (serialNumbers.includes(ports[i].serialNumber)){
+                    console.log(devices[i].nickname);
+                    listenToDevice(serialNumbers.indexOf(ports[i].serialNumber), ports[i].path);
+                }
             }
         }
     });
