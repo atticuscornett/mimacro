@@ -139,7 +139,7 @@ function addDevice(device){
     store.set("devices", devices)
 }
 
-function removeDevice(deviceIndex){
+function removeDevice(event, deviceIndex){
     devices.splice(deviceIndex, 1);
     store.set("devices", devices);
 }
@@ -213,8 +213,29 @@ function listenToDevice(index, devicePath){
     });
 }
 
+function deviceOpen(device){
+    for (let i = 0; i < devices.length; i++){
+        if (device.serialNumber == devices[i].serialNumber){
+            if (devices[i].status == "connected"){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    }
+    return false;
+}
+
 usb.on('attach', (device) => {
     console.log(device);
+    SerialPort.list().then((ports) => {
+        for (let i = 0; i < ports.length; i++){
+            if (serialNumbers.includes(ports[i].serialNumber)){
+                listenToDevice(serialNumbers.indexOf(ports[i].serialNumber), ports[i].path);
+            }
+        }
+    });
 });
 
 function saveMacro(event, macro){
@@ -237,6 +258,7 @@ ipcMain.handle("saveMacro", saveMacro);
 ipcMain.handle("getMacros", getMacros);
 ipcMain.handle("getLayouts", ()=>{return layouts;});
 ipcMain.handle("getParts", ()=>{return parts;});
+ipcMain.handle("removeDevice", removeDevice);
 
 
 app.on("ready", () => {
