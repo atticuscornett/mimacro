@@ -32,4 +32,11 @@
 			background-color: var(--background-gray);
 		}
 	}
+
+	@media (prefers-color-scheme: light) {
+		:global(body) {
+			color: var(--background-gray);
+			background-color: white;
+		}
+	}
 </style>
