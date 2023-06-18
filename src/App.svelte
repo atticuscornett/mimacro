@@ -18,6 +18,13 @@
 
 <style>
 	@media (prefers-color-scheme: dark){
+		:global(:root){
+			--primary-dark: #001524;
+			--primary-blue: #15616D;
+			--secondary-blue: #48BEFF;
+			--primary-green: #399E5A;
+			--secondary-green: #23CE6B;
+		}
 		:global(body) {
 			color: white;
 			background-color: black;
