@@ -3,11 +3,12 @@
     import Devices from "./Devices.svelte";
     import NavBar from "./Components/NavBar.svelte";
     import Settings from "./Settings.svelte";
+	import Macros from "./Macros.svelte";
 	let page = "Devices";
 
 	window.setPage = (pageName) => {page = pageName};
 
-	const components = {Devices, DeviceSetup, Settings}
+	const components = {Devices, DeviceSetup, Settings, Macros}
 </script>
 
 <main>
