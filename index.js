@@ -5,7 +5,7 @@ const Store = require('electron-store');
 const store = new Store();
 const path = require("path");
 const parts = require("./parts.json");
-const layouts = require("../layouts.json");
+const layouts = require("./layouts.json");
 const supportedVersions = require("./supportedVersions.json");
 const {usb} = require('usb');
 
