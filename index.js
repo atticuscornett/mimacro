@@ -1,10 +1,11 @@
 const { SerialPort } = require('serialport')
 const Avrgirl = require("@sienci/avrgirl-arduino");
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, nativeTheme } = require("electron");
 const Store = require('electron-store');
 const store = new Store();
 const path = require("path");
 const parts = require("./parts.json")
+const supportedVersions = require("./supportedVersions.json");
 
 let mainWindow;
 
@@ -12,6 +13,15 @@ if (!store.has("devices")){
     store.set("devices", []);
 }
 let devices = store.get("devices");
+for (let i = 0; i < devices.length; i++){
+    devices[i].status = "disconnected";
+}
+
+if (!store.has("colorTheme")){
+    store.set("colorTheme", "system")
+}
+let colorTheme = store.get("colorTheme");
+nativeTheme.themeSource = colorTheme;
 console.log(parts[0]);
 // var avrgirl = new Avrgirl(
 //     {
@@ -116,6 +126,7 @@ function sendAutoPorts(ports){
 }
 
 function addDevice(device){
+    device.status = "disconnected";
     devices.push(device);
     store.set("devices", devices)
 }
@@ -124,6 +135,79 @@ function getDevices(){
     return devices;
 }
 
+function setColorTheme(event, mode){
+    colorTheme = mode;
+    store.set("colorTheme", mode);
+    nativeTheme.themeSource = mode;
+}
+
+function connectToDevices(){
+    serialNumbers = [];
+    for (let i = 0; i < devices.length; i++){
+        serialNumbers.push(devices[i].serialNumber);
+    }
+    SerialPort.list().then((ports) => {
+        for (let i = 0; i < ports.length; i++){
+            if (serialNumbers.includes(ports[i].serialNumber)){
+                listenToDevice(serialNumbers.indexOf(ports[i].serialNumber), ports[i].path);
+            }
+        }
+    })
+}
+
+function refreshRendererDevices(){
+    mainWindow.webContents.send("refreshDevices");
+}
+
+function listenToDevice(index, devicePath){
+    let thisDevice = devices[index];
+    let sp = new SerialPort({path: devicePath, baudRate: 9600});
+    console.log(thisDevice.nickname);
+    let temp = "";
+    let line = 0;
+    let outdated = false;
+    sp.on("data", function (data){
+        temp += data.toString();
+        // Runs when data is done being received
+        if (data.toString().includes("\n")){
+            if (line < 8){
+                line++;
+            }
+            temp = temp.split("\n")[0].replace("\r", "");
+            console.log(temp);
+            if (line == 2){
+                devices[index].mimacroVersion = temp;
+                if (!supportedVersions.includes(devices[index].mimacroVersion)){
+                    outdated = true;
+                    sp.close()
+                }
+            }
+            if (line == 7){
+                devices[index].status = "connected";
+                refreshRendererDevices();
+            }
+            temp = data.toString().split("\n")[1];
+        }
+    });
+    sp.on("close", () => {
+        if (outdated){
+            devices[index].status = "outdated";
+        }
+        else{
+            devices[index].status = "disconnected";
+        }
+        refreshRendererDevices();
+    });
+}
+
+connectToDevices();
+
+ipcMain.on("autoDetectDevices", (event) => autoDetectPorts(sendAutoPorts, 5000))
+ipcMain.on("addDevice", (event, device) => addDevice(device));
+ipcMain.handle("getDevices", getDevices);
+ipcMain.handle("setColorTheme", setColorTheme);
+ipcMain.handle("getColorTheme", () => {return colorTheme;})
+
 app.on("ready", () => {
   mainWindow = new BrowserWindow({
     webPreferences: {
@@ -131,7 +215,4 @@ app.on("ready", () => {
     }
   });
   mainWindow.loadFile(path.join(__dirname, "public/index.html"));
-  ipcMain.on("autoDetectDevices", (event) => autoDetectPorts(sendAutoPorts, 5000))
-  ipcMain.on("addDevice", (event, device) => addDevice(device));
-  ipcMain.handle("getDevices", getDevices);
 });

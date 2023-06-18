@@ -39,4 +39,10 @@
     div:hover {
         box-shadow: 0 5px 15px rgba(30, 144, 255, .4);
     }
+
+    @media (prefers-color-scheme: dark){
+        input + label > div{
+            color: white;
+        }
+    }
 </style>
