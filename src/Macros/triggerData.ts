@@ -59,24 +59,3 @@ export const EXAMPLE_PART: Part = {
         }
     ]
 }
-
-export function getTriggerNames(): string[] {
-    let results: string[] = [];
-
-    let parts: Part[] = getParts();
-
-    parts.forEach((p) => {
-        results.concat(p.triggers.map(t => t.name))
-    });
-
-    return results;
-}
-
-export function getParts(): Part[] {
-    let results: Part[];
-
-    const setResult = async ()=> { results = await electronAPI.getParts() };
-    setResult()
-
-    return results;
-}
