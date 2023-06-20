@@ -1,7 +1,9 @@
 <script lang="ts">
     import type {MacroData} from "./macro";
     import {EXAMPLE_DEVICE, type ArduinoDevice} from "./device";
-    import {EXAMPLE_PART, EXAMPLE_TRIGGER} from "./triggerData";
+    import {EXAMPLE_PART, EXAMPLE_TRIGGER, Part} from "./triggerData";
+    import {getPopulatedPins, Pin} from "./pin";
+    import {capitalize} from "../utilities";
 
     export let macros: MacroData[];
     export let showingCreator: boolean;
@@ -20,12 +22,23 @@
         devices = await electronAPI.getDevices();
     }
 
-    let selectedDevice: string = "";
+    let parts: Part[] = [];
+    let getParts = async () => {
+        parts = await electronAPI.getParts();
+    }
 
-    let updateSelectedDevice = () => selectedDevice = (document.getElementById("device") as HTMLSelectElement).value;
+    let selectedDevice: ArduinoDevice;
+    let populatedPins: Pin[] = [];
+
+    let updateSelectedDevice = () => {
+        let serial: string = (document.getElementById("device") as HTMLSelectElement).value
+
+        selectedDevice = devices.filter(device => device.serialNumber == serial)[0];
+        populatedPins = getPopulatedPins(selectedDevice);
+    }
 
     getDevices()
-
+    getParts()
 </script>
 
 <main>
@@ -41,22 +54,24 @@
                 <br>
 
                 <label for="device">Device</label>
-                <select on:focusout={updateSelectedDevice} id="device">
-                    {#each devices as device}
+                <select on:change={updateSelectedDevice} id="device">
+                    <option disabled selected hidden></option>
+                    {#each devices as device, i}
                         <option value={device.serialNumber}>{device.nickname}</option>
                     {/each}
                 </select>
 
                 <br>
 
-                <div>
-                    <label for="trigger-pin"></label>
-                    <input id="trigger-pin" type="number">
-                </div>
-
-                <br>
-
-                <br>
+                <label for="pin">Pin</label>
+                <select id="pin">
+                    {#each populatedPins as pin}
+                        <option>
+                            {parts.filter(part => part.id === pin.part.toString())[0].name}
+                            at {capitalize(pin.type)} Pin {pin.pinNumber}
+                        </option>
+                    {/each}
+                </select>
             </div>
 
             <button class="submit-button">Create Macro</button>

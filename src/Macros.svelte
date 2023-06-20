@@ -45,7 +45,6 @@
         <MacroCreator bind:macros={macros} bind:showingCreator={showingCreator} />
     {/if}
 
-
     <ul>
         {#if macros.length === 0}
             <h3>There are no macros... Try creating one!</h3>

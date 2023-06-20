@@ -8,7 +8,7 @@ export interface Pin {
 
 export type PinType = "analog" | "digital";
 
-export function getNonEmptyPins(device: ArduinoDevice): Pin[] {
+export function getPopulatedPins(device: ArduinoDevice): Pin[] {
     if (!device) return [];
 
     let digitalPins = device.pinOut.digital;
@@ -40,7 +40,7 @@ export function getNonEmptyPins(device: ArduinoDevice): Pin[] {
 }
 
 export function getPin(device: ArduinoDevice, index: number): Pin {
-    let pins = getNonEmptyPins(device);
+    let pins = getPopulatedPins(device);
 
     return pins.filter(pin => pin.pinNumber == index)[0];
 }
