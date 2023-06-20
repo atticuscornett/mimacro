@@ -85,6 +85,12 @@
         width: 75%;
         height: 75%;
 
+        max-height: 600px;
+        min-height: 500px;
+
+        max-width: 700px;
+        min-width: 600px;
+
         top: 50%;
         left: 50%;
 
