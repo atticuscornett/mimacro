@@ -13,5 +13,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onDeviceRefresh: (callback) => ipcRenderer.on("refreshDevices", callback),
   getLayouts: () => ipcRenderer.invoke("getLayouts"),
   getParts: () => ipcRenderer.invoke("getLayouts"),
-  removeDevice: (index) => {ipcRenderer.invoke("removeDevice", index)}
+  removeDevice: (index) => {ipcRenderer.invoke("removeDevice", index)},
+  flashDevice: (index, callback) => ipcRenderer.invoke("flashDevice", index),
+  onFlashResult: (callback) => {ipcRenderer.on("flashResult", callback)}
 });

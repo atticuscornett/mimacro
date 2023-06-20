@@ -15,6 +15,7 @@ if (!store.has("devices")){
     store.set("devices", []);
 }
 let devices = store.get("devices");
+let serialPorts = {};
 for (let i = 0; i < devices.length; i++){
     devices[i].status = "disconnected";
 }
@@ -30,7 +31,34 @@ if (!store.has("userMacros")){
 }
 let userMacros = store.get("userMacros");
 
-console.log(parts[0]);
+function flashDevice(event, index){
+    try{
+        serialPorts[index].close()
+    }
+    catch(e){}
+    devices[index].status = "disconnected";
+    refreshRendererDevices()
+    if (devices[index].mimacroType == "Arduino Uno"){
+        var avrgirl = new Avrgirl(
+            {
+                board: "uno",
+                port: devices[index].port
+            }
+        );
+        avrgirl.flash("./arduino/uno/build/arduino.avr.uno/uno.ino.hex", function(e){
+            refreshDevices();
+            if (e){
+                console.log(e);
+                mainWindow.webContents.send("flashResult", false);
+            }
+            else{
+                console.log("Flash complete.");
+                mainWindow.webContents.send("flashResult", true);
+            }
+        });
+            
+    }
+}
 // var avrgirl = new Avrgirl(
 //     {
 //         board: "uno",
@@ -174,7 +202,9 @@ function refreshRendererDevices(){
 
 function listenToDevice(index, devicePath){
     let thisDevice = devices[index];
+    devices[index].port = devicePath;
     let sp = new SerialPort({path: devicePath, baudRate: 9600});
+    serialPorts[index] = sp;
     console.log(thisDevice.nickname);
     let temp = "";
     let line = 0;
@@ -183,6 +213,9 @@ function listenToDevice(index, devicePath){
         temp += data.toString();
         // Runs when data is done being received
         if (data.toString().includes("\n")){
+            if (temp == "MEMRESET"){
+                return;
+            }
             if (line < 8){
                 line++;
             }
@@ -226,14 +259,14 @@ function deviceOpen(device){
     return false;
 }
 
-usb.on('attach', (device) => {
+function refreshDevices(){
     SerialPort.list().then((ports) => {
         serialNumbers = [];
         for (let i = 0; i < devices.length; i++){
             serialNumbers.push(devices[i].serialNumber);
         }
         for (let i = 0; i < ports.length; i++){
-            if (!deviceOpen(ports[i])){
+            if (true){
                 if (serialNumbers.includes(ports[i].serialNumber)){
                     console.log(devices[i].nickname);
                     listenToDevice(serialNumbers.indexOf(ports[i].serialNumber), ports[i].path);
@@ -241,6 +274,10 @@ usb.on('attach', (device) => {
             }
         }
     });
+}
+
+usb.on('attach', (device) => {
+    refreshDevices();
 });
 
 function saveMacro(event, macro){
@@ -264,6 +301,7 @@ ipcMain.handle("getMacros", getMacros);
 ipcMain.handle("getLayouts", ()=>{return layouts;});
 ipcMain.handle("getParts", ()=>{return parts;});
 ipcMain.handle("removeDevice", removeDevice);
+ipcMain.handle("flashDevice", flashDevice);
 
 
 app.on("ready", () => {

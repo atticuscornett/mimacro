@@ -3,7 +3,19 @@
     export let mimacroVersion;
     export let mimacroType;
     export let status = "disconnected";
-    export let hoverOptions = "";
+    export let hoverOptions = true;
+    export let action;
+    export let index;
+
+    async function flashDevice(){
+        action = "flash-"+index;
+        await electronAPI.flashDevice(index);
+    }
+
+    electronAPI.onFlashResult((event, result) => {
+        console.log(result);
+        action="";
+    });
 </script>
 
 <div class="DevTileWrap">
@@ -13,22 +25,26 @@
         <hr>
         <h2>{nickname}</h2>
         <h5 style="{(status == "outdated") ? "color: yellow;" : ""}">{mimacroVersion}{(status == "outdated") ? " (outdated)":""}</h5>
-        <div class="HoverOpt">
-            <svg xmlns="http://www.w3.org/2000/svg" class="HoverOptIcon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-                <path d="M8 12l0 .01"></path>
-                <path d="M12 12l0 .01"></path>
-                <path d="M16 12l0 .01"></path>
-             </svg>
-             <div>
-                <button>Rename</button>
-                <br>
-                <button>{(status == "connected") ? "Reflash":""}{(status == "outdated") ? "Flash Update":""}</button>
-                <br>
-                <button>Remove</button>
-             </div>
-        </div>
+        {#if hoverOptions}
+            <div class="HoverOpt">
+                <svg xmlns="http://www.w3.org/2000/svg" class="HoverOptIcon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+                    <path d="M8 12l0 .01"></path>
+                    <path d="M12 12l0 .01"></path>
+                    <path d="M16 12l0 .01"></path>
+                </svg>
+                <div>
+                    <button>Rename</button>
+                    <br>
+                    {#if status != "disconnected"}
+                        <button on:click={flashDevice}>{(status == "connected") ? "Reflash":""}{(status == "outdated") ? "Flash Update":""}</button>
+                        <br>
+                    {/if}
+                    <button>Remove</button>
+                </div>
+            </div>
+        {/if}
     </div>
     {#if status == "disconnected"}
         <img id="disconnectIcon" src={"../src/Images/Icons/Error.svg"} alt="Device disconnected." title="Device disconnected.">
