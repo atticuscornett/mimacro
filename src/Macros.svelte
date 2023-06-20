@@ -78,6 +78,7 @@
         justify-content: space-between;
     }
 
+
     .macro-button {
         background: none;
         border: none;
@@ -87,5 +88,25 @@
         transform: scale(95%);
         background: none;
         border: none;
+    }
+
+    @media (prefers-color-scheme: light) {
+        .macro-button {
+            background-color: var(--primary-blue);
+            width: 50px;
+            height: 50px;
+
+            padding: 10px;
+
+            border-radius: 50%;
+        }
+
+        .macro-button > img {
+            width: 100%;
+        }
+
+        .macro-button:active {
+            background-color: var(--primary-blue);
+        }
     }
 </style>
