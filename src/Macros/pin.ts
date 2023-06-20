@@ -9,6 +9,8 @@ export interface Pin {
 export type PinType = "analog" | "digital";
 
 export function getNonEmptyPins(device: ArduinoDevice): Pin[] {
+    if (!device) return [];
+
     let digitalPins = device.pinOut.digital;
     let analogPins = device.pinOut.analog;
 
