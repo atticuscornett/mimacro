@@ -114,6 +114,7 @@
 
     .submit-button {
         background-color: var(--primary-blue);
+        color: white;
         width: 40%;
         align-self: center;
         border-radius: 30px;
@@ -135,6 +136,23 @@
     .close-button > img {
         width: 50px;
     }
+
+    @media(prefers-color-scheme: light) {
+        .close-button {
+            background-color: var(--primary-blue);
+            width: 50px;
+            height: 50px;
+
+            padding: 10px;
+
+            border-radius: 50%;
+        }
+
+        .close-button > img {
+            width: 100%;
+        }
+    }
+
 
     .close-button:active {
         background: none;
