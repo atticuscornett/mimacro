@@ -3,6 +3,7 @@
     export let mimacroVersion;
     export let mimacroType;
     export let status = "disconnected";
+    export let hoverOptions = "";
 </script>
 
 <div class="DevTileWrap">
