@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import DeviceSetup from "./DeviceSetup.svelte";
     import Devices from "./Devices.svelte";
     import NavBar from "./Components/NavBar.svelte";
@@ -23,7 +23,7 @@
 		--secondary-blue: #48BEFF;
 		--primary-green: #399E5A;
 		--secondary-green: #23CE6B;
-		--background-gray: #242424;
+		--background-gray: #171717;
 	}
 
 	@media (prefers-color-scheme: dark){
