@@ -12,6 +12,10 @@
         await electronAPI.flashDevice(index);
     }
 
+    async function removeDevice(){
+        await electronAPI.removeDevice(index);
+    }
+
     electronAPI.onFlashResult((event, result) => {
         console.log(result);
         action="";
@@ -21,10 +25,12 @@
 <div class="DevTileWrap">
     <!-- svelte-ignore a11y-missing-attribute -->
     <div class={(status == "connected") ? "DeviceTile":"DeviceTile disabled"}>
-        <img src={"../src/Images/MimacroTypes/" + mimacroType + ".webp"}>
-        <hr>
-        <h2>{nickname}</h2>
-        <h5 style="{(status == "outdated") ? "color: yellow;" : ""}">{mimacroVersion}{(status == "outdated") ? " (outdated)":""}</h5>
+        <div on:click>
+            <img src={"../src/Images/MimacroTypes/" + mimacroType + ".webp"}>
+            <hr>
+            <h2>{nickname}</h2>
+            <h5 style="{(status == "outdated") ? "color: yellow;" : ""}">{mimacroVersion}{(status == "outdated") ? " (outdated)":""}</h5>
+        </div>
         {#if hoverOptions}
             <div class="HoverOpt">
                 <svg xmlns="http://www.w3.org/2000/svg" class="HoverOptIcon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -41,7 +47,7 @@
                         <button on:click={flashDevice}>{(status == "connected") ? "Reflash":""}{(status == "outdated") ? "Flash Update":""}</button>
                         <br>
                     {/if}
-                    <button>Remove</button>
+                    <button on:click={removeDevice}>Remove</button>
                 </div>
             </div>
         {/if}

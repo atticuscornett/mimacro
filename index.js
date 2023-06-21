@@ -1,6 +1,6 @@
 const { SerialPort } = require('serialport')
 const Avrgirl = require("@sienci/avrgirl-arduino");
-const { app, BrowserWindow, ipcMain, nativeTheme } = require("electron");
+const { app, BrowserWindow, ipcMain, nativeTheme, Tray, Menu } = require("electron");
 const Store = require('electron-store');
 const store = new Store();
 const path = require("path");
@@ -10,6 +10,17 @@ const supportedVersions = require("./supportedVersions.json");
 const {usb} = require('usb');
 
 let mainWindow;
+
+const processLock = app.requestSingleInstanceLock();
+let tray = null;
+if (!processLock){
+    app.quit()
+}
+else{
+    app.on('second-instance', () => {
+        mainWindow.show();
+    });
+}
 
 if (!store.has("devices")){
     store.set("devices", []);
@@ -170,6 +181,11 @@ function addDevice(device){
 function removeDevice(event, deviceIndex){
     devices.splice(deviceIndex, 1);
     store.set("devices", devices);
+    try{
+        serialPorts[index].close()
+    }
+    catch(e){}
+    refreshRendererDevices();
 }
 
 function getDevices(){
@@ -203,6 +219,11 @@ function refreshRendererDevices(){
 function listenToDevice(index, devicePath){
     let thisDevice = devices[index];
     devices[index].port = devicePath;
+    devices[index].pinOut = {}
+    devices[index].pinProperties = {
+        "digital": {},
+        "analog": {}
+    }
     let sp = new SerialPort({path: devicePath, baudRate: 9600});
     serialPorts[index] = sp;
     console.log(thisDevice.nickname);
@@ -228,8 +249,22 @@ function listenToDevice(index, devicePath){
                     sp.close()
                 }
             }
+            if (line == 3){
+                devices[index].pinOut.digital = temp.split(", ").map(Number);
+            }
+            if (line == 4){
+                devices[index].pinOut.analog = temp.split(", ").map(Number);
+            }
+            if (line == 5){
+                devices[index].pinProperties.digital.timeout = temp.split(", ").map(Number);
+            }
+            if (line == 6){
+                devices[index].pinProperties.analog.timeout = temp.split(", ").map(Number);
+            }
             if (line == 7){
+                devices[index].pinProperties.analog.minChange = temp.split(", ").map(Number);
                 devices[index].status = "connected";
+                store.set("devices", devices);
                 refreshRendererDevices();
             }
             temp = data.toString().split("\n")[1];
@@ -276,6 +311,10 @@ function refreshDevices(){
     });
 }
 
+function writeDevice(event, device, message){
+    serialPorts[device].write(message+"\n", ()=>{});
+}
+
 usb.on('attach', (device) => {
     refreshDevices();
 });
@@ -302,13 +341,43 @@ ipcMain.handle("getLayouts", ()=>{return layouts;});
 ipcMain.handle("getParts", ()=>{return parts;});
 ipcMain.handle("removeDevice", removeDevice);
 ipcMain.handle("flashDevice", flashDevice);
+ipcMain.handle("writeDevice", writeDevice);
 
 
 app.on("ready", () => {
-  mainWindow = new BrowserWindow({
-    webPreferences: {
+    tray = new Tray("icon.png");
+    tray.setToolTip("mimacro");
+    const trayMenuTemplate = [{
+        label: 'mimacro',
+        enabled: true,
+        click: () => {
+                mainWindow.show()
+            }
+        },
+        {
+            label: 'Quit',
+            enabled: true,
+            click: () => {
+                app.quit()
+                process.exit(0);
+            }
+        }
+    ];
+    let trayMenu = Menu.buildFromTemplate(trayMenuTemplate)
+	tray.setContextMenu(trayMenu);
+    tray.on('click', function(e){
+            mainWindow.show()
+        }
+    );
+
+    mainWindow = new BrowserWindow({
+        webPreferences: {
         preload: path.join(__dirname, "preload.js")
-    }
-  });
-  mainWindow.loadFile(path.join(__dirname, "public/index.html"));
+        }
+    });
+    mainWindow.on('close', e => {
+        e.preventDefault();
+        mainWindow.hide();
+    });
+    mainWindow.loadFile(path.join(__dirname, "public/index.html"));
 });
