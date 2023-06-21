@@ -37,12 +37,12 @@
         <div class="content-pane">
             <div>
                 <label for="name-field">Macro Name</label>
-                <input id="name-field" type="text" placeholder="Macro name...">
+                <input bind:value={macro.name} id="name-field" type="text" placeholder="Macro name...">
 
                 <br>
 
                 <label for="device">Device</label>
-                <select on:change={updateSelectedDevice} id="device">
+                <select bind:value={selectedDeviceSerial} id="device">
                     <option disabled selected hidden></option>
                     {#each devices as device, i}
                         <option value={device.serialNumber}>{device.nickname}</option>
@@ -52,9 +52,9 @@
                 <br>
 
                 <label for="pin">Pin</label>
-                <select id="pin">
+                <select bind:value={stringPin} id="pin">
                     {#each populatedPins as pin}
-                        <option>
+                        <option value={pinToString(pin)}>
                             {parts.filter(part => part.id === pin.part.toString())[0].name}
                             at {capitalize(pin.type)} Pin {pin.pinNumber}
                         </option>
