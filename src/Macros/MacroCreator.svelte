@@ -12,9 +12,9 @@
 
     let macro: MacroData = {
         name: "Default Macro Name",
-        device: EXAMPLE_DEVICE,
-        trigger: EXAMPLE_TRIGGER,
-        part: EXAMPLE_PART,
+        device: placeholderDevice(),
+        trigger: placeholderTrigger(),
+        part: placeholderPart(),
     };
 
     let devices: ArduinoDevice[] = [];

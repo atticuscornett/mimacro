@@ -2,31 +2,31 @@
     import Macro from "./Macros/Macro.svelte";
     import MacroCreator from "./Macros/MacroCreator.svelte";
     import type {MacroData} from "./Macros/macro";
-    import {EXAMPLE_DEVICE} from "./Macros/device";
-    import {EXAMPLE_PART, EXAMPLE_TRIGGER} from "./Macros/triggerData";
+    import {placeholderDevice} from "./Macros/device";
+    import {placeholderPart, placeholderTrigger} from "./Macros/triggerData";
 
     let showingCreator = false;
 
     let macros: MacroData[] = [
         {
             name: "Macro 1",
-            device: EXAMPLE_DEVICE,
-            trigger: EXAMPLE_TRIGGER,
-            part: EXAMPLE_PART
+            device: placeholderDevice(),
+            trigger: placeholderTrigger(),
+            part: placeholderPart()
         },
 
         {
             name: "Macro 2",
-            device: EXAMPLE_DEVICE,
-            trigger: EXAMPLE_TRIGGER,
-            part: EXAMPLE_PART
+            device: placeholderDevice(),
+            trigger: placeholderTrigger(),
+            part: placeholderPart()
         },
 
         {
             name: "Macro 3",
-            device: EXAMPLE_DEVICE,
-            trigger: EXAMPLE_TRIGGER,
-            part: EXAMPLE_PART
+            device: placeholderDevice(),
+            trigger: placeholderTrigger(),
+            part: placeholderPart()
         },
     ]
 
