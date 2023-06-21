@@ -33,7 +33,7 @@
 <main>
     <div class="window">
         <h1>Create a Macro</h1>
-        <button class="close-button" on:click={close}><img src="../src/Images/Icons/Close.svg"></button>
+        <button class="close-button unselectable" on:click={close}><img src="../src/Images/Icons/Close.svg"></button>
 
         <div class="content-pane">
             <div>
@@ -77,7 +77,7 @@
                 </select>
             </div>
 
-            <button class="submit-button">Create Macro</button>
+            <button class="submit-button unselectable">Create Macro</button>
         </div>
     </div>
 </main>
