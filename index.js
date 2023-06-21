@@ -320,9 +320,15 @@ usb.on('attach', (device) => {
 });
 
 function saveMacro(event, macro){
-    userMacros.push(macro);
+    userMacros.push(JSON.parse(macro));
     store.set("userMacros", userMacros);
 }
+
+function removeMacro(event, uuid) {
+    userMacros = userMacros.filter(macro => macro.uuid !== uuid);
+    store.set("userMacros", userMacros);
+}
+
 
 function getMacros(){
     return userMacros;
@@ -337,6 +343,7 @@ ipcMain.handle("setColorTheme", setColorTheme);
 ipcMain.handle("getColorTheme", () => {return colorTheme;})
 ipcMain.handle("saveMacro", saveMacro);
 ipcMain.handle("getMacros", getMacros);
+ipcMain.handle("removeMacro", removeMacro);
 ipcMain.handle("getLayouts", ()=>{return layouts;});
 ipcMain.handle("getParts", ()=>{return parts;});
 ipcMain.handle("removeDevice", removeDevice);

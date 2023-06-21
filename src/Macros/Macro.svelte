@@ -2,12 +2,13 @@
     import {MacroData} from "./macro";
 
     export let macro: MacroData;
-    export let index: number;
 
     export let macros: MacroData[] = [];
 
     const close = () => {
-        macros = macros.filter((macro, macroIndex) => macroIndex != index)
+        console.log(macro.uuid);
+        macros = macros.filter((m) => m.uuid !== macro.uuid)
+        electronAPI.removeMacro(macro.uuid);
     }
 </script>
 

@@ -6,4 +6,5 @@ export interface MacroData {
     device: ArduinoDevice,
     trigger: TriggerData,
     part: Part,
+    uuid: string,
 }

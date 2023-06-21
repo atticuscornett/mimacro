@@ -5,6 +5,7 @@
     import {parts, getPopulatedPins, Pin, pinToString, pinFromString} from "./pin";
     import {capitalize} from "../utilities";
     import {Action, getRegistry} from "./action";
+    import {v4 as uuidv4} from 'uuid'
 
     export let macros: MacroData[];
     export let showingCreator: boolean;
@@ -72,14 +73,19 @@
     function submit(): void {
         console.log("submitted")
 
-        const result: MacroData = {
+        let result: MacroData = {
             name: macroName,
             device: device,
             part: part,
             trigger: trigger,
+            uuid: uuidv4()
         }
 
         macros = [...macros, result]
+
+        console.log(result);
+
+        electronAPI.saveMacro(result);
 
         close()
     }

@@ -2,33 +2,16 @@
     import Macro from "./Macros/Macro.svelte";
     import MacroCreator from "./Macros/MacroCreator.svelte";
     import type {MacroData} from "./Macros/macro";
-    import {placeholderDevice} from "./Macros/device";
-    import {placeholderPart, placeholderTrigger} from "./Macros/triggerData";
+    import {onDestroy} from "svelte";
+    import {v4} from "uuid";
 
     let showingCreator = false;
 
-    let macros: MacroData[] = [
-        {
-            name: "Macro 1",
-            device: placeholderDevice(),
-            trigger: placeholderTrigger(),
-            part: placeholderPart()
-        },
-
-        {
-            name: "Macro 2",
-            device: placeholderDevice(),
-            trigger: placeholderTrigger(),
-            part: placeholderPart()
-        },
-
-        {
-            name: "Macro 3",
-            device: placeholderDevice(),
-            trigger: placeholderTrigger(),
-            part: placeholderPart()
-        },
-    ]
+    let macros: MacroData[] = [];
+    const setMacros = async () => {
+        macros = await electronAPI.getMacros();
+    }
+    setMacros()
 
     const createMacro = () => {
         showingCreator = true;
@@ -49,8 +32,8 @@
         {#if macros.length === 0}
             <h3>There are no macros... Try creating one!</h3>
         {:else}
-            {#each macros as macro, i}
-                <li><Macro bind:macros={macros} index={i} macro={macro}/></li>
+            {#each macros as macro}
+                <li><Macro bind:macros={macros} macro={macro}/></li>
             {/each}
         {/if}
     </ul>
