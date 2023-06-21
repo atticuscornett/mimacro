@@ -1,6 +1,6 @@
 const { SerialPort } = require('serialport')
 const Avrgirl = require("@sienci/avrgirl-arduino");
-const { app, BrowserWindow, ipcMain, nativeTheme } = require("electron");
+const { app, BrowserWindow, ipcMain, nativeTheme, Tray, Menu } = require("electron");
 const Store = require('electron-store');
 const store = new Store();
 const path = require("path");
@@ -10,6 +10,17 @@ const supportedVersions = require("./supportedVersions.json");
 const {usb} = require('usb');
 
 let mainWindow;
+
+const processLock = app.requestSingleInstanceLock();
+let tray = null;
+if (!processLock){
+    app.quit()
+}
+else{
+    app.on('second-instance', () => {
+        mainWindow.show();
+    });
+}
 
 if (!store.has("devices")){
     store.set("devices", []);
@@ -305,10 +316,39 @@ ipcMain.handle("flashDevice", flashDevice);
 
 
 app.on("ready", () => {
-  mainWindow = new BrowserWindow({
-    webPreferences: {
+    tray = new Tray("icon.png");
+    tray.setToolTip("mimacro");
+    const trayMenuTemplate = [{
+        label: 'mimacro',
+        enabled: true,
+        click: () => {
+                mainWindow.show()
+            }
+        },
+        {
+            label: 'Quit',
+            enabled: true,
+            click: () => {
+                app.quit()
+                process.exit(0);
+            }
+        }
+    ];
+    let trayMenu = Menu.buildFromTemplate(trayMenuTemplate)
+	tray.setContextMenu(trayMenu);
+    tray.on('click', function(e){
+            mainWindow.show()
+        }
+    );
+
+    mainWindow = new BrowserWindow({
+        webPreferences: {
         preload: path.join(__dirname, "preload.js")
-    }
-  });
-  mainWindow.loadFile(path.join(__dirname, "public/index.html"));
+        }
+    });
+    mainWindow.on('close', e => {
+        e.preventDefault();
+        mainWindow.hide();
+    });
+    mainWindow.loadFile(path.join(__dirname, "public/index.html"));
 });
