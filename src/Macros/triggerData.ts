@@ -24,6 +24,16 @@ interface JSONTriggerData {
     [x: string]: unknown
 }
 
+export function getPart(id: number): Part {
+    if (!id) return null;
+
+    let result = parts.filter(part => part.id == id.toString())[0]
+
+    if (!result) return null;
+
+    return result;
+}
+
 type TriggerType = "static" | "variable";
 
 export function placeholderTrigger(): TriggerData {
