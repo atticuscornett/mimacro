@@ -8,7 +8,6 @@
 
     const close = () => {
         macros = macros.filter((macro, macroIndex) => macroIndex != index)
-        console.log(macros);
     }
 </script>
 
