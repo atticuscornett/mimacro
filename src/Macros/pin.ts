@@ -41,7 +41,7 @@ export function getPopulatedPins(device: ArduinoDevice): Pin[] {
 
     let results: Pin[] = []
 
-    digitalPins.forEach((value, index) => {
+    digitalPins?.forEach((value, index) => {
         if (value !== 0) {
             results.push({
                 type: "digital",
@@ -51,7 +51,7 @@ export function getPopulatedPins(device: ArduinoDevice): Pin[] {
         }
     })
 
-    analogPins.forEach((value, index) => {
+    analogPins?.forEach((value, index) => {
         if (value !== 0) {
             results.push({
                 type: "analog",
