@@ -17,7 +17,6 @@
         part: placeholderPart(),
     };
 
-
     let selectedDevice: ArduinoDevice;
     $: selectedDevice = devices.filter(device => device.serialNumber == selectedDeviceSerial)[0];
     let selectedDeviceSerial: string;
@@ -28,6 +27,7 @@
     // digital pin 0 part Nothing
     let stringPin: string = "d0p0";
     $: macro.trigger.pin = pinFromString(stringPin);
+
 </script>
 
 <main>
