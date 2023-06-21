@@ -12,6 +12,10 @@
         await electronAPI.flashDevice(index);
     }
 
+    async function removeDevice(){
+        await electronAPI.removeDevice(index);
+    }
+
     electronAPI.onFlashResult((event, result) => {
         console.log(result);
         action="";
@@ -43,7 +47,7 @@
                         <button on:click={flashDevice}>{(status == "connected") ? "Reflash":""}{(status == "outdated") ? "Flash Update":""}</button>
                         <br>
                     {/if}
-                    <button>Remove</button>
+                    <button on:click={removeDevice}>Remove</button>
                 </div>
             </div>
         {/if}

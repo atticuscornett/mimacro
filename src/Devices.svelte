@@ -19,8 +19,10 @@
     });
 
     function viewDevice(index){
-        currentDevice = index;
-        viewingDevice = true;
+        if (deviceList[index.i].status == "connected"){
+            currentDevice = index.i;
+            viewingDevice = true;
+        }
     }
 </script>
 

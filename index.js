@@ -181,6 +181,11 @@ function addDevice(device){
 function removeDevice(event, deviceIndex){
     devices.splice(deviceIndex, 1);
     store.set("devices", devices);
+    try{
+        serialPorts[index].close()
+    }
+    catch(e){}
+    refreshRendererDevices();
 }
 
 function getDevices(){
@@ -259,6 +264,7 @@ function listenToDevice(index, devicePath){
             if (line == 7){
                 devices[index].pinProperties.analog.minChange = temp.split(", ").map(Number);
                 devices[index].status = "connected";
+                store.set("devices", devices);
                 refreshRendererDevices();
             }
             temp = data.toString().split("\n")[1];
@@ -305,6 +311,10 @@ function refreshDevices(){
     });
 }
 
+function writeDevice(event, device, message){
+    serialPorts[device].write(message+"\n", ()=>{});
+}
+
 usb.on('attach', (device) => {
     refreshDevices();
 });
@@ -331,6 +341,7 @@ ipcMain.handle("getLayouts", ()=>{return layouts;});
 ipcMain.handle("getParts", ()=>{return parts;});
 ipcMain.handle("removeDevice", removeDevice);
 ipcMain.handle("flashDevice", flashDevice);
+ipcMain.handle("writeDevice", writeDevice);
 
 
 app.on("ready", () => {
