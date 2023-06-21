@@ -1,22 +1,33 @@
 <script lang="ts">
     import type {MacroData} from "./macro";
-    import {type ArduinoDevice, devices, placeholderDevice} from "./device";
-    import {getPart, placeholderPart, placeholderTrigger} from "./triggerData";
+    import {type ArduinoDevice, devices} from "./device";
+    import {getPart, Part, TriggerData} from "./triggerData";
     import {parts, getPopulatedPins, Pin, pinToString, pinFromString} from "./pin";
     import {capitalize} from "../utilities";
-    import {getRegistry, KeypressAction} from "./action";
+    import {Action, getRegistry} from "./action";
 
     export let macros: MacroData[];
     export let showingCreator: boolean;
 
     const close = () => { showingCreator = false };
 
-    let macro: MacroData = {
-        name: "Default Macro Name",
-        device: placeholderDevice(),
-        trigger: placeholderTrigger(),
-        part: placeholderPart(),
-    };
+    let macroName: string;
+    let device: ArduinoDevice;
+
+    let trigger: TriggerData;
+    let action: Action;
+    let pin: Pin;
+
+    $: {
+        if (trigger)
+            trigger.pin = pin
+    }
+    $: {
+        if (trigger)
+            trigger.action = action;
+    }
+
+    let part: Part;
 
     let selectedDevice: ArduinoDevice;
     $: selectedDevice = devices.filter(device => device.serialNumber == selectedDeviceSerial)[0];
@@ -25,13 +36,35 @@
     let populatedPins: Pin[];
     $: populatedPins = getPopulatedPins(selectedDevice);
 
+    $: {
+        if (pin)
+            part = getPart(pin.part);
+    }
+
     // digital pin 0 part Nothing
     let stringPin: string = "d0p0";
-    $: macro.trigger.pin = pinFromString(stringPin);
+    $: pin = pinFromString(stringPin);
 
     let selectedActionIndex;
-    $: macro.trigger.action = getRegistry()[selectedActionIndex];
+    $: action = getRegistry()[selectedActionIndex];
 
+    function checkCanLeave(): boolean {
+        if (!trigger) return false;
+        if (!action) return false;
+        if (!pin) return false;
+
+        if (!macroName) return false;
+
+        if (!device) return false;
+
+        if (!part) return false;
+
+        return true;
+    }
+
+    let canLeave: boolean;
+    $: canLeave = checkCanLeave();
+    $: console.log(canLeave);
 </script>
 
 <main>
@@ -43,7 +76,7 @@
             <div>
                 <div>
                     <label for="name-field">Macro Name</label>
-                    <input bind:value={macro.name} id="name-field" type="text" placeholder="Macro name...">
+                    <input bind:value={macroName} id="name-field" type="text" placeholder="Macro name...">
                 </div>
 
                 <div>
@@ -71,8 +104,8 @@
                 <div>
                     <label for="trigger">Trigger</label>
                     <select id="trigger">
-                        {#if macro.trigger.pin}
-                            {@const part = getPart(macro.trigger.pin.part)}
+                        {#if pin}
+                            {@const part = getPart(pin.part)}
                             {#if part}
                                 {#each part.triggers as trigger}
                                     <option>
@@ -95,12 +128,12 @@
             </div>
 
             <div>
-                {#if macro.trigger.action}
-                    <svelte:component this={macro.trigger.action.ui}></svelte:component>
+                {#if action}
+                    <svelte:component bind:canLeave={canLeave} bind:action={action} this={action.ui}></svelte:component>
                 {/if}
             </div>
 
-            <button class="submit-button unselectable">Create Macro</button>
+            <button disabled={canLeave ? "" : "disabled"} class="submit-button unselectable">Create Macro</button>
         </div>
     </div>
 </main>
@@ -173,6 +206,10 @@
         font-weight: 600;
         margin: 5px;
         justify-self: center;
+    }
+
+    .submit-button[disabled="disabled"] {
+        background-color: #23CE6B;
     }
 
     .close-button {
