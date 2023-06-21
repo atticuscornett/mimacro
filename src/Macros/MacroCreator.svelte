@@ -60,6 +60,18 @@
                         </option>
                     {/each}
                 </select>
+
+                <label for="trigger">Trigger</label>
+                <select id="trigger">
+                    {#if macro.trigger.pin}
+                        {@const part = getPart(macro.trigger.pin.part)}
+                        {#each part.triggers as trigger}
+                            <option>
+                                {trigger.name}
+                            </option>
+                        {/each}
+                    {/if}
+                </select>
             </div>
 
             <button class="submit-button">Create Macro</button>
