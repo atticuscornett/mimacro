@@ -1,8 +1,8 @@
-import {EXAMPLE_DEVICE} from "./device";
 import type {Pin, PinType} from "./pin";
 import type {Action} from "./action";
-import {getPin} from "./pin";
-import {EXAMPLE_ACTION} from "./action";
+import {getPin, parts} from "./pin";
+import {placeholderAction} from "./action";
+import {placeholderDevice} from "./device";
 
 export interface TriggerData {
     pin: Pin,
@@ -26,36 +26,40 @@ interface JSONTriggerData {
 
 type TriggerType = "static" | "variable";
 
-export const EXAMPLE_TRIGGER: TriggerData = {
-    pin: getPin(EXAMPLE_DEVICE, 0),
-    name: "Down",
-    action: EXAMPLE_ACTION
+export function placeholderTrigger(): TriggerData {
+   return  {
+       pin: getPin(placeholderDevice(), 0),
+       name: "Down",
+       action: placeholderAction()
+   }
 }
 
-export const EXAMPLE_PART: Part = {
-    "id": "1",
-    "name": "Button",
-    "type": "digital",
-    "triggers": [
-        {
-            "name": "Down",
-            "type": "static"
-        },
+export function placeholderPart(): Part {
+    return  {
+        "id": "1",
+        "name": "Button",
+        "type": "digital",
+        "triggers": [
+            {
+                "name": "Down",
+                "type": "static"
+            },
 
-        {
-            "name": "Up",
-            "type": "static"
-        },
+            {
+                "name": "Up",
+                "type": "static"
+            },
 
-        {
-            "name": "Hold",
-            "type": "static",
-            "parameters": [
-                {
-                    "name": "Duration",
-                    "type": "int"
-                }
-            ]
-        }
-    ]
+            {
+                "name": "Hold",
+                "type": "static",
+                "parameters": [
+                    {
+                        "name": "Duration",
+                        "type": "int"
+                    }
+                ]
+            }
+        ]
+    }
 }
