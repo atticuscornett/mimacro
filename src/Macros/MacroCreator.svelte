@@ -1,8 +1,8 @@
 <script lang="ts">
     import type {MacroData} from "./macro";
-    import {EXAMPLE_DEVICE, type ArduinoDevice} from "./device";
-    import {EXAMPLE_PART, EXAMPLE_TRIGGER, Part} from "./triggerData";
-    import {getPopulatedPins, Pin} from "./pin";
+    import {type ArduinoDevice, devices, placeholderDevice} from "./device";
+    import {getPart, placeholderPart, placeholderTrigger} from "./triggerData";
+    import {parts, getPopulatedPins, Pin, pinToString, pinFromString} from "./pin";
     import {capitalize} from "../utilities";
 
     export let macros: MacroData[];
@@ -17,28 +17,16 @@
         part: placeholderPart(),
     };
 
-    let devices: ArduinoDevice[] = [];
-    let getDevices = async () => {
-        devices = await electronAPI.getDevices();
-    }
-
-    let parts: Part[] = [];
-    let getParts = async () => {
-        parts = await electronAPI.getParts();
-    }
 
     let selectedDevice: ArduinoDevice;
-    let populatedPins: Pin[] = [];
+    $: selectedDevice = devices.filter(device => device.serialNumber == selectedDeviceSerial)[0];
+    let selectedDeviceSerial: string;
 
-    let updateSelectedDevice = () => {
-        let serial: string = (document.getElementById("device") as HTMLSelectElement).value
+    let populatedPins: Pin[];
+    $: populatedPins = getPopulatedPins(selectedDevice);
 
-        selectedDevice = devices.filter(device => device.serialNumber == serial)[0];
-        populatedPins = getPopulatedPins(selectedDevice);
-    }
-
-    getDevices()
-    getParts()
+    let stringPin: string;
+    $: macro.trigger.pin = pinFromString(stringPin);
 </script>
 
 <main>
