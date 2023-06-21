@@ -14,27 +14,29 @@
     let macroName: string;
     let device: ArduinoDevice;
 
-    let trigger: TriggerData;
+    let trigger: TriggerData = {
+        action: undefined,
+        name: "",
+        pin: undefined
+
+    };
     let action: Action;
     let pin: Pin;
 
     $: {
-        if (trigger)
             trigger.pin = pin
     }
     $: {
-        if (trigger)
             trigger.action = action;
     }
 
     let part: Part;
 
-    let selectedDevice: ArduinoDevice;
-    $: selectedDevice = devices.filter(device => device.serialNumber == selectedDeviceSerial)[0];
+    $: device = devices.filter(device => device.serialNumber == selectedDeviceSerial)[0];
     let selectedDeviceSerial: string;
 
     let populatedPins: Pin[];
-    $: populatedPins = getPopulatedPins(selectedDevice);
+    $: populatedPins = getPopulatedPins(device);
 
     $: {
         if (pin)
@@ -48,7 +50,7 @@
     let selectedActionIndex;
     $: action = getRegistry()[selectedActionIndex];
 
-    function checkCanLeave(): boolean {
+    function checkCanLeave(trigger: TriggerData, action: Action, pin: Pin, macroName: string, device: ArduinoDevice, part: Part): boolean {
         if (!trigger) return false;
         if (!action) return false;
         if (!pin) return false;
@@ -63,8 +65,23 @@
     }
 
     let canLeave: boolean;
-    $: canLeave = checkCanLeave();
+    $: canLeave = checkCanLeave(trigger, action, pin, macroName, device, part);
     $: console.log(canLeave);
+
+    function submit(): void {
+        console.log("submitted")
+
+        const result: MacroData = {
+            name: macroName,
+            device: device,
+            part: part,
+            trigger: trigger,
+        }
+
+        macros = [...macros, result]
+
+        close()
+    }
 </script>
 
 <main>
@@ -103,12 +120,12 @@
 
                 <div>
                     <label for="trigger">Trigger</label>
-                    <select id="trigger">
+                    <select bind:value={trigger.name} id="trigger">
                         {#if pin}
                             {@const part = getPart(pin.part)}
                             {#if part}
                                 {#each part.triggers as trigger}
-                                    <option>
+                                    <option value={trigger.name}>
                                         {trigger.name}
                                     </option>
                                 {/each}
@@ -133,7 +150,7 @@
                 {/if}
             </div>
 
-            <button disabled={canLeave ? "" : "disabled"} class="submit-button unselectable">Create Macro</button>
+            <button on:click={submit} disabled={canLeave ? "" : "disabled"} class="submit-button unselectable">Create Macro</button>
         </div>
     </div>
 </main>
