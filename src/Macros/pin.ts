@@ -1,9 +1,34 @@
 import type {ArduinoDevice} from "./device";
+import type {Part} from "./triggerData";
 
 export interface Pin {
     type: PinType,
     pinNumber: number,
     part: number,
+}
+
+export function pinToString(pin: Pin): string {
+    let char = pin.type.charAt(0);
+
+    return char + pin.pinNumber + "p" + pin.part;
+}
+
+export function pinFromString(string: string): Pin {
+    if (!string) return null;
+
+    let type: PinType = string.charAt(0) == "a" ? "analog" : "digital";
+
+    let split = string.split("p");
+
+    let pinNumber: number = Number(split[0].slice(1));
+
+    let part: number = Number(split[1]);
+
+    return {
+        type: type,
+        pinNumber: pinNumber,
+        part: part
+    }
 }
 
 export type PinType = "analog" | "digital";
