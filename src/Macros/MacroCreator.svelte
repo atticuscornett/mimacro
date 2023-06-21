@@ -41,58 +41,60 @@
 
         <div class="content-pane">
             <div>
-                <label for="name-field">Macro Name</label>
-                <input bind:value={macro.name} id="name-field" type="text" placeholder="Macro name...">
+                <div>
+                    <label for="name-field">Macro Name</label>
+                    <input bind:value={macro.name} id="name-field" type="text" placeholder="Macro name...">
+                </div>
 
-                <br>
+                <div>
+                    <label for="device">Device</label>
+                    <select bind:value={selectedDeviceSerial} id="device">
+                        <option disabled selected hidden></option>
+                        {#each devices as device, i}
+                            <option value={device.serialNumber}>{device.nickname}</option>
+                        {/each}
+                    </select>
+                </div>
 
-                <label for="device">Device</label>
-                <select bind:value={selectedDeviceSerial} id="device">
-                    <option disabled selected hidden></option>
-                    {#each devices as device, i}
-                        <option value={device.serialNumber}>{device.nickname}</option>
-                    {/each}
-                </select>
+                <div>
+                    <label for="pin">Pin</label>
+                    <select bind:value={stringPin} id="pin">
+                        {#each populatedPins as pin}
+                            <option value={pinToString(pin)}>
+                                {parts.filter(part => part.id === pin.part.toString())[0].name}
+                                at {capitalize(pin.type)} Pin {pin.pinNumber}
+                            </option>
+                        {/each}
+                    </select>
+                </div>
 
-                <br>
-
-                <label for="pin">Pin</label>
-                <select bind:value={stringPin} id="pin">
-                    {#each populatedPins as pin}
-                        <option value={pinToString(pin)}>
-                            {parts.filter(part => part.id === pin.part.toString())[0].name}
-                            at {capitalize(pin.type)} Pin {pin.pinNumber}
-                        </option>
-                    {/each}
-                </select>
-
-                <br>
-
-                <label for="trigger">Trigger</label>
-                <select id="trigger">
-                    {#if macro.trigger.pin}
-                        {@const part = getPart(macro.trigger.pin.part)}
-                        {#if part}
-                            {#each part.triggers as trigger}
-                                <option>
-                                    {trigger.name}
-                                </option>
-                            {/each}
+                <div>
+                    <label for="trigger">Trigger</label>
+                    <select id="trigger">
+                        {#if macro.trigger.pin}
+                            {@const part = getPart(macro.trigger.pin.part)}
+                            {#if part}
+                                {#each part.triggers as trigger}
+                                    <option>
+                                        {trigger.name}
+                                    </option>
+                                {/each}
+                            {/if}
                         {/if}
-                    {/if}
-                </select>
+                    </select>
+                </div>
 
-                <br>
+                <div>
+                    <label for="action">Action</label>
+                    <select bind:value={selectedActionIndex} id="action">
+                        {#each getRegistry() as action, i}
+                            <option value={i}>{action.name}</option>
+                        {/each}
+                    </select>
+                </div>
+            </div>
 
-                <label for="action">Action</label>
-                <select bind:value={selectedActionIndex} id="action">
-                    {#each getRegistry() as action, i}
-                        <option value={i}>{action.name}</option>
-                    {/each}
-                </select>
-
-                <br>
-
+            <div>
                 {#if macro.trigger.action}
                     <svelte:component this={macro.trigger.action.ui}></svelte:component>
                 {/if}
@@ -151,13 +153,17 @@
     }
 
     .content-pane {
-        display: flex;
+        display: grid;
         flex-direction: column;
-        justify-content: space-between;
         height: 100%;
+        grid-template-columns: 1fr;
+        grid-template-rows: 2fr 2fr 1fr;
+        justify-items: start;
     }
 
     .submit-button {
+        position: absolute;
+        bottom: -24px;
         background-color: var(--primary-blue);
         color: white;
         width: 40%;
@@ -166,6 +172,7 @@
         font-size: larger;
         font-weight: 600;
         margin: 5px;
+        justify-self: center;
     }
 
     .close-button {
