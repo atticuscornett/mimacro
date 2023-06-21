@@ -52,6 +52,7 @@
 
     function checkCanLeave(trigger: TriggerData, action: Action, pin: Pin, macroName: string, device: ArduinoDevice, part: Part): boolean {
         if (!trigger) return false;
+        if (!trigger.name) return false;
         if (!action) return false;
         if (!pin) return false;
 
