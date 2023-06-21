@@ -66,11 +66,13 @@
                 <select id="trigger">
                     {#if macro.trigger.pin}
                         {@const part = getPart(macro.trigger.pin.part)}
-                        {#each part.triggers as trigger}
-                            <option>
-                                {trigger.name}
-                            </option>
-                        {/each}
+                        {#if part}
+                            {#each part.triggers as trigger}
+                                <option>
+                                    {trigger.name}
+                                </option>
+                            {/each}
+                        {/if}
                     {/if}
                 </select>
             </div>
