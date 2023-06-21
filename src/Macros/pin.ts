@@ -39,6 +39,12 @@ export function getPopulatedPins(device: ArduinoDevice): Pin[] {
     return results;
 }
 
+export let parts: Part[];
+const updateParts = async () => {
+    parts = await electronAPI.getParts();
+}
+updateParts();
+
 export function getPin(device: ArduinoDevice, index: number): Pin {
     let pins = getPopulatedPins(device);
 

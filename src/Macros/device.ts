@@ -38,4 +38,11 @@ export const EXAMPLE_DEVICE: ArduinoDevice = {
         digital: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         analog: [40, 0, 0, 0, 0, 0]
     }
+    }
 }
+
+export let devices: ArduinoDevice[];
+const getDevices = async () => {
+    devices = await electronAPI.getDevices();
+}
+getDevices();
