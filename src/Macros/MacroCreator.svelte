@@ -25,7 +25,8 @@
     let populatedPins: Pin[];
     $: populatedPins = getPopulatedPins(selectedDevice);
 
-    let stringPin: string;
+    // digital pin 0 part Nothing
+    let stringPin: string = "d0p0";
     $: macro.trigger.pin = pinFromString(stringPin);
 </script>
 
