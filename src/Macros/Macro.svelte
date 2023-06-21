@@ -15,7 +15,7 @@
 <main>
     <div class="header">
         <h3>{macro.name}</h3>
-        <button on:click={close}><img src="../src/Images/Icons/Close.svg"></button>
+        <button class="unselectable" on:click={close}><img src="../src/Images/Icons/Close.svg"></button>
     </div>
 
     <hr>

@@ -38,7 +38,7 @@
 <main>
     <div class="header">
         <h1>Macros</h1>
-        <button class="macro-button" on:click={createMacro}><img src="../src/Images/Icons/New.svg"></button>
+        <button class="macro-button unselectable" on:click={createMacro}><img src="../src/Images/Icons/New.svg"></button>
     </div>
 
     {#if showingCreator}
