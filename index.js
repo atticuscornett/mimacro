@@ -214,6 +214,11 @@ function refreshRendererDevices(){
 function listenToDevice(index, devicePath){
     let thisDevice = devices[index];
     devices[index].port = devicePath;
+    devices[index].pinOut = {}
+    devices[index].pinProperties = {
+        "digital": {},
+        "analog": {}
+    }
     let sp = new SerialPort({path: devicePath, baudRate: 9600});
     serialPorts[index] = sp;
     console.log(thisDevice.nickname);
@@ -239,7 +244,20 @@ function listenToDevice(index, devicePath){
                     sp.close()
                 }
             }
+            if (line == 3){
+                devices[index].pinOut.digital = temp.split(", ").map(Number);
+            }
+            if (line == 4){
+                devices[index].pinOut.analog = temp.split(", ").map(Number);
+            }
+            if (line == 5){
+                devices[index].pinProperties.digital.timeout = temp.split(", ").map(Number);
+            }
+            if (line == 6){
+                devices[index].pinProperties.analog.timeout = temp.split(", ").map(Number);
+            }
             if (line == 7){
+                devices[index].pinProperties.analog.minChange = temp.split(", ").map(Number);
                 devices[index].status = "connected";
                 refreshRendererDevices();
             }
