@@ -4,6 +4,7 @@
     import {getPart, placeholderPart, placeholderTrigger} from "./triggerData";
     import {parts, getPopulatedPins, Pin, pinToString, pinFromString} from "./pin";
     import {capitalize} from "../utilities";
+    import {getRegistry, KeypressAction} from "./action";
 
     export let macros: MacroData[];
     export let showingCreator: boolean;
@@ -27,6 +28,9 @@
     // digital pin 0 part Nothing
     let stringPin: string = "d0p0";
     $: macro.trigger.pin = pinFromString(stringPin);
+
+    let selectedActionIndex;
+    $: macro.trigger.action = getRegistry()[selectedActionIndex];
 
 </script>
 
@@ -62,6 +66,8 @@
                     {/each}
                 </select>
 
+                <br>
+
                 <label for="trigger">Trigger</label>
                 <select id="trigger">
                     {#if macro.trigger.pin}
@@ -75,6 +81,21 @@
                         {/if}
                     {/if}
                 </select>
+
+                <br>
+
+                <label for="action">Action</label>
+                <select bind:value={selectedActionIndex} id="action">
+                    {#each getRegistry() as action, i}
+                        <option value={i}>{action.name}</option>
+                    {/each}
+                </select>
+
+                <br>
+
+                {#if macro.trigger.action}
+                    <svelte:component this={macro.trigger.action.ui}></svelte:component>
+                {/if}
             </div>
 
             <button class="submit-button unselectable">Create Macro</button>

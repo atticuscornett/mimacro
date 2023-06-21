@@ -4,6 +4,8 @@
     import NavBar from "./Components/NavBar.svelte";
     import Settings from "./Settings.svelte";
 	import Macros from "./Macros.svelte";
+	import {onMount} from "svelte";
+	import {KeypressAction, mounted} from "./Macros/action";
 	let page = "Devices";
 
 	window.setPage = (pageName) => {page = pageName};
