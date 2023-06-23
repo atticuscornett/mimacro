@@ -176,6 +176,8 @@ function addDevice(device){
     device.status = "disconnected";
     devices.push(device);
     store.set("devices", devices)
+    refreshDevices();
+    refreshRendererDevices();
 }
 
 function removeDevice(event, deviceIndex){
@@ -316,6 +318,17 @@ function writeDevice(event, device, message){
     serialPorts[device].write(message+"\n", ()=>{});
 }
 
+function setDevicePinOut(event, device, config){
+    for (let i = 0; i < config.digital.length; i++){
+        if (config.digital[i] != devices[device].pinOut.digital[i]){
+            console.log("DPIN S " + String(layouts[devices[device].mimacroType]["digital"][i]).padStart(2, "0") + " " + String(config.digital[i]).padStart(2, "0"))
+            writeDevice(null, device, "DPIN S " + String(layouts[devices[device].mimacroType]["digital"][i]).padStart(2, "0") + " " + String(config.digital[i]).padStart(2, "0"))
+        }
+    }
+    devices[device].pinOut = config;
+    refreshRendererDevices();
+}
+
 usb.on('attach', (device) => {
     refreshDevices();
 });
@@ -356,6 +369,7 @@ ipcMain.handle("getParts", ()=>{return parts;});
 ipcMain.handle("removeDevice", removeDevice);
 ipcMain.handle("flashDevice", flashDevice);
 ipcMain.handle("writeDevice", writeDevice);
+ipcMain.handle("setDevicePinOut", setDevicePinOut);
 
 
 app.on("ready", () => {

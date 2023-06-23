@@ -18,5 +18,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   removeDevice: (index) => {ipcRenderer.invoke("removeDevice", index)},
   flashDevice: (index, callback) => ipcRenderer.invoke("flashDevice", index),
   onFlashResult: (callback) => {ipcRenderer.on("flashResult", callback)},
-  writeDevice: (device, message) => ipcRenderer.invoke("writeDevice", device, message)
+  writeDevice: (device, message) => ipcRenderer.invoke("writeDevice", device, message),
+  setDevicePinOut: (device, config) => ipcRenderer.invoke("setDevicePinOut", device, config)
 });
