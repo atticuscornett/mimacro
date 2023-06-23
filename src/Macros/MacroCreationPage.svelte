@@ -2,12 +2,12 @@
     import type {MacroData} from "./Data/macro";
     import {type ArduinoDevice, devices} from "./Data/device";
     import {getPart, Part, TriggerData} from "./Data/triggerData";
-    import {parts, getPopulatedPins, Pin, pinToString, pinFromString} from "./Data/pin";
-    import {capitalize, getColorTheme} from "../utilities";
+    import {getPopulatedPins, parts, Pin, pinFromString, pinToString} from "./Data/pin";
+    import {capitalize} from "../utilities";
     import {Action, getRegistry} from "./Data/action";
     import {v4 as uuidv4} from 'uuid'
-    import {getContext, setContext} from "svelte";
-    import {get, writable} from "svelte/store";
+    import {getContext} from "svelte";
+    import {writable} from "svelte/store";
 
     export let canRegress: boolean;
     canRegress = true;
@@ -105,7 +105,9 @@
             <select class="dropdown" bind:value={selectedDeviceSerial} id="device">
                 <option disabled selected hidden></option>
                 {#each devices as device, i}
-                    <option value={device.serialNumber}>{device.nickname}</option>
+                    {#if getPopulatedPins(device).length > 0}
+                        <option value={device.serialNumber}>{device.nickname}</option>
+                    {/if}
                 {/each}
             </select>
 
