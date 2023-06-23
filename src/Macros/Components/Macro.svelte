@@ -36,10 +36,12 @@
     main {
         background-color: var(--primary-blue);
         color: white;
-        padding: 10px;
-        border-radius: 5px;
+
         width: 75%;
 
+        border-radius: 5px;
+
+        padding: 10px;
         margin: 5px 5px 5px 0;
     }
 

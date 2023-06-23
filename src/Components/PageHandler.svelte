@@ -116,6 +116,7 @@
     .nav-buttons {
         display: flex;
         position: absolute;
+
         top: 0;
         right: 0;
     }

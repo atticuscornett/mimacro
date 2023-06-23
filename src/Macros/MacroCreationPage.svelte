@@ -173,11 +173,14 @@
     .dropdown {
         position: relative;
         display: inline-block;
+
         background-color: var(--background-gray);
-        border-radius: 15px;
-        min-width: 200px;
-        border: var(--primary-blue) 2px solid;
         color: white;
+
+        border-radius: 15px;
+        border: var(--primary-blue) 2px solid;
+
+        min-width: 200px;
         padding: 9px;
     }
 
@@ -188,9 +191,10 @@
     @media (prefers-color-scheme: light) {
         .dropdown {
             background-color: white;
+            color: black;
+
             border-width: 3px;
             border-color: var(--secondary-blue);
-            color: black;
         }
     }
 
