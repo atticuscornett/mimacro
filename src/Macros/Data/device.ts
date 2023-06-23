@@ -43,7 +43,13 @@ export function placeholderDevice(): ArduinoDevice {
 }
 
 export let devices: ArduinoDevice[];
-const getDevices = async () => {
+
+async function getDevices(): Promise<void> {
     devices = await electronAPI.getDevices();
+
+    console.log("Updated Devices");
 }
+
 getDevices();
+
+electronAPI.onDeviceRefresh(getDevices);
