@@ -7,6 +7,12 @@ export interface Pin {
     part: number,
 }
 
+export interface Layout {
+    name: string,
+    digital: number[],
+    analog: number[],
+}
+
 export function pinToString(pin: Pin): string {
     let char = pin.type.charAt(0);
 
@@ -39,13 +45,15 @@ export function getPopulatedPins(device: ArduinoDevice): Pin[] {
     let digitalPins = device.pinOut.digital;
     let analogPins = device.pinOut.analog;
 
+    let layout = getDeviceLayout(device);
+
     let results: Pin[] = []
 
     digitalPins?.forEach((value, index) => {
         if (value !== 0) {
             results.push({
                 type: "digital",
-                pinNumber: index,
+                pinNumber: layout.digital[index],
                 part: value,
             })
         }
@@ -55,11 +63,19 @@ export function getPopulatedPins(device: ArduinoDevice): Pin[] {
         if (value !== 0) {
             results.push({
                 type: "analog",
-                pinNumber: index,
+                pinNumber: layout.analog[index],
                 part: value,
             })
         }
     })
+
+    return results;
+}
+
+function getDeviceLayout(device: ArduinoDevice): Layout {
+    let results = layouts.filter(layout => layout.name === device.mimacroType)[0];
+
+    if (!results) return null;
 
     return results;
 }
@@ -69,6 +85,12 @@ const updateParts = async () => {
     parts = await electronAPI.getParts();
 }
 updateParts();
+
+export let layouts: Layout[];
+const updateLayouts = async () => {
+    layouts = await electronAPI.getLayouts();
+}
+updateLayouts();
 
 export function getPin(device: ArduinoDevice, index: number): Pin {
     let pins = getPopulatedPins(device);
