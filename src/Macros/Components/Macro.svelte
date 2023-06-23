@@ -1,14 +1,14 @@
 <script lang="ts">
-    import {MacroData} from "./macro";
+    import {MacroData} from "../Data/macro";
+    import {writable} from "svelte/store";
+    import {getContext} from "svelte";
 
     export let macro: MacroData;
 
-    export let macros: MacroData[] = [];
+    let macros: writable<MacroData[]> = getContext("macros");
 
     const close = () => {
-        console.log(macro.uuid);
-        macros = macros.filter((m) => m.uuid !== macro.uuid)
-        electronAPI.removeMacro(macro.uuid);
+        $macros = $macros.filter(m => m.uuid !== macro.uuid);
     }
 </script>
 

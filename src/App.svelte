@@ -3,14 +3,12 @@
     import Devices from "./Devices.svelte";
     import NavBar from "./Components/NavBar.svelte";
     import Settings from "./Settings.svelte";
-	import Macros from "./Macros.svelte";
-	import {onMount} from "svelte";
-	import {KeypressAction, mounted} from "./Macros/action";
+	import MacroPage from "./MacroPage.svelte";
 	let page = "Devices";
 
 	window.setPage = (pageName) => {page = pageName};
 
-	const components = {Devices, DeviceSetup, Settings, Macros}
+	const components = {Devices, DeviceSetup, Settings, MacroPage}
 </script>
 
 <main>

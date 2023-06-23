@@ -324,6 +324,11 @@ function saveMacro(event, macro){
     store.set("userMacros", userMacros);
 }
 
+function setMacros(event, macros) {
+    userMacros = JSON.parse(macros);
+    store.set("userMacros", userMacros);
+}
+
 function removeMacro(event, uuid) {
     userMacros = userMacros.filter(macro => macro.uuid !== uuid);
     store.set("userMacros", userMacros);
@@ -342,6 +347,7 @@ ipcMain.handle("getDevices", getDevices);
 ipcMain.handle("setColorTheme", setColorTheme);
 ipcMain.handle("getColorTheme", () => {return colorTheme;})
 ipcMain.handle("saveMacro", saveMacro);
+ipcMain.handle("setMacros", setMacros);
 ipcMain.handle("getMacros", getMacros);
 ipcMain.handle("removeMacro", removeMacro);
 ipcMain.handle("getLayouts", ()=>{return layouts;});

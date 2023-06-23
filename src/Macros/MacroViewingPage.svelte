@@ -1,39 +1,26 @@
 <script lang="ts">
-    import Macro from "./Macros/Macro.svelte";
-    import MacroCreator from "./Macros/MacroCreator.svelte";
-    import type {MacroData} from "./Macros/macro";
-    import {onDestroy} from "svelte";
-    import {v4} from "uuid";
+    import Macro from "./Components/Macro.svelte";
+    import type {MacroData} from "./Data/macro";
+    import {getContext} from "svelte";
+    import{ writable} from "svelte/store";
 
-    let showingCreator = false;
+    export let next: () => void;
 
-    let macros: MacroData[] = [];
-    const setMacros = async () => {
-        macros = await electronAPI.getMacros();
-    }
-    setMacros()
-
-    const createMacro = () => {
-        showingCreator = true;
-    }
+    let macros: writable<MacroData[]> = getContext("macros");
 </script>
 
 <main>
     <div class="header">
         <h1>Macros</h1>
-        <button class="macro-button unselectable" on:click={createMacro}><img src="../src/Images/Icons/New.svg"></button>
+        <button class="macro-button unselectable" on:click={next}><img src="../src/Images/Icons/New.svg"></button>
     </div>
 
-    {#if showingCreator}
-        <MacroCreator bind:macros={macros} bind:showingCreator={showingCreator} />
-    {/if}
-
     <ul>
-        {#if macros.length === 0}
+        {#if $macros.length === 0}
             <h3>There are no macros... Try creating one!</h3>
         {:else}
-            {#each macros as macro}
-                <li><Macro bind:macros={macros} macro={macro}/></li>
+            {#each $macros as macro}
+                <li><Macro macro={macro}/></li>
             {/each}
         {/if}
     </ul>

@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setColorTheme: (color) => ipcRenderer.invoke("setColorTheme", color),
   getColorTheme: () => ipcRenderer.invoke("getColorTheme"),
   saveMacro: (macro) => ipcRenderer.invoke("saveMacro", JSON.stringify(macro)),
+  setMacros: (macros) => ipcRenderer.invoke("setMacros", JSON.stringify(macros)),
   removeMacro: (uuid) => ipcRenderer.invoke("removeMacro", uuid),
   getMacros: () => ipcRenderer.invoke("getMacros"),
   onDeviceRefresh: (callback) => ipcRenderer.on("refreshDevices", callback),

@@ -1,5 +1,5 @@
 import {SvelteComponent} from "svelte";
-import KeypressActionUI from "./Action/KeypressActionUI.svelte";
+import KeypressActionUI from "../Action/KeypressActionUI.svelte";
 
 const actionRegistry: Action[] = []
 

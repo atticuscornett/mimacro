@@ -13,7 +13,7 @@
         },
         {
             "name": "Macros",
-            "pageTo": "Macros"
+            "pageTo": "MacroPage"
         },
         {
             "name": "Plugins",

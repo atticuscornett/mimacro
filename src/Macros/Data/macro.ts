@@ -8,3 +8,13 @@ export interface MacroData {
     part: Part,
     uuid: string,
 }
+
+export function getMacros(): MacroData[] {
+    let results: MacroData[];
+    const getResults = async () => {
+        results = await electronAPI.getMacros();
+    }
+    getResults();
+
+    return results;
+}
