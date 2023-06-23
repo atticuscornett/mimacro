@@ -85,13 +85,6 @@
             uuid: uuidv4()
         }
 
-        console.log($macros);
-
-        // macros.update(value => {
-        //     value.push(result)
-        //     console.log("value: " + typeof value);
-        // })
-
         $macros = $macros.concat([result]);
     }
 </script>
