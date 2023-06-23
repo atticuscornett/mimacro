@@ -63,7 +63,7 @@
 <style>
     .DevTileWrap {
         position: relative;
-        display: inline-block;
+        display: inline-flex;
     }
 
     .HoverOpt {
