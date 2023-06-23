@@ -1,10 +1,11 @@
 <script lang="ts">
     import MacroViewingPage from "./Macros/MacroViewingPage.svelte";
-    import MacroCreationPage from "./Macros/MacroCreationPage.svelte";
     import PageHandler from "./Components/PageHandler.svelte";
     import {writable} from "svelte/store";
     import {MacroData} from "./Macros/Data/macro";
     import {setContext} from "svelte";
+    import ActionConfigPage from "./Macros/ActionConfigPage.svelte";
+    import MacroConfigPage from "./Macros/MacroConfigPage.svelte";
 
     let macros = writable([] as MacroData[]);
 
@@ -25,9 +26,22 @@
     updateMacros()
 
     setContext("macros", macros);
+
+    let wipMacro = writable(null as MacroData)
+    setContext("wipMacro", wipMacro);
 </script>
 
-<PageHandler pages={[
+<PageHandler onLoop={() => {
+                 // Push wipMacro
+                 $macros = $macros.concat([$wipMacro])
+
+                 // and then reset it to get ready for the next cycle
+                 $wipMacro = null;
+             }}
+
+             pages={[
     MacroViewingPage,
-    MacroCreationPage,
-]} />
+    MacroConfigPage,
+    ActionConfigPage
+]}
+/>

@@ -1,13 +1,10 @@
 import type {Pin, PinType} from "./pin";
-import type {Action} from "./action";
 import {getPin, parts} from "./pin";
-import {placeholderAction} from "./action";
 import {placeholderDevice} from "./device";
 
 export interface TriggerData {
     pin: Pin,
     name: string,
-    action: Action
 }
 
 export interface Part {
@@ -40,7 +37,6 @@ export function placeholderTrigger(): TriggerData {
    return  {
        pin: getPin(placeholderDevice(), 0),
        name: "Down",
-       action: placeholderAction()
    }
 }
 

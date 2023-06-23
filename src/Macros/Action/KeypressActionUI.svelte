@@ -2,7 +2,7 @@
     import type {Action} from "../Data/action";
 
     export let action: Action;
-    export let canLeave: boolean;
+    export let canProgress: boolean;
 </script>
 
-HALLO AM UI
+<button on:click={() => {canProgress = true}}>Configure</button>

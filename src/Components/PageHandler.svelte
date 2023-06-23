@@ -6,6 +6,11 @@
 
     export let pages: typeof SvelteComponent[];
 
+    /**
+     * Called only when the pages successfully make a loop and wrap back to the first page.
+     */
+    export let onLoop: () => void;
+
     let canProgress = true;
     let canRegress = true;
     let canLeave = true;
@@ -47,6 +52,7 @@
 
         if (index + 1 >= pages.length) {
             index = 0;
+            onLoop?.call(onLoop);
         }
 
         else {

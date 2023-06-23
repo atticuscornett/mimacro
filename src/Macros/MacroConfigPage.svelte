@@ -11,25 +11,22 @@
     export let canRegress: boolean;
     canRegress = true;
 
-    let macros: writable<MacroData[]> = getContext("macros");
+    let macro: writable<MacroData> = getContext("wipMacro");
 
     let macroName: string;
     let device: ArduinoDevice;
 
     let trigger: TriggerData = {
-        action: undefined,
         name: "",
         pin: undefined
 
     };
+
     let action: Action;
     let pin: Pin;
 
     $: {
         trigger.pin = pin
-    }
-    $: {
-        trigger.action = action;
     }
 
     let part: Part;
@@ -82,12 +79,13 @@
             device: device,
             part: part,
             trigger: trigger,
+            action: action,
             uuid: uuidv4()
         }
 
-        console.log("Submitted Macro: " + result);
+        console.log("Submitted Macro: " + JSON.stringify(result));
 
-        $macros = $macros.concat([result]);
+        $macro = result;
     }
 </script>
 
