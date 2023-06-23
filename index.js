@@ -141,31 +141,36 @@ function deviceExists(serial){
 
 // Checks if arduino at port has mimacro software flashed.
 function autoDetectListener(port, detectedPorts, closePorts, deviceType){
-    let sp = new SerialPort({path: port.path, baudRate: 9600});
-    let temp = "";
-    let isMimacro = false;
-    let line = 0;
-    let index = 0;
-    sp.on("data", function (data){
-        temp += data.toString();
-        // Runs when data is done being received
-        if (data.toString().includes("\n")){
-            line++;
-            temp = temp.split("\n")[0].replace("\r", "");
-            if (temp == "mimacro" && line == 1){
-                port.flashed = true;
-                isMimacro = true;
-                detectedPorts[deviceType].splice(detectedPorts[deviceType].indexOf(port), 1);
-                detectedPorts["mimacro"].push(port);
-                index = detectedPorts["mimacro"].indexOf(port);
+    try{
+        let sp = new SerialPort({path: port.path, baudRate: 9600});
+        let temp = "";
+        let isMimacro = false;
+        let line = 0;
+        let index = 0;
+        sp.on("data", function (data){
+            temp += data.toString();
+            // Runs when data is done being received
+            if (data.toString().includes("\n")){
+                line++;
+                temp = temp.split("\n")[0].replace("\r", "");
+                if (temp == "mimacro" && line == 1){
+                    port.flashed = true;
+                    isMimacro = true;
+                    detectedPorts[deviceType].splice(detectedPorts[deviceType].indexOf(port), 1);
+                    detectedPorts["mimacro"].push(port);
+                    index = detectedPorts["mimacro"].indexOf(port);
+                }
+                if (isMimacro && line == 2){
+                    detectedPorts["mimacro"][index].mimacroVersion = temp;
+                }
+                temp = data.toString().split("\n")[1];
             }
-            if (isMimacro && line == 2){
-                detectedPorts["mimacro"][index].mimacroVersion = temp;
-            }
-            temp = data.toString().split("\n")[1];
-        }
-    });
-    closePorts.push(sp);
+        });
+        closePorts.push(sp);
+    }
+    catch(e){
+        return;
+    }
 }
 
 function sendAutoPorts(ports){
@@ -319,10 +324,22 @@ function writeDevice(event, device, message){
 }
 
 function setDevicePinOut(event, device, config){
+    let pinMod = 0;
     for (let i = 0; i < config.digital.length; i++){
         if (config.digital[i] != devices[device].pinOut.digital[i]){
-            console.log("DPIN S " + String(layouts[devices[device].mimacroType]["digital"][i]).padStart(2, "0") + " " + String(config.digital[i]).padStart(2, "0"))
-            writeDevice(null, device, "DPIN S " + String(layouts[devices[device].mimacroType]["digital"][i]).padStart(2, "0") + " " + String(config.digital[i]).padStart(2, "0"))
+            console.log("DPIN S " + String(layouts[devices[device].mimacroType]["digital"][i]+pinMod).padStart(2, "0") + " " + String(config.digital[i]).padStart(2, "0"))
+            writeDevice(null, device, "DPIN S " + String(layouts[devices[device].mimacroType]["digital"][i]+pinMod).padStart(2, "0") + " " + String(config.digital[i]).padStart(2, "0"))
+        }
+    }
+    // Modify pin code for Arduino software (temp solution)
+    pinMod = 0;
+    if (devices[device].mimacroType == "Arduino Uno"){
+        pinMod = -14;
+    }
+    for (let i = 0; i < config.analog.length; i++){
+        if (config.analog[i] != devices[device].pinOut.analog[i]){
+            console.log("APIN S " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog[i]).padStart(2, "0"))
+            writeDevice(null, device, "APIN S " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog[i]).padStart(2, "0"))
         }
     }
     devices[device].pinOut = config;

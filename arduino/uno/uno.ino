@@ -25,7 +25,7 @@ int analogChangeMin[] = { 25, 25, 25, 25, 25, 25 };
 unsigned long analogLastStateChange[] = { 0, 0, 0, 0, 0, 0 };
 
 String serialBuffer = "";
-String version = "UNO 0.0.1";
+String version = "UNO 0.0.2";
 
 void setup() {
   Serial.begin(9600);
@@ -187,9 +187,9 @@ void handleSerialCommands() {
         }
       } else if (serialBuffer.substring(0, 5) == "APIN ") {
         if (serialBuffer.substring(5, 7) == "S ") {
-          // Usage - "APIN S <PIN (one digit)> <MODE>"
-          int pin = serialBuffer.substring(7, 8).toInt();
-          int mode = serialBuffer.substring(9).toInt();
+          // Usage - "APIN S <PIN (two digit)> <MODE>"
+          int pin = serialBuffer.substring(7, 9).toInt();
+          int mode = serialBuffer.substring(10).toInt();
           if (pin < 0 || pin > 5) {
             Serial.println("Malfored command. Invalid pin.");
           } else {
@@ -199,8 +199,8 @@ void handleSerialCommands() {
             Serial.println("ANALOG PIN " + String(pin) + " IS NOW MODE " + String(mode));
           }
         } else if (serialBuffer.substring(5, 7) == "T ") {
-          int pin = serialBuffer.substring(7, 8).toInt();
-          int time = serialBuffer.substring(9).toInt();
+          int pin = serialBuffer.substring(7, 9).toInt();
+          int time = serialBuffer.substring(10).toInt();
           if (pin < 0 || pin > 5) {
             Serial.println("Malfored command. Invalid pin.");
           } else if (time > 255) {
@@ -211,8 +211,8 @@ void handleSerialCommands() {
             Serial.println("ANALOG PIN " + String(pin) + " NOW HAS TIMEOUT OF " + String(time));
           }
         } else if (serialBuffer.substring(5, 7) == "V ") {
-          int pin = serialBuffer.substring(7, 8).toInt();
-          int val = serialBuffer.substring(9).toInt();
+          int pin = serialBuffer.substring(7, 9).toInt();
+          int val = serialBuffer.substring(10).toInt();
           if (pin < 0 || pin > 5) {
             Serial.println("Malfored command. Invalid pin.");
           } else if (val > 255) {
