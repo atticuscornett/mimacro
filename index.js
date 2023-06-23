@@ -303,8 +303,9 @@ function refreshDevices(){
         for (let i = 0; i < ports.length; i++){
             if (true){
                 if (serialNumbers.includes(ports[i].serialNumber)){
-                    console.log(devices[i].nickname);
-                    listenToDevice(serialNumbers.indexOf(ports[i].serialNumber), ports[i].path);
+                    if (!deviceOpen(serialNumbers.indexOf(ports[i].serialNumber))){
+                        listenToDevice(serialNumbers.indexOf(ports[i].serialNumber), ports[i].path);
+                    }
                 }
             }
         }

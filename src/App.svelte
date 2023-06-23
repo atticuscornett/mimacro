@@ -6,6 +6,7 @@
 	import Macros from "./Macros.svelte";
 	import {onMount} from "svelte";
 	import {KeypressAction, mounted} from "./Macros/action";
+    import Background from "./Components/Background.svelte";
 	let page = "Devices";
 
 	window.setPage = (pageName) => {page = pageName};
@@ -14,6 +15,7 @@
 </script>
 
 <main>
+	<Background></Background>
 	<NavBar bind:page={page}></NavBar>
 	<svelte:component this={components[page]}></svelte:component>
 </main>
@@ -31,14 +33,12 @@
 	@media (prefers-color-scheme: dark){
 		:global(body) {
 			color: white;
-			background-color: var(--background-gray);
 		}
 	}
 
 	@media (prefers-color-scheme: light) {
 		:global(body) {
 			color: var(--background-gray);
-			background-color: white;
 		}
 	}
 </style>
