@@ -8,7 +8,6 @@ export interface Pin {
 }
 
 export interface Layout {
-    name: string,
     digital: number[],
     analog: number[],
 }
@@ -73,7 +72,7 @@ export function getPopulatedPins(device: ArduinoDevice): Pin[] {
 }
 
 function getDeviceLayout(device: ArduinoDevice): Layout {
-    let results = layouts.filter(layout => layout.name === device.mimacroType)[0];
+    let results = layouts[device.mimacroType];
 
     if (!results) return null;
 
@@ -86,9 +85,12 @@ const updateParts = async () => {
 }
 updateParts();
 
-export let layouts: Layout[];
+export let layouts: { [name: string]: Layout }
 const updateLayouts = async () => {
-    layouts = await electronAPI.getLayouts();
+    let jsonLayouts = await electronAPI.getLayouts();
+    let keys = Object.keys(jsonLayouts);
+
+    layouts = jsonLayouts;
 }
 updateLayouts();
 
