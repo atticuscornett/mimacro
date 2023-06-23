@@ -13,7 +13,6 @@
     canRegress = true;
 
     let macros: writable<MacroData[]> = getContext("macros");
-    export let showingCreator: boolean;
 
     let macroName: string;
     let device: ArduinoDevice;
@@ -28,19 +27,25 @@
     let pin: Pin;
 
     $: {
-            trigger.pin = pin
+        trigger.pin = pin
     }
     $: {
-            trigger.action = action;
+        trigger.action = action;
     }
 
     let part: Part;
 
-    $: device = devices.filter(device => device.serialNumber == selectedDeviceSerial)[0];
+    $: {
+        device = devices.filter(device => device.serialNumber == selectedDeviceSerial)[0];
+        console.log("device updated")
+    }
     let selectedDeviceSerial: string;
 
     let populatedPins: Pin[];
-    $: populatedPins = getPopulatedPins(device);
+    $: {
+        populatedPins = getPopulatedPins(device);
+        console.log("populated pins recalc")
+    }
 
     $: {
         if (pin)
@@ -71,7 +76,6 @@
 
     export let canProgress: boolean;
     $: canProgress = checkCanProgress(trigger, action, pin, macroName, device, part);
-    $: console.log(canProgress);
 
     export let onProgress: () => void
     onProgress = () => {
@@ -102,7 +106,7 @@
 
         <p>
             When
-            <select class="dropdown" bind:value={selectedDeviceSerial} id="device">
+            <select bind:value={selectedDeviceSerial} class="dropdown" id="device-dropdown">
                 <option disabled selected hidden></option>
                 {#each devices as device, i}
                     {#if getPopulatedPins(device).length > 0}
@@ -116,7 +120,7 @@
             <br>
 
             from
-            <select class="dropdown" bind:value={stringPin} id="pin">
+            <select bind:value={stringPin} class="dropdown" disabled={populatedPins.length < 1} id="pin-dropdown">
                 {#each populatedPins as pin}
                     <option value={pinToString(pin)}>
                         {parts.filter(part => part.id === pin.part.toString())[0].name}
@@ -131,16 +135,14 @@
 
             when trigger
 
-            <select class="dropdown" bind:value={trigger.name} id="trigger">
-                {#if pin}
-                    {@const part = getPart(pin.part)}
-                    {#if part}
-                        {#each part.triggers as trigger}
-                            <option value={trigger.name}>
-                                {trigger.name}
-                            </option>
-                        {/each}
-                    {/if}
+            <select bind:value={trigger.name} class="dropdown" disabled={!part || part.triggers.length < 1}
+                    id="trigger-dropdown">
+                {#if part != null}
+                    {#each part.triggers as trigger}
+                        <option value={trigger.name}>
+                            {trigger.name}
+                        </option>
+                    {/each}
                 {/if}
             </select>
 
@@ -150,7 +152,7 @@
 
             run
 
-            <select class="dropdown" bind:value={selectedActionIndex} id="action">
+            <select bind:value={selectedActionIndex} class="dropdown" id="action-dropdown">
                 {#each getRegistry() as action, i}
                     <option value={i}>{action.name}</option>
                 {/each}
@@ -177,6 +179,19 @@
         border: var(--primary-blue) 2px solid;
         color: white;
         padding: 9px;
+    }
+
+    .dropdown[disabled] {
+        border-color: dimgray;
+    }
+
+    @media (prefers-color-scheme: light) {
+        .dropdown {
+            background-color: white;
+            border-width: 3px;
+            border-color: var(--secondary-blue);
+            color: black;
+        }
     }
 
     button {
