@@ -3,7 +3,6 @@
     import {type ArduinoDevice, devices} from "./Data/device";
     import {getPart, Part, TriggerData} from "./Data/triggerData";
     import {getPopulatedPins, parts, Pin, pinFromString, pinToString} from "./Data/pin";
-    import {capitalize} from "../utilities";
     import {Action, getRegistry} from "./Data/action";
     import {v4 as uuidv4} from 'uuid'
     import {getContext} from "svelte";
@@ -37,14 +36,13 @@
 
     $: {
         device = devices.filter(device => device.serialNumber == selectedDeviceSerial)[0];
-        console.log("device updated")
     }
     let selectedDeviceSerial: string;
 
     let populatedPins: Pin[];
     $: {
         populatedPins = getPopulatedPins(device);
-        console.log("populated pins recalc")
+        console.log("Recalculated the `populatedPins` variable")
     }
 
     $: {
@@ -79,8 +77,6 @@
 
     export let onProgress: () => void
     onProgress = () => {
-        console.log("submitted")
-
         let result: MacroData = {
             name: macroName,
             device: device,
@@ -88,6 +84,8 @@
             trigger: trigger,
             uuid: uuidv4()
         }
+
+        console.log("Submitted Macro: " + result);
 
         $macros = $macros.concat([result]);
     }
@@ -107,8 +105,10 @@
         <p>
             When
             <select bind:value={selectedDeviceSerial} class="dropdown" id="device-dropdown">
+                <!-- Empty option that you can't reselect -->
                 <option disabled selected hidden></option>
-                {#each devices as device, i}
+
+                {#each devices as device}
                     {#if getPopulatedPins(device).length > 0}
                         <option value={device.serialNumber}>{device.nickname}</option>
                     {/if}
@@ -124,7 +124,7 @@
                 {#each populatedPins as pin}
                     <option value={pinToString(pin)}>
                         {parts.filter(part => part.id === pin.part.toString())[0].name}
-                        at {capitalize(pin.type)} Pin {pin.pinNumber}
+                        at {pin.type} pin {pin.pinNumber}
                     </option>
                 {/each}
             </select>
@@ -182,6 +182,8 @@
 
         min-width: 200px;
         padding: 9px;
+
+        text-transform: capitalize;
     }
 
     .dropdown[disabled] {
