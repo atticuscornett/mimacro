@@ -3,6 +3,7 @@
     import Devices from "./Devices.svelte";
     import NavBar from "./Components/NavBar.svelte";
     import Settings from "./Settings.svelte";
+	import Background from "./Components/Background.svelte";
 	import MacroPage from "./MacroPage.svelte";
 	let page = "Devices";
 
@@ -12,6 +13,7 @@
 </script>
 
 <main>
+	<Background></Background>
 	<NavBar bind:page={page}></NavBar>
 	<svelte:component this={components[page]}></svelte:component>
 </main>
@@ -29,14 +31,12 @@
 	@media (prefers-color-scheme: dark){
 		:global(body) {
 			color: white;
-			background-color: var(--background-gray);
 		}
 	}
 
 	@media (prefers-color-scheme: light) {
 		:global(body) {
 			color: var(--background-gray);
-			background-color: white;
 		}
 	}
 </style>
