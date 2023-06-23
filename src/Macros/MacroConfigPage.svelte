@@ -7,6 +7,9 @@
     import {v4 as uuidv4} from 'uuid'
     import {getContext} from "svelte";
     import {writable} from "svelte/store";
+    import SubmitButton from "./Components/SubmitButton.svelte";
+
+    export let next: () => void;
 
     export let canRegress: boolean;
     canRegress = true;
@@ -157,6 +160,8 @@
             </select>
         </p>
     </div>
+
+    <SubmitButton disabled={!canProgress} on:submit={next}/>
 </main>
 
 <style>
