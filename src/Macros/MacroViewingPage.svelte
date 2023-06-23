@@ -2,7 +2,7 @@
     import Macro from "./Components/Macro.svelte";
     import type {MacroData} from "./Data/macro";
     import {getContext} from "svelte";
-    import{ writable} from "svelte/store";
+    import {writable} from "svelte/store";
 
     export let next: () => void;
 
@@ -45,6 +45,7 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
     }
 
 
