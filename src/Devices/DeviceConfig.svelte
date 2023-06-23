@@ -37,7 +37,7 @@
 </script>
 
 <h1>Configure {devices[device].nickname}</h1>
-{#if partsList.length && deviceLayouts.length}
+{#if partsList.length}
     <div on:change={getSelections}>
         <h3>Digital Pins</h3>
         {#each devices[device].pinOut.digital as d, i}
