@@ -24,11 +24,15 @@
 
         <br>
 
-        {macro.part.name + " " + macro.trigger.name} at {macro.trigger.pin.type} pin {macro.trigger.pin.pinNumber}
+        {macro.part.name + " " + macro.trigger.name} at {macro.trigger.pin.type} Pin {macro.trigger.pin.pinNumber}
     </p>
 </main>
 
 <style>
+    main {
+        text-transform: capitalize;
+    }
+
     main {
         background-color: var(--primary-blue);
         color: white;
