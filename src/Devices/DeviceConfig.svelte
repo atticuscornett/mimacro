@@ -40,24 +40,46 @@
 {#if partsList.length}
     <div on:change={getSelections}>
         <h3>Digital Pins</h3>
-        {#each devices[device].pinOut.digital as d, i}
-            <label>Pin {deviceLayouts[devices[device].mimacroType]["digital"][i]}</label>
-            <select value={String(d)} id={"digital-" + i}>
-                {#each partsList as part}
-                {#if part.type != "analog"}
-                    <option value={String(part.id)}>{part.name}</option>
-                {/if}
-                {/each}
-            </select>
-        {/each}
+        <div class="grid">
+            {#each devices[device].pinOut.digital as d, i}
+                <div class="config">
+                    <label for={"digital-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["digital"][i]}</label>
+                    <select value={String(d)} id={"digital-" + i}>
+                        {#each partsList as part}
+                        {#if part.type != "analog"}
+                            <option value={String(part.id)}>{part.name}</option>
+                        {/if}
+                        {/each}
+                    </select>
+                </div>
+            {/each}
+        </div>
         <h3>Analog Pins</h3>
-        {#each devices[device].pinOut.analog as d, i}
-            <label>Pin {deviceLayouts[devices[device].mimacroType]["analog"][i]}</label>
-            <select value={String(d)} id={"analog-" + i}>
-                {#each partsList as part}
-                    <option value={String(part.id)}>{part.name}</option>
-                {/each}
-            </select>
-        {/each}
+        <div class="grid">
+            {#each devices[device].pinOut.analog as d, i}
+                <div>
+                    <label>Pin {deviceLayouts[devices[device].mimacroType]["analog"][i]}</label>
+                    <select value={String(d)} id={"analog-" + i}>
+                        {#each partsList as part}
+                            <option value={String(part.id)}>{part.name}</option>
+                        {/each}
+                    </select>
+                </div>
+            {/each}
+        </div>
     </div>
 {/if}
+
+<style>
+    select { 
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .grid {
+        grid-template-columns: auto auto;
+        display: grid;
+        justify-content: start;
+        grid-gap: 5px;
+    }
+</style>
