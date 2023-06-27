@@ -417,8 +417,11 @@ app.on("ready", () => {
 
     mainWindow = new BrowserWindow({
         webPreferences: {
-        preload: path.join(__dirname, "preload.js")
-        }
+            preload: path.join(__dirname, "preload.js")
+        },
+
+        minWidth: 800,
+        minHeight: 600
     });
     mainWindow.on('close', e => {
         e.preventDefault();
