@@ -120,7 +120,10 @@ function autoDetectPorts(callback, timeout){
     setTimeout(function(){
         for (let i = 0; i < closePorts.length; i++){
             try{
-                closePorts[i].close();
+                if (port.isOpen){
+                    closePorts[i].close();
+                }
+                console.log(port.isOpen)
             }
             catch(e){
                 console.log(e);

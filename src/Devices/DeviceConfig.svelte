@@ -39,7 +39,7 @@
 <h2>Configure "{devices[device].nickname}"</h2>
 {#if partsList.length}
     <div on:change={getSelections} style="display: inline-flex;margin: 0 20px;width:-webkit-fill-available;justify-content:space-between;">
-        <div>
+        <div style="margin-bottom: 85px;">
             <h3>Digital Pins</h3>
             <div class="grid">
                 {#each devices[device].pinOut.digital as d, i}
@@ -75,6 +75,8 @@
             </div>
         </div>
     </div>
+    <button style="position:fixed; bottom: 10px; left: 20px;">Show Advanced Options</button>
+    <button style="position:fixed; bottom: 10px; right: 20px;" on:click={()=>{viewingDevice=false;}}>Save Config</button>
 {/if}
 
 <style>
@@ -95,5 +97,24 @@
         max-height: 90%;
         transform: rotate(-90deg);
         margin-top: 20%;
+    }
+
+    button {
+        width: 300px;
+        border-radius: 15px;
+        background-color: var(--secondary-blue);
+        color: white;
+        border: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+
+    }
+
+    @media (prefers-color-scheme: light) {
+        button[disabled] {
+            background-color: dimgray;
+            color: white;
+            opacity: 0.6;
+        }
     }
 </style>
