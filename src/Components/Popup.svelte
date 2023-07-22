@@ -33,6 +33,8 @@
         border-radius: 10px;
 
         padding: 10px;
+
+        overflow-y: auto;
     }
 
     @media (prefers-color-scheme: light) {

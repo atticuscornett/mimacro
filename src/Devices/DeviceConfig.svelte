@@ -1,5 +1,6 @@
 <script>
     import { onMount } from "svelte";
+    import Popup from "../Components/Popup.svelte";
 
     export let device;
     export let devices;
@@ -9,12 +10,17 @@
 
     let partsList = [];
     let deviceLayouts = [];
+    let showAdvanced = false;
 
 
     async function getAvailablePins(){
         console.log(device);
         deviceLayouts = await electronAPI.getLayouts();
         partsList = await electronAPI.getParts();
+    }
+
+    async function saveAdvanced(){
+        showAdvanced = false;
     }
 
     async function getSelections(){
@@ -75,8 +81,19 @@
             </div>
         </div>
     </div>
-    <button style="position:fixed; bottom: 10px; left: 20px;">Show Advanced Options</button>
+    <button style="position:fixed; bottom: 10px; left: 20px;" on:click={()=>{showAdvanced=true;}}>Show Advanced Options</button>
     <button style="position:fixed; bottom: 10px; right: 20px;" on:click={()=>{viewingDevice=false;}}>Save Config</button>
+    {#if showAdvanced}
+        <Popup id="advancedOptions">
+            <h2>Advanced Options</h2>
+            <h3>Digital Pins</h3>
+                {#each devices[device].pinProperties.digital.timeout as t, i}
+                    <label for={"digitaltimeout-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["digital"][i]} Timeout</label>
+                    <input type="number" value={t} id={"digitaltimeout-" + i} min="1" max="255">
+                {/each}
+            <button on:click={saveAdvanced}>Close</button>
+        </Popup>
+    {/if}
 {/if}
 
 <style>
@@ -107,14 +124,5 @@
         border: none;
         -moz-user-select: none;
         -webkit-user-select: none;
-
-    }
-
-    @media (prefers-color-scheme: light) {
-        button[disabled] {
-            background-color: dimgray;
-            color: white;
-            opacity: 0.6;
-        }
     }
 </style>
