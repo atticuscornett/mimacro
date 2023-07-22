@@ -48,7 +48,7 @@
             {#each detected["mimacro"] as {friendlyName}, i}
                 <Selectable id={"mimacro-" + i} name="autoDeviceSelect" label={friendlyName}></Selectable>
             {/each}
-            <h2>Arduino Uno Devices</h2>
+            <h2>Compatible Devices</h2>
             {#each detected["uno"] as {friendlyName}, i}
                 <Selectable id={"uno-" + i} name="autoDeviceSelect" label={friendlyName}></Selectable>
             {/each}
