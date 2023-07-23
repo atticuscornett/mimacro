@@ -432,5 +432,6 @@ app.on("ready", () => {
         e.preventDefault();
         mainWindow.hide();
     });
+    mainWindow.setMenu(null);
     mainWindow.loadFile(path.join(__dirname, "public/index.html"));
 });
