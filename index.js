@@ -336,6 +336,7 @@ function setDevicePinOut(event, device, config){
             writeDevice(null, device, "DPIN S " + String(layouts[devices[device].mimacroType]["digital"][i]+pinMod).padStart(2, "0") + " " + String(config.digital[i]).padStart(2, "0"))
         }
     }
+    // TODO
     // Modify pin code for Arduino software (temp solution)
     pinMod = 0;
     if (devices[device].mimacroType == "Arduino Uno"){
@@ -349,6 +350,44 @@ function setDevicePinOut(event, device, config){
     }
     devices[device].pinOut = config;
     refreshRendererDevices();
+}
+
+function setDevicePinProperties(event, device, config){
+    for (let i = 0; i < config.digital.timeout.length; i++){
+        let newConf = config.digital.timeout[i];
+        if (newConf != devices[device].pinProperties.digital.timeout[i]){
+            console.log("DPIN T " + String(layouts[devices[device].mimacroType]["digital"][i]).padStart(2, "0") + " " + String(config.digital.timeout[i]).padStart(3, "0"))
+            writeDevice(null, device, "DPIN T " + String(layouts[devices[device].mimacroType]["digital"][i]).padStart(2, "0") + " " + String(config.digital.timeout[i]).padStart(3, "0"))
+        }
+    }
+    // TODO
+    // Modify pin code for Arduino software (temp solution)
+    let pinMod = 0;
+    if (devices[device].mimacroType == "Arduino Uno"){
+        pinMod = -14;
+    }
+    for (let i = 0; i < config.analog.timeout.length; i++){
+        let newConf = config.analog.timeout[i];
+        if (newConf != devices[device].pinProperties.analog.timeout[i]){
+            console.log("APIN T " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
+            writeDevice(null, device, "APIN T " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
+        }
+    }
+    for (let i = 0; i < config.analog.timeout.length; i++){
+        let newConf = config.analog.timeout[i];
+        if (newConf != devices[device].pinProperties.analog.timeout[i]){
+            console.log("APIN V " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
+            writeDevice(null, device, "APIN V " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
+        }
+    }
+    for (let i = 0; i < config.analog.minChange.length; i++){
+        let newConf = config.analog.minChange[i];
+        if (newConf != devices[device].pinProperties.analog.minChange[i]){
+            console.log("APIN V " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.minChange[i]).padStart(3, "0"))
+            writeDevice(null, device, "APIN V " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.minChange[i]).padStart(3, "0"))
+        }
+    }
+    devices[device].pinProperties = config;
 }
 
 usb.on('attach', (device) => {
@@ -392,6 +431,7 @@ ipcMain.handle("removeDevice", removeDevice);
 ipcMain.handle("flashDevice", flashDevice);
 ipcMain.handle("writeDevice", writeDevice);
 ipcMain.handle("setDevicePinOut", setDevicePinOut);
+ipcMain.handle("setDevicePinProperties", setDevicePinProperties);
 
 
 app.on("ready", () => {

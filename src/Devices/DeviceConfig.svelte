@@ -21,6 +21,23 @@
 
     async function saveAdvanced(){
         showAdvanced = false;
+        validateAdvancedInputs();
+        let i = 0;
+        while (document.getElementById("digitaltimeout-" + i)){
+            devices[device].pinProperties.digital.timeout[i] = Number(document.getElementById("digitaltimeout-" + i).value);
+            i++;
+        }
+        i = 0;
+        while (document.getElementById("analogtimeout-" + i)){
+            devices[device].pinProperties.analog.timeout[i] = Number(document.getElementById("analogtimeout-" + i).value);
+            i++;
+        }
+        i = 0;
+        while (document.getElementById("analogminchange-" + i)){
+            devices[device].pinProperties.analog.minChange[i] = Number(document.getElementById("analogminchange-" + i).value);
+            i++;
+        }
+        electronAPI.setDevicePinProperties(device, devices[device].pinProperties);
     }
 
     async function getSelections(){
@@ -143,7 +160,7 @@
             </div>
             <h4>Minimum change (minchange) sets the minimum change in analog value (0-1023) that will be registered by the device, altering its sensitivity.  A minimum change value helps the device ignore regular variations in voltage readings.</h4>
             <div class="flexList" on:change={validateAdvancedInputs}>
-                {#each devices[device].pinProperties.analog.timeout as t, i}
+                {#each devices[device].pinProperties.analog.minChange as t, i}
                     <div>
                         <label for={"analogminchange-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["analog"][i]} Minchange</label>
                         <input type="number" value={t} id={"analogminchange-" + i} min="1" max="255">

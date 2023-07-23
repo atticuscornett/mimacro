@@ -120,8 +120,8 @@ void EEPROMReset() {
     EEPROM.update(j, 20);
   }
   for (int j = 36; j < 42; j++) {
-    analogChangeMin[j - 36] = 10;
-    EEPROM.update(j, 10);
+    analogChangeMin[j - 36] = 30;
+    EEPROM.update(j, 30);
   }
   Serial.println("MEMRESET");
 }
@@ -277,7 +277,7 @@ void handleAnalogPin(int pin) {
       int state = analogRead(pin);
       if (minDifference(analogLastState[pin - 14], state, analogChangeMin[pin - 14])) {
         Serial.println("POTENT " + String(pin) + " " + String(state));
-        analogLastState[pin - 14] = state;
+        updateAnalogPinState(pin, state);
       }
     }
   }
