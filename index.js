@@ -120,7 +120,10 @@ function autoDetectPorts(callback, timeout){
     setTimeout(function(){
         for (let i = 0; i < closePorts.length; i++){
             try{
-                closePorts[i].close();
+                if (closePorts[i].isOpen){
+                    closePorts[i].close();
+                }
+                console.log(closePorts[i].isOpen)
             }
             catch(e){
                 console.log(e);
@@ -189,9 +192,11 @@ function removeDevice(event, deviceIndex){
     devices.splice(deviceIndex, 1);
     store.set("devices", devices);
     try{
-        serialPorts[index].close()
+        serialPorts[deviceIndex].close()
     }
-    catch(e){}
+    catch(e){
+        console.log(e);
+    }
     refreshRendererDevices();
 }
 

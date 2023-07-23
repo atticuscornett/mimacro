@@ -33,11 +33,24 @@
         border-radius: 10px;
 
         padding: 10px;
+
+        overflow-y: auto;
     }
 
     @media (prefers-color-scheme: light) {
         .popup {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(5px);
+        }
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .popup {
+            background-color: rgba(0, 0, 0, 0.50);
+            backdrop-filter: blur(5px);
+        }
+        .container{
+            background-color: rgba(0, 0, 0, 0.10);
         }
     }
 </style>
