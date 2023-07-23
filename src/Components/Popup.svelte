@@ -15,6 +15,8 @@
         height: 100%;
 
         background-color: rgba(0, 0, 0, .75);
+
+        backdrop-filter: blur(5px);
     }
 
     .popup {
@@ -32,7 +34,7 @@
 
         border-radius: 10px;
 
-        padding: 10px;
+        padding: 20px;
 
         overflow-y: auto;
     }
@@ -40,17 +42,15 @@
     @media (prefers-color-scheme: light) {
         .popup {
             background-color: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(5px);
         }
     }
 
     @media (prefers-color-scheme: dark) {
         .popup {
-            background-color: rgba(0, 0, 0, 0.50);
-            backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.1);
         }
         .container{
-            background-color: rgba(0, 0, 0, 0.10);
+            background-color: rgba(0, 0, 0, 0.9);
         }
     }
 </style>

@@ -40,6 +40,39 @@
         }
         await electronAPI.setDevicePinOut(device, pinOutTemp);
     }
+
+    function validateAdvancedInputs(){
+        let i = 0;
+        while (document.getElementById("digitaltimeout-" + i)){
+            if (document.getElementById("digitaltimeout-" + i).value > 255){
+                document.getElementById("digitaltimeout-" + i).value = "255";
+            }
+            if (document.getElementById("digitaltimeout-" + i).value < 0){
+                document.getElementById("digitaltimeout-" + i).value = "0";
+            }
+            i++;
+        }
+        i = 0;
+        while (document.getElementById("analogtimeout-" + i)){
+            if (document.getElementById("analogtimeout-" + i).value > 255){
+                document.getElementById("analogtimeout-" + i).value = "255";
+            }
+            if (document.getElementById("analogtimeout-" + i).value < 0){
+                document.getElementById("analogtimeout-" + i).value = "0";
+            }
+            i++;
+        }
+        i = 0;
+        while (document.getElementById("analogminchange-" + i)){
+            if (document.getElementById("analogminchange-" + i).value > 255){
+                document.getElementById("analogminchange-" + i).value = "255";
+            }
+            if (document.getElementById("analogminchange-" + i).value < 0){
+                document.getElementById("analogminchange-" + i).value = "0";
+            }
+            i++;
+        }
+    }
 </script>
 
 <h2>Configure "{devices[device].nickname}"</h2>
@@ -53,9 +86,9 @@
                         <label for={"digital-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["digital"][i]}</label>
                         <select value={String(d)} id={"digital-" + i}>
                             {#each partsList as part}
-                            {#if part.type != "analog"}
-                                <option value={String(part.id)}>{part.name}</option>
-                            {/if}
+                                {#if part.type != "analog"}
+                                    <option value={String(part.id)}>{part.name}</option>
+                                {/if}
                             {/each}
                         </select>
                     </div>
@@ -85,13 +118,39 @@
     <button style="position:fixed; bottom: 10px; right: 20px;" on:click={()=>{viewingDevice=false;}}>Save Config</button>
     {#if showAdvanced}
         <Popup id="advancedOptions">
-            <h2>Advanced Options</h2>
+            <h2 style="margin-top:0;">Advanced Options</h2>
             <h3>Digital Pins</h3>
+            <hr>
+            <h4>Timeout sets how often the state of the pin is allowed to refresh. A digital timeout helps prevent false double presses from being recorded. Units are in milliseconds.</h4>
+            <div class="flexList" on:change={validateAdvancedInputs}>
                 {#each devices[device].pinProperties.digital.timeout as t, i}
-                    <label for={"digitaltimeout-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["digital"][i]} Timeout</label>
-                    <input type="number" value={t} id={"digitaltimeout-" + i} min="1" max="255">
+                    <div>
+                        <label for={"digitaltimeout-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["digital"][i]} Timeout</label>
+                        <input type="number" value={t} id={"digitaltimeout-" + i} min="1" max="255">
+                    </div>
                 {/each}
-            <button on:click={saveAdvanced}>Close</button>
+            </div>
+            <h3>Analog Pins</h3>
+            <hr>
+            <h4>Timeout sets how often the state of the pin is allowed to refresh. An analog timeout helps prevent the serial connection from sending messages too often. Units are in milliseconds.</h4>
+            <div class="flexList" on:change={validateAdvancedInputs}>
+                {#each devices[device].pinProperties.analog.timeout as t, i}
+                    <div>
+                        <label for={"analogtimeout-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["analog"][i]} Timeout</label>
+                        <input type="number" value={t} id={"analogtimeout-" + i} min="1" max="255">
+                    </div>
+                {/each}
+            </div>
+            <h4>Minimum change (minchange) sets the minimum change in analog value (0-1023) that will be registered by the device, altering its sensitivity.  A minimum change value helps the device ignore regular variations in voltage readings.</h4>
+            <div class="flexList" on:change={validateAdvancedInputs}>
+                {#each devices[device].pinProperties.analog.timeout as t, i}
+                    <div>
+                        <label for={"analogminchange-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["analog"][i]} Minchange</label>
+                        <input type="number" value={t} id={"analogminchange-" + i} min="1" max="255">
+                    </div>
+                {/each}
+            </div>
+            <button on:click={saveAdvanced} style="width:100%;position:sticky;bottom:0;margin-top:20px;">Save Changes</button>
         </Popup>
     {/if}
 {/if}
@@ -114,15 +173,21 @@
         max-height: 90%;
         transform: rotate(-90deg);
         margin-top: 20%;
+        pointer-events: none;
+    }
+
+    .flexList {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 150px);
     }
 
     button {
         width: 300px;
         border-radius: 15px;
-        background-color: var(--secondary-blue);
+        font-weight: bold;
+        background-color: var(--primary-blue);
         color: white;
         border: none;
-        -moz-user-select: none;
-        -webkit-user-select: none;
+        user-select: none;
     }
 </style>
