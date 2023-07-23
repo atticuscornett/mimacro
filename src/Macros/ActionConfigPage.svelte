@@ -3,7 +3,7 @@
     import type {MacroData} from "./Data/macro";
     import {writable} from "svelte/store";
     import type {Action} from "./Data/action";
-    import SubmitButton from "./Components/SubmitButton.svelte";
+    import SubmitButton from "../Components/SubmitButton.svelte";
 
     const macroStore: writable<MacroData> = getContext("wipMacro");
 

@@ -7,7 +7,7 @@
     import {v4 as uuidv4} from 'uuid'
     import {getContext} from "svelte";
     import {writable} from "svelte/store";
-    import SubmitButton from "./Components/SubmitButton.svelte";
+    import SubmitButton from "../Components/SubmitButton.svelte";
 
     export let next: () => void;
 

@@ -24,13 +24,16 @@
 <style>
     button {
         width: 300px;
-        border-radius: 15px;
-        background-color: var(--secondary-blue);
-        color: white;
-        border: none;
-        -moz-user-select: none;
-        -webkit-user-select: none;
 
+        border-radius: 15px;
+        border: none;
+
+        background-color: var(--primary-blue);
+        color: white;
+
+        font-weight: bold;
+
+        pointer-events: none;
     }
 
     button[disabled] {
