@@ -1,4 +1,5 @@
 import {SvelteComponent} from "svelte";
+import KeypressActionUI from "../Action/KeypressActionUI.svelte";
 
 const actionRegistry: Action[] = []
 
@@ -18,7 +19,7 @@ export class KeypressAction extends Action {
     constructor() {
         super();
 
-        this.ui = null;
+        this.ui = KeypressActionUI;
         this.name = "Keypress"
     }
 

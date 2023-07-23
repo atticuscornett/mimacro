@@ -4,9 +4,22 @@
     const dispatch = createEventDispatcher();
 
     export let disabled: boolean;
+
+    export let top: number;
+    export let bottom: number;
+    export let left: number;
+    export let right: number;
+
+    let absolute = false;
+    $: absolute = (top != null || bottom != null || left != null || right != null);
 </script>
 
-<button disabled={disabled} on:click={() => dispatch("submit")}>Submit</button>
+<button
+        disabled={disabled}
+        on:click={() => dispatch("submit")}
+        style="position: {absolute ? 'absolute' : 'static'}; top: {top}px; bottom: {bottom}px; left: {left}px; right: {right}px; margin: 10px;"
+>Submit
+</button>
 
 <style>
     button {

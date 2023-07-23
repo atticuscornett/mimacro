@@ -93,16 +93,15 @@
 </script>
 
 <main>
-    <h1>Create a Macro</h1>
-
-    <h2>Macro Data</h2>
-    <hr>
+    <h1>Macro Data</h1>
     <div class="content-pane">
         <div>
             <label for="name-field">Macro Name</label>
             <input bind:value={macroName} id="name-field" type="text" placeholder="Macro name...">
         </div>
 
+        <h2>Create a Macro</h2>
+        <hr>
         <p>
             When
             <select bind:value={selectedDeviceSerial} class="dropdown" id="device-dropdown">
@@ -161,27 +160,67 @@
         </p>
     </div>
 
-    <SubmitButton disabled={!canProgress} on:submit={next}/>
+    <SubmitButton bottom={0} class="submit-button" disabled={!canProgress} on:submit={next} right={0}/>
 </main>
 
 <style>
+    :root {
+        --highlight: var(--primary-blue);
+        --text-color: white;
+        --background: var(--background-gray)
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --highlight: var(--secondary-blue);
+            --text-color: black;
+            --background: white;
+        }
+    }
+
     h1 {
         margin-top: 6px;
     }
 
+    .submit-button {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin: 5px;
+    }
+
+    input[type="text"] {
+        /* This is the height of the dropdowns */
+        height: 44px;
+
+        background-color: var(--background);
+
+        border-radius: 15px;
+        border: var(--highlight) 2px solid;
+
+        color: var(--text-color);
+    }
+
     .content-pane {
         display: flex;
+        flex-direction: column;
+    }
+
+    .content-pane > hr {
+        width: 100%;
     }
 
     .dropdown {
         position: relative;
         display: inline-block;
 
-        background-color: var(--background-gray);
-        color: white;
+        cursor: pointer;
+
+        background: var(--background);
+        color: var(--text-color);
 
         border-radius: 15px;
-        border: var(--primary-blue) 2px solid;
+        border: var(--highlight) 2px solid;
 
         min-width: 200px;
         padding: 9px;
@@ -200,6 +239,12 @@
 
             border-width: 3px;
             border-color: var(--secondary-blue);
+        }
+
+        input[type="text"] {
+            background-color: white;
+            border-color: var(--secondary-blue);
+            color: black;
         }
     }
 
