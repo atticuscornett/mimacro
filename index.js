@@ -8,6 +8,9 @@ const parts = require("./parts.json");
 const layouts = require("./layouts.json");
 const supportedVersions = require("./supportedVersions.json");
 const {usb} = require('usb');
+const { readFileSync } = require('fs');
+const vm = require("vm");
+const { join } = require('path');
 
 let mainWindow;
 
@@ -41,6 +44,40 @@ if (!store.has("userMacros")){
     store.set("userMacros", []);
 }
 let userMacros = store.get("userMacros");
+
+const pluginAPI = {
+    require: null,
+    PluginEvents: {
+
+    },
+    PluginUtils: {
+        log: (message) => console.log(message),
+        use: require
+    },
+    setTimeout: setTimeout
+}
+
+function loadPlugin(pluginPath) {
+    try {
+        pluginAPI.require = createRequire(pluginPath);
+        const code = readFileSync(join(pluginPath, 'index.js'), 'utf-8');
+        const context = vm.createContext(pluginAPI);
+        vm.runInContext(code, context);
+    } catch (err) {
+      console.error('Error loading plugin:', err);
+    }
+}
+
+function createRequire(pluginPath) {
+    return (moduleName) => {
+        const modulePath = require.resolve(moduleName, { paths: [pluginPath] });
+        delete require.cache[modulePath]; // Optional: Ensure fresh modules each time
+        return require(modulePath);
+    };
+  }
+  
+
+loadPlugin("C:/Users/attic/OneDrive/Documents/GitHub/tests")
 
 function flashDevice(event, index){
     try{
