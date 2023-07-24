@@ -45,16 +45,42 @@ if (!store.has("userMacros")){
 }
 let userMacros = store.get("userMacros");
 
+let plugins = [];
+
 const pluginAPI = {
     require: null,
     PluginEvents: {
-
     },
     PluginUtils: {
         log: (message) => console.log(message),
+        //TODO - Remove this, could make it possible for plugins to make themselves impossible to disable.
         use: require
     },
-    setTimeout: setTimeout
+    setTimeout: setTimeout,
+    setInterval: setInterval
+}
+
+function getPluginIndexByPackageName(packageName){
+    for (let i = 0; i < plugins.length; i++){
+        if (plugins[i].packageName == packageName){
+            return i;
+        }
+    }
+    return -1;
+}
+
+function getPlugin(package){
+    let index = getPluginIndexByPackageName(package);
+    if (index > -1){
+        return plugins[index];
+    }
+    return null;
+}
+
+function createEvents(pluginName){
+    return {
+        onEnable: (callback) => {getPlugin(pluginName).events.onEnable = callback;}
+    }
 }
 
 function loadPlugin(pluginPath) {
@@ -62,9 +88,26 @@ function loadPlugin(pluginPath) {
         pluginAPI.require = createRequire(pluginPath);
         const code = readFileSync(join(pluginPath, 'index.js'), 'utf-8');
         const context = vm.createContext(pluginAPI);
+        const packageJson = JSON.parse(readFileSync(join(pluginPath, "package.json"), 'utf-8'));
+        let pluginName = packageJson.name;
+        const pluginObj = {
+            packageName: packageJson.name,
+            pluginName: packageJson.displayName,
+            version: packageJson.version,
+            description: packageJson.description,
+            author: packageJson.author,
+            events: {}
+        }
+        plugins.push(pluginObj);
+        pluginAPI.PluginEvents = createEvents(pluginObj.packageName);
+        console.log("Loading plugin: " + pluginName)
         vm.runInContext(code, context);
+        console.log("Plugin loaded.")
+        if (getPlugin(pluginName).events.onEnable){
+            getPlugin(pluginName).events.onEnable();
+        }
     } catch (err) {
-      console.error('Error loading plugin:', err);
+      console.error('Error loading plugin (' + pluginPath + '):', err);
     }
 }
 
