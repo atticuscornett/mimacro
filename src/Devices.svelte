@@ -24,6 +24,11 @@
             viewingDevice = true;
         }
     }
+
+    function renameDevice(){
+        electronAPI.renameDevice(Number(action.split("-")[1]), document.getElementById("deviceName").value);
+        action = "";
+    }
 </script>
 
 <main>
@@ -45,6 +50,11 @@
                 <h2>Device Type: {deviceList[Number(action.split("-")[1])].mimacroType}</h2>
                 <h2>Serial Number: {deviceList[Number(action.split("-")[1])].serialNumber}</h2>
                 <h2>Device Port: {deviceList[Number(action.split("-")[1])].port}</h2>
+            {/if}
+            {#if action.includes("rename")}
+                <h1>Rename "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
+                <input id="deviceName">
+                <button on:click={renameDevice}>Save</button>
             {/if}
         </Popup>
     {/if}

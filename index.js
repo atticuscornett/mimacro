@@ -56,6 +56,7 @@ const pluginAPI = {
         //TODO - Remove this, could make it possible for plugins to make themselves impossible to disable.
         use: require
     },
+    RegisterRunnable: () => console.log("WIP"),
     setTimeout: setTimeout,
     setInterval: setInterval
 }
@@ -277,6 +278,11 @@ function removeDevice(event, deviceIndex){
     catch(e){
         console.log(e);
     }
+    refreshRendererDevices();
+}
+
+function renameDevice(event, deviceIndex, deviceName){
+    devices[deviceIndex].nickname = deviceName;
     refreshRendererDevices();
 }
 
@@ -508,6 +514,7 @@ ipcMain.handle("removeMacro", removeMacro);
 ipcMain.handle("getLayouts", ()=>{return layouts;});
 ipcMain.handle("getParts", ()=>{return parts;});
 ipcMain.handle("removeDevice", removeDevice);
+ipcMain.handle("renameDevice", renameDevice);
 ipcMain.handle("flashDevice", flashDevice);
 ipcMain.handle("writeDevice", writeDevice);
 ipcMain.handle("setDevicePinOut", setDevicePinOut);

@@ -11,6 +11,10 @@
         action = "flash-"+index;
         await electronAPI.flashDevice(index);
     }
+    
+    async function renameDevice(){
+        action = "rename-" + index;
+    }
 
     async function removeDevice(){
         await electronAPI.removeDevice(index);
@@ -41,7 +45,7 @@
                     <path d="M16 12l0 .01"></path>
                 </svg>
                 <div>
-                    <button>Rename</button>
+                    <button on:click={renameDevice}>Rename</button>
                     <br>
                     {#if status != "disconnected"}
                         <button on:click={flashDevice}>{(status == "connected") ? "Reflash":""}{(status == "outdated") ? "Flash Update":""}</button>
