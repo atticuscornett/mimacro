@@ -40,7 +40,7 @@ let userMacros = store.get("userMacros");
 
 let installedPlugins = store.get("installedPlugins");
 refreshInstalledPlugins();
-
+let pluginStorage = store.get("pluginStorage");
 let loadedPlugins = [];
 
 const pluginAPI = {
@@ -51,6 +51,8 @@ const pluginAPI = {
         log: (message) => console.log(message),
         //TODO - Remove this, could make it possible for plugins to make themselves impossible to disable.
         use: require
+    },
+    PluginStorage: {
     },
     RegisterRunnable: () => console.log("WIP"),
     setTimeout: setTimeout,
@@ -69,6 +71,9 @@ function initializeStores(){
     }
     if (!store.has("installedPlugins")){
         store.set("installedPlugins", []);
+    }
+    if (!store.has("pluginStorage")){
+        store.set("pluginStorage", {});
     }
 }
 
@@ -139,7 +144,25 @@ function getPlugin(package){
 
 function createEvents(pluginName){
     return {
-        onEnable: (callback) => {getPlugin(pluginName).events.onEnable = callback;}
+        onEnable: (callback) => {getPlugin(pluginName).events.onEnable = callback;},
+        onDisable: (callback) => {getPlugin(pluginName).events.onDisable = callback;},
+        onRunnable: (callback) => {getPlugin(pluginName).events.onRunnable = callback;},
+        onDeviceMessage: (callback) => {getPlugin(pluginName).events.onDeviceMessage = callback;}
+    }
+}
+
+function createStorage(pluginName){
+    if (!pluginStorage[pluginName]){
+        pluginStorage[pluginName] = {};
+        store.set("pluginStorage", pluginStorage);
+    }
+    return {
+        set: (key, value) => {
+            pluginStorage[pluginName][key] = value;
+            store.set("pluginStorage", pluginStorage);
+            return value;
+        },
+        get: (key) => {return pluginStorage[pluginName][key];}
     }
 }
 
@@ -172,6 +195,7 @@ function loadPlugin(pluginPath) {
         }
         loadedPlugins.push(pluginObj);
         pluginAPI.PluginEvents = createEvents(pluginObj.packageName);
+        pluginAPI.PluginStorage = createStorage(pluginObj.packageName);
         console.log("Loading plugin: " + pluginName)
         vm.runInContext(code, context);
         console.log("Plugin loaded.")
@@ -222,21 +246,6 @@ function flashDevice(event, index){
             
     }
 }
-// var avrgirl = new Avrgirl(
-//     {
-//         board: "uno",
-//         port: "COM5"
-//     }
-// );
-
-// avrgirl.flash("./arduino/test/build/arduino.avr.uno/test.ino.hex", function(e){
-//     if (e){
-//         console.log(e);
-//     }
-//     else{
-//         console.log("Flash complete.");
-//     }
-// });
 
 // Detect mimacro and Arduino devices.
 function autoDetectPorts(callback, timeout){
