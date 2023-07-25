@@ -26,49 +26,20 @@ else{
     });
 }
 
-if (!store.has("devices")){
-    store.set("devices", []);
-}
+initializeStores();
 let devices = store.get("devices");
 let serialPorts = {};
 for (let i = 0; i < devices.length; i++){
     devices[i].status = "disconnected";
 }
 
-if (!store.has("colorTheme")){
-    store.set("colorTheme", "system")
-}
 let colorTheme = store.get("colorTheme");
 nativeTheme.themeSource = colorTheme;
 
-if (!store.has("userMacros")){
-    store.set("userMacros", []);
-}
 let userMacros = store.get("userMacros");
 
-if (!store.has("installedPlugins")){
-    store.set("installedPlugins", []);
-}
 let installedPlugins = store.get("installedPlugins");
-if (!fs.existsSync("./plugins")){
-    fs.mkdirSync("./plugins");
-}
-let pluginFolderList = getFoldersInDirectory("./plugins");
-let tempInstalledPlugins = [];
-for (folder in pluginFolderList){
-    let folderPath = join("./plugins", pluginFolderList[folder]);
-    let package = pluginPackageJSON(folderPath);
-    if (getInstalledPluginIndexByPackageName(package.name) > -1){
-        package.enabled = installedPlugins[getInstalledPluginIndexByPackageName(package.name)];
-    }
-    else {
-        package.enabled = false;
-    }
-    tempInstalledPlugins.push(package);
-}
-installedPlugins = tempInstalledPlugins;
-console.log(installedPlugins)
-store.set("installedPlugins", installedPlugins);
+refreshInstalledPlugins();
 
 let loadedPlugins = [];
 
@@ -84,6 +55,43 @@ const pluginAPI = {
     RegisterRunnable: () => console.log("WIP"),
     setTimeout: setTimeout,
     setInterval: setInterval
+}
+
+function initializeStores(){
+    if (!store.has("devices")){
+        store.set("devices", []);
+    }
+    if (!store.has("colorTheme")){
+        store.set("colorTheme", "system")
+    }
+    if (!store.has("userMacros")){
+        store.set("userMacros", []);
+    }
+    if (!store.has("installedPlugins")){
+        store.set("installedPlugins", []);
+    }
+}
+
+function refreshInstalledPlugins(){
+    if (!fs.existsSync("./plugins")){
+        fs.mkdirSync("./plugins");
+    }
+    let pluginFolderList = getFoldersInDirectory("./plugins");
+    let tempInstalledPlugins = [];
+    for (folder in pluginFolderList){
+        let folderPath = join("./plugins", pluginFolderList[folder]);
+        let package = pluginPackageJSON(folderPath);
+        if (getInstalledPluginIndexByPackageName(package.name) > -1){
+            package.enabled = installedPlugins[getInstalledPluginIndexByPackageName(package.name)];
+        }
+        else {
+            package.enabled = false;
+        }
+        tempInstalledPlugins.push(package);
+    }
+    installedPlugins = tempInstalledPlugins;
+    console.log(installedPlugins)
+    store.set("installedPlugins", installedPlugins);
 }
 
 function getFoldersInDirectory(directoryPath) {
