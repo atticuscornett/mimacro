@@ -127,5 +127,6 @@ dist
 .pnp.*
 
 /public/build/
+/plugins
 
 .DS_Store

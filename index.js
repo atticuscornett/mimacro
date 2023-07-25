@@ -11,6 +11,7 @@ const {usb} = require('usb');
 const { readFileSync } = require('fs');
 const vm = require("vm");
 const { join } = require('path');
+const fs = require("fs");
 
 let mainWindow;
 
@@ -45,7 +46,31 @@ if (!store.has("userMacros")){
 }
 let userMacros = store.get("userMacros");
 
-let plugins = [];
+if (!store.has("installedPlugins")){
+    store.set("installedPlugins", []);
+}
+let installedPlugins = store.get("installedPlugins");
+if (!fs.existsSync("./plugins")){
+    fs.mkdirSync("./plugins");
+}
+let pluginFolderList = getFoldersInDirectory("./plugins");
+let tempInstalledPlugins = [];
+for (folder in pluginFolderList){
+    let folderPath = join("./plugins", pluginFolderList[folder]);
+    let package = pluginPackageJSON(folderPath);
+    if (getInstalledPluginIndexByPackageName(package.name) > -1){
+        package.enabled = installedPlugins[getInstalledPluginIndexByPackageName(package.name)];
+    }
+    else {
+        package.enabled = false;
+    }
+    tempInstalledPlugins.push(package);
+}
+installedPlugins = tempInstalledPlugins;
+console.log(installedPlugins)
+store.set("installedPlugins", installedPlugins);
+
+let loadedPlugins = [];
 
 const pluginAPI = {
     require: null,
@@ -61,9 +86,35 @@ const pluginAPI = {
     setInterval: setInterval
 }
 
+function getFoldersInDirectory(directoryPath) {
+    try {
+      const items = fs.readdirSync(directoryPath);
+  
+      // Filter out only the folders from the items
+      const folders = items.filter((item) => {
+        const itemPath = path.join(directoryPath, item);
+        return fs.statSync(itemPath).isDirectory();
+      });
+  
+      return folders;
+    } catch (err) {
+      console.error('Error reading directory:', err);
+      return [];
+    }
+}
+
 function getPluginIndexByPackageName(packageName){
-    for (let i = 0; i < plugins.length; i++){
-        if (plugins[i].packageName == packageName){
+    for (let i = 0; i < loadedPlugins.length; i++){
+        if (loadedPlugins[i].packageName == packageName){
+            return i;
+        }
+    }
+    return -1;
+}
+
+function getInstalledPluginIndexByPackageName(packageName){
+    for (let i = 0; i < installedPlugins.length; i++){
+        if (installedPlugins[i].packageName == packageName){
             return i;
         }
     }
@@ -73,7 +124,7 @@ function getPluginIndexByPackageName(packageName){
 function getPlugin(package){
     let index = getPluginIndexByPackageName(package);
     if (index > -1){
-        return plugins[index];
+        return loadedPlugins[index];
     }
     return null;
 }
@@ -82,6 +133,18 @@ function createEvents(pluginName){
     return {
         onEnable: (callback) => {getPlugin(pluginName).events.onEnable = callback;}
     }
+}
+
+function pluginPackageJSON(pluginPath){
+    const packageJson = JSON.parse(readFileSync(join(pluginPath, "package.json"), 'utf-8'));
+    const pluginObj = {
+        packageName: packageJson.name,
+        pluginName: packageJson.displayName,
+        version: packageJson.version,
+        description: packageJson.description,
+        author: packageJson.author
+    }
+    return pluginObj;
 }
 
 function loadPlugin(pluginPath) {
@@ -99,7 +162,7 @@ function loadPlugin(pluginPath) {
             author: packageJson.author,
             events: {}
         }
-        plugins.push(pluginObj);
+        loadedPlugins.push(pluginObj);
         pluginAPI.PluginEvents = createEvents(pluginObj.packageName);
         console.log("Loading plugin: " + pluginName)
         vm.runInContext(code, context);
