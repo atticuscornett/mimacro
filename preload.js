@@ -21,5 +21,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onFlashResult: (callback) => {ipcRenderer.on("flashResult", callback)},
   writeDevice: (device, message) => ipcRenderer.invoke("writeDevice", device, message),
   setDevicePinOut: (device, config) => ipcRenderer.invoke("setDevicePinOut", device, config),
-  setDevicePinProperties: (device, config) => ipcRenderer.invoke("setDevicePinProperties", device, config)
+  setDevicePinProperties: (device, config) => ipcRenderer.invoke("setDevicePinProperties", device, config),
+  getInstalledPlugins: () => ipcRenderer.invoke("getInstalledPlugins"),
+  enablePlugin: (packageName) => ipcRenderer.invoke("enablePlugin", packageName),
+  disablePlugin: (packageName) => ipcRenderer.invoke("disablePlugin", packageName)
 });

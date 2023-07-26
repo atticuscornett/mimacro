@@ -580,6 +580,20 @@ function getMacros(){
     return userMacros;
 }
 
+function getInstalledPlugins(){
+    return installedPlugins;
+}
+
+function enablePlugin(event, packageName){
+    installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = true;
+    store.set("installedPlugins", installedPlugins);
+}
+
+function disablePlugin(event, packageName){
+    installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = false;
+    store.set("installedPlugins", installedPlugins);
+}
+
 connectToDevices();
 
 ipcMain.on("autoDetectDevices", (event) => autoDetectPorts(sendAutoPorts, 5000))
@@ -599,6 +613,9 @@ ipcMain.handle("flashDevice", flashDevice);
 ipcMain.handle("writeDevice", writeDevice);
 ipcMain.handle("setDevicePinOut", setDevicePinOut);
 ipcMain.handle("setDevicePinProperties", setDevicePinProperties);
+ipcMain.handle("getInstalledPlugins", getInstalledPlugins);
+ipcMain.handle("enablePlugin", enablePlugin);
+ipcMain.handle("disablePlugin", disablePlugin);
 
 
 app.on("ready", () => {
