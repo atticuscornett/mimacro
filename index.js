@@ -38,11 +38,6 @@ nativeTheme.themeSource = colorTheme;
 
 let userMacros = store.get("userMacros");
 
-let installedPlugins = store.get("installedPlugins");
-refreshInstalledPlugins();
-let pluginStorage = store.get("pluginStorage");
-let loadedPlugins = [];
-
 const pluginAPI = {
     require: null,
     PluginEvents: {
@@ -58,6 +53,12 @@ const pluginAPI = {
     setTimeout: setTimeout,
     setInterval: setInterval
 }
+
+let installedPlugins = store.get("installedPlugins");
+refreshInstalledPlugins();
+let pluginStorage = store.get("pluginStorage");
+let loadedPlugins = [];
+loadEnabledPlugins();
 
 function initializeStores(){
     if (!store.has("devices")){
@@ -78,25 +79,44 @@ function initializeStores(){
 }
 
 function refreshInstalledPlugins(){
+    console.log(installedPlugins);
     if (!fs.existsSync("./plugins")){
         fs.mkdirSync("./plugins");
     }
     let pluginFolderList = getFoldersInDirectory("./plugins");
     let tempInstalledPlugins = [];
     for (folder in pluginFolderList){
-        let folderPath = join("./plugins", pluginFolderList[folder]);
-        let package = pluginPackageJSON(folderPath);
-        if (getInstalledPluginIndexByPackageName(package.name) > -1){
-            package.enabled = installedPlugins[getInstalledPluginIndexByPackageName(package.name)];
+        try{
+            let folderPath = join("./plugins", pluginFolderList[folder]);
+            let package = pluginPackageJSON(folderPath);
+            package.path = folderPath;
+            if (getInstalledPluginIndexByPackageName(package.packageName) > -1){
+                try{
+                    package.enabled = installedPlugins[getInstalledPluginIndexByPackageName(package.packageName)].enabled;
+                }
+                catch(e){
+                    package.enabled = false;
+                }
+            }
+            else {
+                package.enabled = false;
+            }
+            tempInstalledPlugins.push(package);
         }
-        else {
-            package.enabled = false;
+        catch(e){  
         }
-        tempInstalledPlugins.push(package);
     }
     installedPlugins = tempInstalledPlugins;
     console.log(installedPlugins)
     store.set("installedPlugins", installedPlugins);
+}
+
+function loadEnabledPlugins(){
+    for (plugin in installedPlugins){
+        if (installedPlugins[plugin].enabled){
+            loadPlugin(installedPlugins[plugin].path);
+        }
+    }
 }
 
 function getFoldersInDirectory(directoryPath) {
@@ -216,7 +236,6 @@ function createRequire(pluginPath) {
   }
   
 
-loadPlugin("C:/Users/attic/OneDrive/Documents/GitHub/tests")
 
 function flashDevice(event, index){
     try{
