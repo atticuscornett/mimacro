@@ -5,11 +5,12 @@
     import Settings from "./Settings.svelte";
 	import Background from "./Components/Background.svelte";
 	import MacroPage from "./MacroPage.svelte";
+	import Plugins from "./Plugins.svelte";
 	let page = "Devices";
 
 	window.setPage = (pageName) => {page = pageName};
 
-	const components = {Devices, DeviceSetup, Settings, MacroPage}
+	const components = {Devices, DeviceSetup, Settings, MacroPage, Plugins}
 </script>
 
 <main>
