@@ -129,4 +129,6 @@ dist
 /public/build/
 /plugins
 
+/.idea
+
 .DS_Store

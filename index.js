@@ -85,23 +85,23 @@ function refreshInstalledPlugins(){
     }
     let pluginFolderList = getFoldersInDirectory("./plugins");
     let tempInstalledPlugins = [];
-    for (folder in pluginFolderList){
+    for (let folder in pluginFolderList){
         try{
             let folderPath = join("./plugins", pluginFolderList[folder]);
-            let package = pluginPackageJSON(folderPath);
-            package.path = folderPath;
-            if (getInstalledPluginIndexByPackageName(package.packageName) > -1){
+            let packageObj = pluginPackageJSON(folderPath);
+            packageObj.path = folderPath;
+            if (getInstalledPluginIndexByPackageName(packageObj.packageName) > -1){
                 try{
-                    package.enabled = installedPlugins[getInstalledPluginIndexByPackageName(package.packageName)].enabled;
+                    packageObj.enabled = installedPlugins[getInstalledPluginIndexByPackageName(packageObj.packageName)].enabled;
                 }
                 catch(e){
-                    package.enabled = false;
+                    packageObj.enabled = false;
                 }
             }
             else {
-                package.enabled = false;
+                packageObj.enabled = false;
             }
-            tempInstalledPlugins.push(package);
+            tempInstalledPlugins.push(packageObj);
         }
         catch(e){  
         }
@@ -112,7 +112,7 @@ function refreshInstalledPlugins(){
 }
 
 function loadEnabledPlugins(){
-    for (plugin in installedPlugins){
+    for (let plugin in installedPlugins){
         if (installedPlugins[plugin].enabled){
             loadPlugin(installedPlugins[plugin].path);
         }
@@ -124,12 +124,10 @@ function getFoldersInDirectory(directoryPath) {
       const items = fs.readdirSync(directoryPath);
   
       // Filter out only the folders from the items
-      const folders = items.filter((item) => {
-        const itemPath = path.join(directoryPath, item);
-        return fs.statSync(itemPath).isDirectory();
+      return items.filter((item) => {
+          const itemPath = path.join(directoryPath, item);
+          return fs.statSync(itemPath).isDirectory();
       });
-  
-      return folders;
     } catch (err) {
       console.error('Error reading directory:', err);
       return [];
@@ -154,8 +152,8 @@ function getInstalledPluginIndexByPackageName(packageName){
     return -1;
 }
 
-function getPlugin(package){
-    let index = getPluginIndexByPackageName(package);
+function getPlugin(packageName){
+    let index = getPluginIndexByPackageName(packageName);
     if (index > -1){
         return loadedPlugins[index];
     }
@@ -188,14 +186,13 @@ function createStorage(pluginName){
 
 function pluginPackageJSON(pluginPath){
     const packageJson = JSON.parse(readFileSync(join(pluginPath, "package.json"), 'utf-8'));
-    const pluginObj = {
+    return {
         packageName: packageJson.name,
         pluginName: packageJson.displayName,
         version: packageJson.version,
         description: packageJson.description,
         author: packageJson.author
-    }
-    return pluginObj;
+    };
 }
 
 function loadPlugin(pluginPath) {
@@ -245,7 +242,7 @@ function flashDevice(event, index){
     devices[index].status = "disconnected";
     refreshRendererDevices()
     if (devices[index].mimacroType == "Arduino Uno"){
-        var avrgirl = new Avrgirl(
+        let avrgirl = new Avrgirl(
             {
                 board: "uno",
                 port: devices[index].port
@@ -352,7 +349,7 @@ function autoDetectListener(port, detectedPorts, closePorts, deviceType){
         closePorts.push(sp);
     }
     catch(e){
-        return;
+
     }
 }
 
@@ -396,7 +393,7 @@ function setColorTheme(event, mode){
 }
 
 function connectToDevices(){
-    serialNumbers = [];
+    let serialNumbers = [];
     for (let i = 0; i < devices.length; i++){
         serialNumbers.push(devices[i].serialNumber);
     }
@@ -493,16 +490,14 @@ function deviceOpen(device){
 
 function refreshDevices(){
     SerialPort.list().then((ports) => {
-        serialNumbers = [];
+        let serialNumbers = [];
         for (let i = 0; i < devices.length; i++){
             serialNumbers.push(devices[i].serialNumber);
         }
         for (let i = 0; i < ports.length; i++){
-            if (true){
-                if (serialNumbers.includes(ports[i].serialNumber)){
-                    if (!deviceOpen(serialNumbers.indexOf(ports[i].serialNumber))){
-                        listenToDevice(serialNumbers.indexOf(ports[i].serialNumber), ports[i].path);
-                    }
+            if (serialNumbers.includes(ports[i].serialNumber)) {
+                if (!deviceOpen(serialNumbers.indexOf(ports[i].serialNumber))) {
+                    listenToDevice(serialNumbers.indexOf(ports[i].serialNumber), ports[i].path);
                 }
             }
         }
@@ -575,7 +570,7 @@ function setDevicePinProperties(event, device, config){
     devices[device].pinProperties = config;
 }
 
-usb.on('attach', (device) => {
+usb.on('attach', () => {
     refreshDevices();
 });
 
@@ -615,7 +610,7 @@ function disablePlugin(event, packageName){
 
 connectToDevices();
 
-ipcMain.on("autoDetectDevices", (event) => autoDetectPorts(sendAutoPorts, 5000))
+ipcMain.on("autoDetectDevices", () => autoDetectPorts(sendAutoPorts, 5000))
 ipcMain.on("addDevice", (event, device) => addDevice(device));
 ipcMain.handle("getDevices", getDevices);
 ipcMain.handle("setColorTheme", setColorTheme);
@@ -658,7 +653,7 @@ app.on("ready", () => {
     ];
     let trayMenu = Menu.buildFromTemplate(trayMenuTemplate)
 	tray.setContextMenu(trayMenu);
-    tray.on('click', function(e){
+    tray.on('click', function(){
             mainWindow.show()
         }
     );
