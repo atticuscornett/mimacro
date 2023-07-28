@@ -379,6 +379,7 @@ function removeDevice(event, deviceIndex){
 
 function renameDevice(event, deviceIndex, deviceName){
     devices[deviceIndex].nickname = deviceName;
+    store.set("devices", devices);
     refreshRendererDevices();
 }
 
