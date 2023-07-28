@@ -136,7 +136,7 @@ function getFoldersInDirectory(directoryPath) {
 
 function getPluginIndexByPackageName(packageName){
     for (let i = 0; i < loadedPlugins.length; i++){
-        if (loadedPlugins[i].packageName == packageName){
+        if (loadedPlugins[i].packageName === packageName){
             return i;
         }
     }
@@ -145,7 +145,7 @@ function getPluginIndexByPackageName(packageName){
 
 function getInstalledPluginIndexByPackageName(packageName){
     for (let i = 0; i < installedPlugins.length; i++){
-        if (installedPlugins[i].packageName == packageName){
+        if (installedPlugins[i].packageName === packageName){
             return i;
         }
     }
@@ -241,7 +241,7 @@ function flashDevice(event, index){
     catch(e){}
     devices[index].status = "disconnected";
     refreshRendererDevices()
-    if (devices[index].mimacroType == "Arduino Uno"){
+    if (devices[index].mimacroType === "Arduino Uno"){
         let avrgirl = new Avrgirl(
             {
                 board: "uno",
@@ -312,7 +312,7 @@ function autoDetectPorts(callback, timeout){
 
 function deviceExists(serial){
     for (let i = 0; i < devices.length; i++){
-        if (devices[i].serialNumber == serial){
+        if (devices[i].serialNumber === serial){
             return true;
         }
     }
@@ -333,14 +333,14 @@ function autoDetectListener(port, detectedPorts, closePorts, deviceType){
             if (data.toString().includes("\n")){
                 line++;
                 temp = temp.split("\n")[0].replace("\r", "");
-                if (temp == "mimacro" && line == 1){
+                if (temp === "mimacro" && line === 1){
                     port.flashed = true;
                     isMimacro = true;
                     detectedPorts[deviceType].splice(detectedPorts[deviceType].indexOf(port), 1);
                     detectedPorts["mimacro"].push(port);
                     index = detectedPorts["mimacro"].indexOf(port);
                 }
-                if (isMimacro && line == 2){
+                if (isMimacro && line === 2){
                     detectedPorts["mimacro"][index].mimacroVersion = temp;
                 }
                 temp = data.toString().split("\n")[1];
@@ -429,7 +429,7 @@ function listenToDevice(index, devicePath){
         temp += data.toString();
         // Runs when data is done being received
         if (data.toString().includes("\n")){
-            if (temp == "MEMRESET"){
+            if (temp === "MEMRESET"){
                 return;
             }
             if (line < 8){
@@ -437,26 +437,26 @@ function listenToDevice(index, devicePath){
             }
             temp = temp.split("\n")[0].replace("\r", "");
             console.log(temp);
-            if (line == 2){
+            if (line === 2){
                 devices[index].mimacroVersion = temp;
                 if (!supportedVersions.includes(devices[index].mimacroVersion)){
                     outdated = true;
                     sp.close()
                 }
             }
-            if (line == 3){
+            if (line === 3){
                 devices[index].pinOut.digital = temp.split(", ").map(Number);
             }
-            if (line == 4){
+            if (line === 4){
                 devices[index].pinOut.analog = temp.split(", ").map(Number);
             }
-            if (line == 5){
+            if (line === 5){
                 devices[index].pinProperties.digital.timeout = temp.split(", ").map(Number);
             }
-            if (line == 6){
+            if (line === 6){
                 devices[index].pinProperties.analog.timeout = temp.split(", ").map(Number);
             }
-            if (line == 7){
+            if (line === 7){
                 devices[index].pinProperties.analog.minChange = temp.split(", ").map(Number);
                 devices[index].status = "connected";
                 store.set("devices", devices);
@@ -478,9 +478,9 @@ function listenToDevice(index, devicePath){
 
 function deviceOpen(device){
     for (let j = 0; j < devices.length; j++){
-        if (device.serialNumber == devices[j].serialNumber){
+        if (device.serialNumber === devices[j].serialNumber){
             console.log(devices[j].status)
-            if (devices[j].status == "connected"){
+            if (devices[j].status === "connected"){
                 console.log("yes yes")
                 return true;
             }
@@ -512,7 +512,7 @@ function writeDevice(event, device, message){
 function setDevicePinOut(event, device, config){
     let pinMod = 0;
     for (let i = 0; i < config.digital.length; i++){
-        if (config.digital[i] != devices[device].pinOut.digital[i]){
+        if (config.digital[i] !== devices[device].pinOut.digital[i]){
             console.log("DPIN S " + String(layouts[devices[device].mimacroType]["digital"][i]+pinMod).padStart(2, "0") + " " + String(config.digital[i]).padStart(2, "0"))
             writeDevice(null, device, "DPIN S " + String(layouts[devices[device].mimacroType]["digital"][i]+pinMod).padStart(2, "0") + " " + String(config.digital[i]).padStart(2, "0"))
         }
@@ -520,11 +520,11 @@ function setDevicePinOut(event, device, config){
     // TODO
     // Modify pin code for Arduino software (temp solution)
     pinMod = 0;
-    if (devices[device].mimacroType == "Arduino Uno"){
+    if (devices[device].mimacroType === "Arduino Uno"){
         pinMod = -14;
     }
     for (let i = 0; i < config.analog.length; i++){
-        if (config.analog[i] != devices[device].pinOut.analog[i]){
+        if (config.analog[i] !== devices[device].pinOut.analog[i]){
             console.log("APIN S " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog[i]).padStart(2, "0"))
             writeDevice(null, device, "APIN S " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog[i]).padStart(2, "0"))
         }
@@ -536,7 +536,7 @@ function setDevicePinOut(event, device, config){
 function setDevicePinProperties(event, device, config){
     for (let i = 0; i < config.digital.timeout.length; i++){
         let newConf = config.digital.timeout[i];
-        if (newConf != devices[device].pinProperties.digital.timeout[i]){
+        if (newConf !== devices[device].pinProperties.digital.timeout[i]){
             console.log("DPIN T " + String(layouts[devices[device].mimacroType]["digital"][i]).padStart(2, "0") + " " + String(config.digital.timeout[i]).padStart(3, "0"))
             writeDevice(null, device, "DPIN T " + String(layouts[devices[device].mimacroType]["digital"][i]).padStart(2, "0") + " " + String(config.digital.timeout[i]).padStart(3, "0"))
         }
@@ -544,26 +544,26 @@ function setDevicePinProperties(event, device, config){
     // TODO
     // Modify pin code for Arduino software (temp solution)
     let pinMod = 0;
-    if (devices[device].mimacroType == "Arduino Uno"){
+    if (devices[device].mimacroType === "Arduino Uno"){
         pinMod = -14;
     }
     for (let i = 0; i < config.analog.timeout.length; i++){
         let newConf = config.analog.timeout[i];
-        if (newConf != devices[device].pinProperties.analog.timeout[i]){
+        if (newConf !== devices[device].pinProperties.analog.timeout[i]){
             console.log("APIN T " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
             writeDevice(null, device, "APIN T " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
         }
     }
     for (let i = 0; i < config.analog.timeout.length; i++){
         let newConf = config.analog.timeout[i];
-        if (newConf != devices[device].pinProperties.analog.timeout[i]){
+        if (newConf !== devices[device].pinProperties.analog.timeout[i]){
             console.log("APIN V " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
             writeDevice(null, device, "APIN V " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
         }
     }
     for (let i = 0; i < config.analog.minChange.length; i++){
         let newConf = config.analog.minChange[i];
-        if (newConf != devices[device].pinProperties.analog.minChange[i]){
+        if (newConf !== devices[device].pinProperties.analog.minChange[i]){
             console.log("APIN V " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.minChange[i]).padStart(3, "0"))
             writeDevice(null, device, "APIN V " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.minChange[i]).padStart(3, "0"))
         }
