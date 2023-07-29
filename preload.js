@@ -25,5 +25,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getInstalledPlugins: () => ipcRenderer.invoke("getInstalledPlugins"),
   enablePlugin: (packageName) => ipcRenderer.invoke("enablePlugin", packageName),
   disablePlugin: (packageName) => ipcRenderer.invoke("disablePlugin", packageName),
-  addPluginDialog: () => ipcRenderer.invoke("addPluginDialog")
+  addPluginDialog: () => ipcRenderer.invoke("addPluginDialog"),
+  addPluginFromFile: (pluginPath) => ipcRenderer.invoke("addPluginFromFile", pluginPath)
 });

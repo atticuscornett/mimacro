@@ -259,10 +259,29 @@ function addPluginDialog(){
     try{
         let pluginZip = new AdmZip(selected[0]);
         let packageJson = JSON.parse(pluginZip.readAsText("package.json"));
+        packageJson.path = selected[0];
         pluginZip.extractEntryTo(packageJson.icon, "temp", true, true);
         return packageJson;
     }
     catch (e){
+        return false;
+    }
+}
+
+function addPluginFromFile(event, filePath){
+    try{
+        let pluginZip = new AdmZip(filePath);
+        let packageJson = JSON.parse(pluginZip.readAsText("package.json"));
+        let pluginFolder = join("./plugins/", packageJson.name);
+        if (!fs.existsSync(pluginFolder)){
+            fs.mkdirSync(pluginFolder);
+        }
+        pluginZip.extractAllTo(pluginFolder, true);
+        refreshInstalledPlugins();
+        enablePlugin(null, packageJson.name);
+        return true;
+    }
+    catch(e){
         return false;
     }
 }
@@ -655,6 +674,7 @@ ipcMain.handle("getInstalledPlugins", getInstalledPlugins);
 ipcMain.handle("enablePlugin", enablePlugin);
 ipcMain.handle("disablePlugin", disablePlugin);
 ipcMain.handle("addPluginDialog", addPluginDialog);
+ipcMain.handle("addPluginFromFile", addPluginFromFile);
 
 
 app.on("ready", () => {
