@@ -602,10 +602,14 @@ function getInstalledPlugins(){
 
 function enablePlugin(event, packageName){
     installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = true;
+    loadPlugin(installedPlugins[getInstalledPluginIndexByPackageName(packageName)].path);
     store.set("installedPlugins", installedPlugins);
 }
 
 function disablePlugin(event, packageName){
+    if (getPlugin(packageName).events.onDisable){
+        getPlugin(packageName).events.onDisable();
+    }
     installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = false;
     store.set("installedPlugins", installedPlugins);
 }
@@ -648,6 +652,11 @@ app.on("ready", () => {
             label: 'Quit',
             enabled: true,
             click: () => {
+                for (let i = 0; i < loadedPlugins.length; i++){
+                    if (loadedPlugins[i].events.onDisable){
+                        loadedPlugins[i].events.onDisable();
+                    }
+                }
                 app.quit()
                 process.exit(0);
             }
