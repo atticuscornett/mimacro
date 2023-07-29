@@ -1,5 +1,16 @@
 <script>
     export let plugin;
+
+    function togglePlugin(){
+        if (plugin.enabled){
+            plugin.enabled = false;
+            electronAPI.disablePlugin(plugin.packageName);
+        }
+        else{
+            plugin.enabled = true;
+            electronAPI.enablePlugin(plugin.packageName);
+        }
+    }
 </script>
 <div class="PluginTile">
     <img class="iconImage" src={"../" + plugin.icon} alt={plugin.pluginName}>
@@ -8,7 +19,7 @@
         <h4>{plugin.version}</h4>
         <h4>{plugin.author}</h4>
         <button>More Details</button>
-        <button class={plugin.enabled ? "enabled" : "disabled"}>{plugin.enabled ? "Disable" : "Enable"}</button>
+        <button on:click={togglePlugin} class={plugin.enabled ? "enabled" : "disabled"}>{plugin.enabled ? "Disable" : "Enable"}</button>
     </div>
 </div>
 <style>
