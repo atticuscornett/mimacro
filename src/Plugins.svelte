@@ -1,5 +1,6 @@
 <script>
     import { onMount } from "svelte";
+    import PluginTile from "./Components/PluginTile.svelte";
 
     let plugins = [];
     
@@ -10,8 +11,8 @@
 
 <h1>Plugins</h1>
 {#each plugins as plugin}
-    <h2>{plugin.pluginName}</h2>
+    <PluginTile plugin={plugin}></PluginTile>
 {/each}
-{#if plugins.length == 0}
+{#if plugins.length === 0}
     <h2>You have no plugins installed.</h2>
 {/if}

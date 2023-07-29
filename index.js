@@ -191,7 +191,8 @@ function pluginPackageJSON(pluginPath){
         pluginName: packageJson.displayName,
         version: packageJson.version,
         description: packageJson.description,
-        author: packageJson.author
+        author: packageJson.author,
+        icon: join(pluginPath, packageJson.icon)
     };
 }
 
