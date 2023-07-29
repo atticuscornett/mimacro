@@ -1,6 +1,6 @@
 const { SerialPort } = require('serialport')
 const Avrgirl = require("@sienci/avrgirl-arduino");
-const { app, BrowserWindow, ipcMain, nativeTheme, Tray, Menu } = require("electron");
+const { app, BrowserWindow, ipcMain, nativeTheme, Tray, Menu, dialog } = require("electron");
 const Store = require('electron-store');
 const store = new Store();
 const path = require("path");
@@ -12,6 +12,7 @@ const { readFileSync } = require('fs');
 const vm = require("vm");
 const { join } = require('path');
 const fs = require("fs");
+const AdmZip = require("adm-zip");
 
 let mainWindow;
 
@@ -228,12 +229,43 @@ function loadPlugin(pluginPath) {
 function createRequire(pluginPath) {
     return (moduleName) => {
         const modulePath = require.resolve(moduleName, { paths: [pluginPath] });
-        delete require.cache[modulePath]; // Optional: Ensure fresh modules each time
+        delete require.cache[modulePath];
         return require(modulePath);
     };
   }
-  
 
+function enablePlugin(event, packageName){
+    installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = true;
+    loadPlugin(installedPlugins[getInstalledPluginIndexByPackageName(packageName)].path);
+    store.set("installedPlugins", installedPlugins);
+}
+
+function disablePlugin(event, packageName){
+    if (getPlugin(packageName).events.onDisable){
+        getPlugin(packageName).events.onDisable();
+    }
+    installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = false;
+    store.set("installedPlugins", installedPlugins);
+}
+
+function addPluginDialog(){
+    let selected = dialog.showOpenDialogSync(mainWindow, {
+        properties: ['openFile'],
+        filters: [{name: "Mimacro Extensions", extensions:["zip"]}]
+    });
+    if (!selected){
+        return null;
+    }
+    try{
+        let pluginZip = new AdmZip(selected[0]);
+        let packageJson = JSON.parse(pluginZip.readAsText("package.json"));
+        pluginZip.extractEntryTo(packageJson.icon, "temp", true, true);
+        return packageJson;
+    }
+    catch (e){
+        return false;
+    }
+}
 
 function flashDevice(event, index){
     try{
@@ -600,20 +632,6 @@ function getInstalledPlugins(){
     return installedPlugins;
 }
 
-function enablePlugin(event, packageName){
-    installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = true;
-    loadPlugin(installedPlugins[getInstalledPluginIndexByPackageName(packageName)].path);
-    store.set("installedPlugins", installedPlugins);
-}
-
-function disablePlugin(event, packageName){
-    if (getPlugin(packageName).events.onDisable){
-        getPlugin(packageName).events.onDisable();
-    }
-    installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = false;
-    store.set("installedPlugins", installedPlugins);
-}
-
 connectToDevices();
 
 ipcMain.on("autoDetectDevices", () => autoDetectPorts(sendAutoPorts, 5000))
@@ -636,6 +654,7 @@ ipcMain.handle("setDevicePinProperties", setDevicePinProperties);
 ipcMain.handle("getInstalledPlugins", getInstalledPlugins);
 ipcMain.handle("enablePlugin", enablePlugin);
 ipcMain.handle("disablePlugin", disablePlugin);
+ipcMain.handle("addPluginDialog", addPluginDialog);
 
 
 app.on("ready", () => {

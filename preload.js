@@ -24,5 +24,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setDevicePinProperties: (device, config) => ipcRenderer.invoke("setDevicePinProperties", device, config),
   getInstalledPlugins: () => ipcRenderer.invoke("getInstalledPlugins"),
   enablePlugin: (packageName) => ipcRenderer.invoke("enablePlugin", packageName),
-  disablePlugin: (packageName) => ipcRenderer.invoke("disablePlugin", packageName)
+  disablePlugin: (packageName) => ipcRenderer.invoke("disablePlugin", packageName),
+  addPluginDialog: () => ipcRenderer.invoke("addPluginDialog")
 });
