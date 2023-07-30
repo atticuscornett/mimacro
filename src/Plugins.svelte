@@ -87,6 +87,12 @@
         display: inline;
         float: right;
         margin-left: 10px;
+        border-radius: 15px;
+        font-weight: bold;
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+        user-select: none;
     }
 
     .inline {
