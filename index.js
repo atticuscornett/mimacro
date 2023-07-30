@@ -45,6 +45,9 @@ const pluginAPI = {
     },
     PluginUtils: {
         log: (message) => console.log(message),
+        getDevices: () => devices,
+        getDeviceLayouts: () => layouts,
+        getMacros: () => userMacros,
         //TODO - Remove this, could make it possible for plugins to make themselves impossible to disable.
         use: require
     },
@@ -216,7 +219,7 @@ function loadPlugin(pluginPath) {
         pluginAPI.PluginEvents = createEvents(pluginObj.packageName);
         pluginAPI.PluginStorage = createStorage(pluginObj.packageName);
         console.log("Loading plugin: " + pluginName)
-        vm.runInContext(code, context);
+        vm.runInContext(code, context, { timeout: 5000 });
         console.log("Plugin loaded.")
         if (getPlugin(pluginName).events.onEnable){
             getPlugin(pluginName).events.onEnable();
