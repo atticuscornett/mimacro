@@ -1,3 +1,10 @@
+<script>
+    import {onDestroy, onMount} from "svelte";
+
+    onMount(() => {document.body.style.overflowY = "hidden";});
+    onDestroy(() => {document.body.style.overflowY = "auto";});
+</script>
+
 <div class="container">
     <div class="popup">
         <slot></slot>

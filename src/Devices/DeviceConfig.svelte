@@ -103,7 +103,7 @@
                         <label for={"digital-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["digital"][i]}</label>
                         <select value={String(d)} id={"digital-" + i}>
                             {#each partsList as part}
-                                {#if part.type != "analog"}
+                                {#if part.type !== "analog"}
                                     <option value={String(part.id)}>{part.name}</option>
                                 {/if}
                             {/each}

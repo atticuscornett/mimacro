@@ -19,7 +19,7 @@
     });
 
     function viewDevice(index){
-        if (deviceList[index.i].status == "connected"){
+        if (deviceList[index.i].status === "connected"){
             currentDevice = index.i;
             viewingDevice = true;
         }
@@ -43,7 +43,7 @@
         {/each}
     </div>
 
-    {#if action != ""}
+    {#if action !== ""}
         <Popup>
             {#if action.includes("flash")}
                 <h1>Flashing "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
