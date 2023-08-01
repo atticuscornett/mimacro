@@ -55,12 +55,14 @@ const pluginAPI = {
     },
     RegisterRunnable: () => console.log("WIP"),
     setTimeout: setTimeout,
-    setInterval: setInterval
+    setInterval: setInterval,
+    Forever: null
 }
 
 let installedPlugins = store.get("installedPlugins");
 refreshInstalledPlugins();
 let pluginStorage = store.get("pluginStorage");
+let pluginForever = {};
 let loadedPlugins = [];
 loadEnabledPlugins();
 
@@ -218,6 +220,7 @@ function loadPlugin(pluginPath) {
         loadedPlugins.push(pluginObj);
         pluginAPI.PluginEvents = createEvents(pluginObj.packageName);
         pluginAPI.PluginStorage = createStorage(pluginObj.packageName);
+        pluginAPI.Forever = createForever(pluginObj.packageName);
         console.log("Loading plugin: " + pluginName)
         vm.runInContext(code, context, { timeout: 5000 });
         console.log("Plugin loaded.")
@@ -235,7 +238,14 @@ function createRequire(pluginPath) {
         delete require.cache[modulePath];
         return require(modulePath);
     };
-  }
+}
+
+function createForever(pluginName){
+    if (pluginForever[pluginName] === undefined){
+        pluginForever[pluginName] = [];
+    }
+    return (callback) => {pluginForever[pluginName].push(callback);}
+}
 
 function enablePlugin(event, packageName){
     installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = true;
@@ -247,8 +257,22 @@ function disablePlugin(event, packageName){
     if (getPlugin(packageName).events.onDisable){
         getPlugin(packageName).events.onDisable();
     }
+    pluginForever[packageName] = [];
     installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = false;
     store.set("installedPlugins", installedPlugins);
+}
+
+function fireForever(){
+    for (let key in pluginForever){
+        for (let index in pluginForever[key]){
+            try{
+                pluginForever[key][index]();
+            }
+            catch(e){
+                console.log("Error running forever callback for " + key + " (index " + index + ")")
+            }
+        }
+    }
 }
 
 function addPluginDialog(){
@@ -725,3 +749,4 @@ app.on("ready", () => {
     });
     mainWindow.loadFile(path.join(__dirname, "public/index.html"));
 });
+setInterval(fireForever, 1);
