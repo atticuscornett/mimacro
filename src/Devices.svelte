@@ -3,6 +3,7 @@
     import DeviceTile from "./Components/DeviceTile.svelte";
     import Popup from "./Components/Popup.svelte";
     import DeviceConfig from "./Devices/DeviceConfig.svelte";
+    import DeviceSetup from "./Devices/DeviceSetup.svelte";
 
     let deviceList = [];
 
@@ -33,6 +34,8 @@
 
 <main>
     <h1>Devices</h1>
+    <button id="newDeviceButton" on:click={()=>{action = "newDevice";}}>Add Device +</button>
+    <br>
     
     {#if viewingDevice}
         <DeviceConfig bind:viewingDevice={viewingDevice} device={currentDevice} devices={deviceList}></DeviceConfig>
@@ -56,6 +59,9 @@
                 <input id="deviceName">
                 <button on:click={renameDevice}>Save</button>
             {/if}
+            {#if action === "newDevice"}
+                <DeviceSetup bind:action={action}></DeviceSetup>
+            {/if}
         </Popup>
     {/if}
     {/if}
@@ -65,5 +71,23 @@
     .deviceList {
         display: flex;
         flex-wrap: wrap;
+        margin-top: 15px;
+    }
+
+    h1 {
+        display: inline;
+    }
+
+    #newDeviceButton {
+        margin-top: 7.5px;
+        display: inline;
+        float: right;
+        margin-left: 10px;
+        border-radius: 15px;
+        font-weight: bold;
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+        user-select: none;
     }
 </style>

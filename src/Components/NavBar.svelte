@@ -8,10 +8,6 @@
             "pageTo": "Devices",
         },
         {
-            "name": "Device Setup",
-            "pageTo": "DeviceSetup"
-        },
-        {
             "name": "Macros",
             "pageTo": "MacroPage"
         },
@@ -27,7 +23,7 @@
 </script>
 
 {#each pages as {name, pageTo}}
-    <NavButton id={pageTo} name={name} checked={name=="Devices"} bind:page={page}></NavButton>
+    <NavButton id={pageTo} name={name} checked={name==="Devices"} bind:page={page}></NavButton>
 {/each}
 <hr>
 
