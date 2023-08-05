@@ -9,7 +9,7 @@
     }
 
     function uncheck(page){
-        if (page != id){
+        if (page !== id){
             checked = false;
         }
     }

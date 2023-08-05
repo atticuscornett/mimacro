@@ -85,6 +85,8 @@
 
     button {
         display: inline;
+        padding-left: 25px;
+        padding-right: 25px;
         float: right;
         margin-left: 10px;
         border-radius: 15px;
