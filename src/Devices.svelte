@@ -33,7 +33,7 @@
 </script>
 
 <main>
-    <h1>Devices</h1>
+    <h1 class="inline">Devices</h1>
     <button id="newDeviceButton" on:click={()=>{action = "newDevice";}}>Add Device +</button>
     <br>
     
@@ -74,12 +74,13 @@
         margin-top: 15px;
     }
 
-    h1 {
+    .inline {
         display: inline;
     }
 
     #newDeviceButton {
-        margin-top: 7.5px;
+        padding-left: 25px;
+        padding-right: 25px;
         display: inline;
         float: right;
         margin-left: 10px;
