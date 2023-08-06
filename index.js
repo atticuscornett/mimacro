@@ -678,6 +678,16 @@ function getInstalledPlugins(){
     return installedPlugins;
 }
 
+function setOpenAtLogin(shouldRun){
+    app.setLoginItemSettings({
+        openAtLogin: shouldRun
+    });
+}
+
+function getOpenAtLogin(){
+    return app.getLoginItemSettings().openAtLogin;
+}
+
 connectToDevices();
 
 ipcMain.on("autoDetectDevices", () => autoDetectPorts(sendAutoPorts, 5000))
@@ -702,6 +712,8 @@ ipcMain.handle("enablePlugin", enablePlugin);
 ipcMain.handle("disablePlugin", disablePlugin);
 ipcMain.handle("addPluginDialog", addPluginDialog);
 ipcMain.handle("addPluginFromFile", addPluginFromFile);
+ipcMain.handle("setOpenAtLogin", setOpenAtLogin);
+ipcMain.handle("getOpenAtLogin", getOpenAtLogin);
 
 
 app.on("ready", () => {
@@ -741,7 +753,8 @@ app.on("ready", () => {
         },
         autoHideMenuBar: true,
         minWidth: 800,
-        minHeight: 600
+        minHeight: 600,
+        show: !getOpenAtLogin()
     });
     mainWindow.on('close', e => {
         e.preventDefault();
