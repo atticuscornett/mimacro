@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "[a-z\\-]+"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[A-Z].*"
+    },
+    "ui": {
+      "type": "object",
+      "properties": {
+        "keyCode": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "keyCode"
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "ui"
+  ]
+}
