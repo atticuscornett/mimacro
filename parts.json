@@ -41,7 +41,7 @@
         "triggers": [
             {
                 "name": "Value Change",
-                "type": "variable"
+                "type": "dynamic"
             },
 
             {

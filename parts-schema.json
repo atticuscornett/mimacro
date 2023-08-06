@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/part"
+  },
+  "definitions": {
+    "part": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "[0-9]"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z].*"
+        },
+        "type": {
+          "enum": [
+            "digital",
+            "analog",
+            null
+          ]
+        },
+        "triggers": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/trigger"
+          }
+        }
+      }
+    },
+    "trigger": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z].*"
+        },
+        "type": {
+          "enum": [
+            "static",
+            "dynamic"
+          ]
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/parameter"
+          }
+        }
+      }
+    },
+    "parameter": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z].*"
+        },
+        "type": {
+          "enum": [
+            "int",
+            "analogInt",
+            "boolean"
+          ]
+        }
+      }
+    }
+  }
+}

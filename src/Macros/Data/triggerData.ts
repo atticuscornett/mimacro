@@ -31,7 +31,7 @@ export function getPart(id: number): Part {
     return result;
 }
 
-type TriggerType = "static" | "variable";
+type TriggerType = "static" | "dynamic";
 
 export function placeholderTrigger(): TriggerData {
    return  {
