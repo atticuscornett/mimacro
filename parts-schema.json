@@ -32,7 +32,13 @@
             "$ref": "#/definitions/trigger"
           }
         }
-      }
+      },
+      "required": [
+        "name",
+        "id",
+        "triggers",
+        "type"
+      ]
     },
     "trigger": {
       "properties": {
@@ -52,7 +58,11 @@
             "$ref": "#/definitions/parameter"
           }
         }
-      }
+      },
+      "required": [
+        "name",
+        "type"
+      ]
     },
     "parameter": {
       "properties": {
@@ -67,7 +77,11 @@
             "boolean"
           ]
         }
-      }
+      },
+      "required": [
+        "name",
+        "type"
+      ]
     }
   }
 }
