@@ -678,7 +678,7 @@ function getInstalledPlugins(){
     return installedPlugins;
 }
 
-function setOpenAtLogin(shouldRun){
+function setOpenAtLogin(event, shouldRun){
     app.setLoginItemSettings({
         openAtLogin: shouldRun
     });

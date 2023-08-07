@@ -9,6 +9,10 @@
     function updateColorTheme(){
         electronAPI.setColorTheme(document.getElementById("colorTheme").value);
     }
+
+    function updateStartup(){
+        electronAPI.setOpenAtLogin(document.getElementById("runAtStartup").checked);
+    }
 </script>
 <h1>Settings</h1>
 
@@ -19,7 +23,7 @@
     <option value="dark">Dark</option>
 </select>
 <br>
-<input type="checkbox" id="runAtStartup">
+<input type="checkbox" id="runAtStartup" on:change={updateStartup}>
 <label for="runAtStartup">Run mimacro in background on startup</label>
 <br>
 <input type="checkbox" id="automaticallyUpdate">
