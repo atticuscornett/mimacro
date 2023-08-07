@@ -36,7 +36,7 @@
 <br>
 <br>
 {#each plugins as plugin}
-    <PluginTile plugin={plugin}></PluginTile>
+    <PluginTile plugin={plugin} bind:pluginList={plugins}></PluginTile>
 {/each}
 {#if plugins.length === 0}
     <h2>You have no plugins installed.</h2>
@@ -53,7 +53,7 @@
         <h1 class="inline">{pluginDetails.displayName}</h1>
         <h4>Package Name: {pluginDetails.name}</h4>
         <h4>Package Author: {pluginDetails.author}</h4>
-        <h5>Warning: Anyone can enter any author name. Make sure you downloaded this from a trusted source.</h5>
+        <h5 class="dangerous">Warning: Anyone can enter any author name. Make sure you downloaded this from a trusted source.</h5>
         <h4>Package Version: {pluginDetails.version}</h4>
         <h4>Package Description: {pluginDetails.description}</h4>
         <br>

@@ -2,6 +2,7 @@
     import Popup from "./Popup.svelte";
 
     export let plugin;
+    export let pluginList;
     let moreDetails = false;
 
     function togglePlugin(){
@@ -17,6 +18,13 @@
 
     function toggleDetails(){
         moreDetails = !moreDetails;
+    }
+
+    async function uninstall() {
+        document.getElementById("uninstallButton").disabled = true;
+        document.getElementById("uninstallButton").innerText = "Uninstalling...";
+        await electronAPI.uninstallPlugin(plugin.packageName);
+        pluginList = await electronAPI.getInstalledPlugins();
     }
 </script>
 <div class="PluginTile">
@@ -35,7 +43,8 @@
         <h4>Package Name: {plugin.packageName}</h4>
         <h4>Package Author: {plugin.author}</h4>
         <h4>Version: {plugin.version}</h4>
-        <br>
+        <button id="uninstallButton" on:click={uninstall}>Uninstall</button>
+        <br><br>
         <h2>Plugin Description:</h2>
         <hr>
         <h3>{plugin.description}</h3>

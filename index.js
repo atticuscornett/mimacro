@@ -13,6 +13,7 @@ const vm = require("vm");
 const { join } = require('path');
 const fs = require("fs");
 const AdmZip = require("adm-zip");
+const {install} = require("@sienci/avrgirl-arduino/lib/test-pilot-checker");
 
 let mainWindow;
 
@@ -260,6 +261,14 @@ function disablePlugin(event, packageName){
     pluginForever[packageName] = [];
     installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = false;
     store.set("installedPlugins", installedPlugins);
+}
+
+function uninstallPlugin(event, pluginName){
+    if (getPluginIndexByPackageName(pluginName) >= 0){
+        disablePlugin(null, pluginName);
+    }
+    fs.rmSync(installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].path, { recursive: true, force: true });
+    refreshInstalledPlugins();
 }
 
 function fireForever(){
@@ -710,6 +719,7 @@ ipcMain.handle("setDevicePinProperties", setDevicePinProperties);
 ipcMain.handle("getInstalledPlugins", getInstalledPlugins);
 ipcMain.handle("enablePlugin", enablePlugin);
 ipcMain.handle("disablePlugin", disablePlugin);
+ipcMain.handle("uninstallPlugin", uninstallPlugin);
 ipcMain.handle("addPluginDialog", addPluginDialog);
 ipcMain.handle("addPluginFromFile", addPluginFromFile);
 ipcMain.handle("setOpenAtLogin", setOpenAtLogin);
