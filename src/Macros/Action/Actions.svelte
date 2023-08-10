@@ -21,7 +21,7 @@
         popupIsShowing = true;
 
         mouseX = event.clientX;
-        mouseY = event.clientY;
+        mouseY = event.clientY + scrollY;
     }
 
     let selectAction = (actionData) => {
