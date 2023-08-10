@@ -781,7 +781,7 @@ ipcMain.handle("addPluginFromFile", addPluginFromFile);
 ipcMain.handle("setOpenAtLogin", setOpenAtLogin);
 ipcMain.handle("getOpenAtLogin", getOpenAtLogin);
 ipcMain.handle("getPluginREADME", getPluginREADME);
-
+ipcMain.handle("getPlugin", (event, packageName)=>{return JSON.parse(JSON.stringify(getPlugin(packageName)))});
 
 app.on("ready", () => {
     tray = new Tray("icon.png");
