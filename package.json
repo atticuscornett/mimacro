@@ -14,7 +14,7 @@
   "dependencies": {
     "@rollup/plugin-typescript": "^11.1.1",
     "@sienci/avrgirl-arduino": "^5.0.3",
-    "@tabler/icons-svelte": "^2.22.0",
+    "@tabler/icons-svelte": "^2.30.0",
     "adm-zip": "^0.5.10",
     "electron-store": "^8.1.0",
     "marked": "^7.0.2",
