@@ -34,36 +34,38 @@
 
 <main>
     <h1 class="inline">Devices</h1>
-    <button id="newDeviceButton" on:click={()=>{action = "newDevice";}}>Add Device +</button>
+    {#if !viewingDevice}
+        <button id="newDeviceButton" on:click={()=>{action = "newDevice";}}>Add Device +</button>
+    {/if}
     <br>
     
     {#if viewingDevice}
         <DeviceConfig bind:viewingDevice={viewingDevice} device={currentDevice} devices={deviceList}></DeviceConfig>
     {:else}
-    <div class="deviceList">
-        {#each deviceList as {nickname, mimacroVersion, mimacroType, status}, i}
-            <DeviceTile mimacroType={mimacroType} nickname={nickname} mimacroVersion={mimacroVersion} status={status} bind:action={action} index={i} on:click={() => {viewDevice({i})}}></DeviceTile>
-        {/each}
-    </div>
+        <div class="deviceList">
+            {#each deviceList as {nickname, mimacroVersion, mimacroType, status}, i}
+                <DeviceTile mimacroType={mimacroType} nickname={nickname} mimacroVersion={mimacroVersion} status={status} bind:action={action} index={i} on:click={() => {viewDevice({i})}}></DeviceTile>
+            {/each}
+        </div>
 
-    {#if action !== ""}
-        <Popup>
-            {#if action.includes("flash")}
-                <h1>Flashing "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
-                <h2>Device Type: {deviceList[Number(action.split("-")[1])].mimacroType}</h2>
-                <h2>Serial Number: {deviceList[Number(action.split("-")[1])].serialNumber}</h2>
-                <h2>Device Port: {deviceList[Number(action.split("-")[1])].port}</h2>
-            {/if}
-            {#if action.includes("rename")}
-                <h1>Rename "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
-                <input id="deviceName">
-                <button on:click={renameDevice}>Save</button>
-            {/if}
-            {#if action === "newDevice"}
-                <DeviceSetup bind:action={action}></DeviceSetup>
-            {/if}
-        </Popup>
-    {/if}
+        {#if action !== ""}
+            <Popup>
+                {#if action.includes("flash")}
+                    <h1>Flashing "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
+                    <h2>Device Type: {deviceList[Number(action.split("-")[1])].mimacroType}</h2>
+                    <h2>Serial Number: {deviceList[Number(action.split("-")[1])].serialNumber}</h2>
+                    <h2>Device Port: {deviceList[Number(action.split("-")[1])].port}</h2>
+                {/if}
+                {#if action.includes("rename")}
+                    <h1>Rename "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
+                    <input id="deviceName">
+                    <button on:click={renameDevice}>Save</button>
+                {/if}
+                {#if action === "newDevice"}
+                    <DeviceSetup bind:action={action}></DeviceSetup>
+                {/if}
+            </Popup>
+        {/if}
     {/if}
 </main>
 
