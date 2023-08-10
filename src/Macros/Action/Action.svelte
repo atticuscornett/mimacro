@@ -34,10 +34,6 @@
         opacity: 0;
     }
 
-    .buttons:hover {
-        opacity: 1;
-    }
-
     .buttons > button {
         margin: 5px;
         width: 35px;
@@ -66,5 +62,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+    }
+
+    .action:hover .buttons {
+        opacity: 1;
+    }
+
+    .action:hover {
+        background: var(--background-gray);
     }
 </style>
