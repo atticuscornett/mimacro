@@ -8,6 +8,7 @@
     import {getContext} from "svelte";
     import {writable} from "svelte/store";
     import SubmitButton from "../Components/SubmitButton.svelte";
+    import Actions from "./Action/Actions.svelte";
 
     export let next: () => void;
 
@@ -25,7 +26,7 @@
 
     };
 
-    let action: Action;
+    let actions: Action[];
     let pin: Pin;
 
     $: {
@@ -82,7 +83,7 @@
             device: device,
             part: part,
             trigger: trigger,
-            action: action,
+            actions: actions,
             uuid: uuidv4()
         }
 
@@ -150,13 +151,9 @@
 
             <br>
 
-            run
+            run these actions in order:
 
-            <select bind:value={selectedActionIndex} class="dropdown" id="action-dropdown">
-                {#each getRegistry() as action, i}
-                    <option value={i}>{action.name}</option>
-                {/each}
-            </select>
+            <Actions/>
         </p>
     </div>
 

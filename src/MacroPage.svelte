@@ -27,7 +27,7 @@
 
     setContext("macros", macros);
 
-    let wipMacro = writable(null as MacroData)
+    let wipMacro = writable({} as MacroData)
     setContext("wipMacro", wipMacro);
 </script>
 

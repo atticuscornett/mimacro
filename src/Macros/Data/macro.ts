@@ -7,7 +7,7 @@ export interface MacroData {
     device: ArduinoDevice,
     trigger: TriggerData,
     part: Part,
-    action: Action,
+    actions: Action[],
     uuid: string,
 }
 

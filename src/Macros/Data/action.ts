@@ -1,42 +1,24 @@
-import {SvelteComponent} from "svelte";
-import KeypressActionUI from "../Action/KeypressActionUI.svelte";
-
 const actionRegistry: Action[] = []
 
-export abstract class Action {
-    public ui: typeof SvelteComponent;
-    public name: string;
+export interface Action {
+    displayName: string,
+    id: string,
+    pluginId: string,
 
-    protected constructor() {
-    }
-
-    abstract onRun(): void;
+    meta?: object[],
+    ui?: object,
 }
 
-export class KeypressAction extends Action {
-    ui: typeof SvelteComponent
+actionRegistry.push({
+    displayName: "Keypress",
+    id: "keypress",
+    pluginId: "default",
 
-    constructor() {
-        super();
-
-        this.ui = KeypressActionUI;
-        this.name = "Keypress"
+    ui: {
+        keycode: "string"
     }
-
-    onRun() {
-        console.log("running keypressaction")
-    }
-}
-registerAction(new KeypressAction())
-
-export function registerAction(action: Action) {
-    actionRegistry.push(action);
-}
+} as Action)
 
 export function getRegistry(): Action[] {
     return actionRegistry;
-}
-
-export function placeholderAction(): Action {
-    return new KeypressAction();
 }
