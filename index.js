@@ -499,6 +499,21 @@ function refreshRendererDevices(){
     mainWindow.webContents.send("refreshDevices");
 }
 
+function handleTriggers(input, device){
+    let command = input.split(" ");
+    console.log(command);
+    for (let i = 0; i < userMacros.length; i++){
+        if (userMacros[i].device.serialNumber === device.serialNumber){
+            if (command[0] === "POTENT" && userMacros[i].part.id === "40"){
+                if (String(userMacros[i].trigger.pin.pinNumber) === command[1]){
+                    console.log("Check trigger conditions")
+                }
+            }
+        }
+        console.log(userMacros[i]);
+    }
+}
+
 function listenToDevice(index, devicePath){
     let thisDevice = devices[index];
     devices[index].port = devicePath;
@@ -524,7 +539,9 @@ function listenToDevice(index, devicePath){
                 line++;
             }
             temp = temp.split("\n")[0].replace("\r", "");
-            console.log(temp);
+            if (devices[index].status === "connected"){
+                handleTriggers(temp, devices[index]);
+            }
             if (line === 2){
                 devices[index].mimacroVersion = temp;
                 if (!supportedVersions.includes(devices[index].mimacroVersion)){
