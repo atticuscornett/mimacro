@@ -3,6 +3,7 @@
 
     export let x;
     export let y;
+    let screenHeight = document.body.scrollHeight;
 
     let placePopup = () => {
         let modX = x;
@@ -11,7 +12,7 @@
         if ((Number(x) + popup.offsetWidth) > window.innerWidth){
             modX -= popup.offsetWidth;
         }
-        if ((Number(y) + popup.offsetHeight) > document.body.scrollHeight){
+        if ((Number(y) + popup.offsetHeight) > screenHeight){
             modY -= popup.offsetHeight;
         }
         popup.style.left = modX + "px";
