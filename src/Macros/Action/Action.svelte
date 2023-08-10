@@ -10,10 +10,12 @@
     let iconColor = getPrimaryThemeColor();
     let iconSize = 15;
     let iconStroke = 4;
+
+    export let ordinal: number;
 </script>
 
 <div class="action">
-    {action.displayName}
+    {ordinal + 1}. {action.displayName}
 
     <div class="buttons">
         <button>
@@ -62,6 +64,9 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+
+        padding-left: 15px;
+        border-radius: 5px;
     }
 
     .action:hover .buttons {

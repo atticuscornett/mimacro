@@ -32,17 +32,17 @@
 </script>
 
 <main>
-    <ol>
+    <ul>
         {#if $macro.actions}
-            {#each $macro.actions as actionData}
+            {#each $macro.actions as actionData, i}
                 <li>
-                    <Action bind:action={actionData}/>
+                    <Action bind:action={actionData} ordinal={i}/>
                 </li>
             {/each}
         {:else}
             Nothing
         {/if}
-    </ol>
+    </ul>
 
     <button on:click={showPopup}>Add New Action</button>
 
@@ -55,3 +55,9 @@
         </FloatingPopup>
     {/if}
 </main>
+
+<style>
+    li {
+        list-style: none;
+    }
+</style>
