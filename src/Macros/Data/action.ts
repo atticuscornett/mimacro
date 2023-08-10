@@ -19,6 +19,36 @@ actionRegistry.push({
     }
 } as Action)
 
+actionRegistry.push({
+    displayName: "2 Keypress",
+    id: "diff-keypress",
+    pluginId: "default",
+
+    ui: {
+        keycode: "string"
+    }
+} as Action)
+
+actionRegistry.push({
+    displayName: "3 Keypress",
+    id: "diff-keypress",
+    pluginId: "default",
+
+    ui: {
+        keycode: "string"
+    }
+} as Action)
+
+actionRegistry.push({
+    displayName: "4 Keypress",
+    id: "diff-keypress",
+    pluginId: "default",
+
+    ui: {
+        keycode: "string"
+    }
+} as Action)
+
 export function getRegistry(): Action[] {
     return actionRegistry;
 }
