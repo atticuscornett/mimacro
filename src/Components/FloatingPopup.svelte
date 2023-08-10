@@ -11,7 +11,7 @@
         if ((Number(x) + popup.offsetWidth) > window.innerWidth){
             modX -= popup.offsetWidth;
         }
-        if ((Number(y) + popup.offsetHeight) > window.innerHeight){
+        if ((Number(y) + popup.offsetHeight) > document.body.scrollHeight){
             modY -= popup.offsetHeight;
         }
         popup.style.left = modX + "px";
