@@ -167,6 +167,15 @@ function getPlugin(packageName){
     return null;
 }
 
+function getPluginREADME(event, packageName){
+    try {
+        return fs.readFileSync(join("./plugins/", packageName, "README.md"), "utf8");
+    }
+    catch (e) {
+        return "";
+    }
+}
+
 function createEvents(pluginName){
     return {
         onEnable: (callback) => {getPlugin(pluginName).events.onEnable = callback;},
@@ -771,6 +780,7 @@ ipcMain.handle("addPluginDialog", addPluginDialog);
 ipcMain.handle("addPluginFromFile", addPluginFromFile);
 ipcMain.handle("setOpenAtLogin", setOpenAtLogin);
 ipcMain.handle("getOpenAtLogin", getOpenAtLogin);
+ipcMain.handle("getPluginREADME", getPluginREADME);
 
 
 app.on("ready", () => {

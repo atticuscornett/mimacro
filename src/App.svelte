@@ -1,3 +1,8 @@
+<svelte:head>
+	<script type="text/javascript" src="../src/Libraries/marked.min.js"></script>
+	<script type="text/javascript" src="../src/Libraries/purify.min.js"></script>
+</svelte:head>
+
 <script>
     import Devices from "./Devices.svelte";
     import NavBar from "./Components/NavBar.svelte";

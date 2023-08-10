@@ -1,9 +1,18 @@
 <script>
     import Popup from "./Popup.svelte";
+    import {onMount} from "svelte";
 
     export let plugin;
     export let pluginList;
     let moreDetails = false;
+    let readME = "";
+    onMount(async () => {
+        console
+        readME = await getPluginREADME();
+        if (readME === "")[
+            readME = "No README provided."
+        ]
+    })
 
     function togglePlugin(){
         if (plugin.enabled){
@@ -18,6 +27,13 @@
 
     function toggleDetails(){
         moreDetails = !moreDetails;
+    }
+
+    async function getPluginREADME() {
+        let text = await electronAPI.getPluginREADME(plugin.packageName);
+        text = marked.parse(text);
+        text = DOMPurify.sanitize(text);
+        return text;
     }
 
     async function uninstall() {
@@ -43,11 +59,12 @@
         <h4>Package Name: {plugin.packageName}</h4>
         <h4>Package Author: {plugin.author}</h4>
         <h4>Version: {plugin.version}</h4>
+        <h4>Description: {plugin.description}</h4>
         <button id="uninstallButton" on:click={uninstall}>Uninstall</button>
         <br><br>
-        <h2>Plugin Description:</h2>
+        <h2>Plugin README</h2>
         <hr>
-        <h3>{plugin.description}</h3>
+        <h3>{@html readME}</h3>
         <button class="close" on:click={toggleDetails}><img class="closeImg" src="../src/Images/Icons/Close.svg" alt="Close"></button>
     </Popup>
 {/if}
