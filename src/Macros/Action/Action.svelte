@@ -4,12 +4,15 @@
     import IconArrowBarToUp from "@tabler/icons-svelte/dist/svelte/icons/IconArrowBarToUp.svelte"
     import IconArrowBarToDown from "@tabler/icons-svelte/dist/svelte/icons/IconArrowBarToDown.svelte"
     import {getPrimaryThemeColor} from "../../utilities";
+    import {createEventDispatcher} from "svelte";
 
     export let action: Action;
 
     let iconColor = getPrimaryThemeColor();
     let iconSize = 15;
     let iconStroke = 4;
+
+    const dispatch = createEventDispatcher();
 
     export let ordinal: number;
 </script>
@@ -18,13 +21,13 @@
     {ordinal + 1}. {action.displayName}
 
     <div class="buttons">
-        <button>
+        <button on:click={() => dispatch('delete')}>
             <IconMinus color={iconColor} size={iconSize} stroke={iconStroke}/>
         </button>
-        <button>
+        <button on:click={() => dispatch('shiftup')}>
             <IconArrowBarToUp color={iconColor} size={iconSize} stroke={iconStroke}/>
         </button>
-        <button>
+        <button on:click={() => dispatch('shiftdown')}>
             <IconArrowBarToDown color={iconColor} size={iconSize} stroke={iconStroke}/>
         </button>
     </div>

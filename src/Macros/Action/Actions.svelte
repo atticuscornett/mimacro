@@ -2,7 +2,7 @@
     import {writable} from "svelte/store";
     import {MacroData} from "../Data/macro";
     import {getContext} from "svelte";
-    import {getRegistry} from "../Data/action";
+    import {Action as ActionData, getRegistry} from "../Data/action";
     import Action from "./Action.svelte";
     import FloatingPopup from "../../Components/FloatingPopup.svelte";
 
@@ -10,7 +10,8 @@
 
     $macro.actions = [];
 
-    $: console.log($macro.actions);
+    let actions: ActionData[] = $macro.actions;
+    $: $macro.actions = actions;
 
     let popupIsShowing = false;
 
@@ -27,7 +28,29 @@
     let selectAction = (actionData) => {
         popupIsShowing = false;
 
-        $macro.actions = [...$macro.actions, actionData]
+        actions = [...actions, actionData]
+    }
+
+    function deleteAction(index: number): void {
+        actions = actions.filter((a, i) => i !== index);
+    }
+
+    function insertAction(idIndex: number, index: number): void {
+        let action = actions[idIndex];
+
+        actions = [
+            ...actions.slice(0, index),
+            action,
+            ...actions.slice(index),
+        ]
+    }
+
+    function shiftActionUp(index: number): void {
+        if (index === 0 || index >= actions.length) return;
+
+        insertAction(index, index - 1);
+
+        deleteAction(index + 1)
     }
 </script>
 
@@ -36,7 +59,11 @@
         {#if $macro.actions}
             {#each $macro.actions as actionData, i}
                 <li>
-                    <Action bind:action={actionData} ordinal={i}/>
+                    <Action bind:action={actionData} ordinal={i}
+                            on:delete={() => deleteAction(i)}
+                            on:shiftup={() => shiftActionUp(i)}
+                            on:shiftdown={() => shiftActionUp(i + 1)}
+                    />
                 </li>
             {/each}
         {:else}
