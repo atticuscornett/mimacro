@@ -26,6 +26,11 @@
 </main>
 
 <style>
+	@font-face {
+		font-family: Kanit;
+		src: url("../../src/fonts/Kanit-Light.ttf");
+	}
+
 	:global(:root){
 		--primary-dark: #001524;
 		--primary-blue: #15616D;
@@ -33,6 +38,10 @@
 		--primary-green: #399E5A;
 		--secondary-green: #23CE6B;
 		--background-gray: #171717;
+	}
+
+	:global(body){
+		font-family: Kamit, sans-serif;
 	}
 
 	.mainApp {
