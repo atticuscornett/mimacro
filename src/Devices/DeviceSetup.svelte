@@ -18,42 +18,42 @@
     <button class="close" on:click={()=>{action="";}}><img class="closeImg" src="../src/Images/Icons/Close.svg" alt="Close"></button>
 
     {#if step === "AutoDetect"}
-        <div transition:fade>
+        <div>
             <h4>Select a device.</h4>
             <AutoDetectResults bind:page={step} bind:device={device}></AutoDetectResults>
         </div>
     {/if}
     {#if step === "FlashDevice"}
-        <Delay>
-            <div transition:fade>
-                <h4>Flash mimacro to your device.</h4>
-                <FlashDevice></FlashDevice>
-            </div>
-        </Delay>
+        <div>
+            <h4>Flash mimacro to your device.</h4>
+            <FlashDevice bind:page={step} bind:device={device}></FlashDevice>
+        </div>
     {/if}
     {#if step === "CompatibilityWarn"}
-        <Delay>
-            <div transition:fade>
-                <h4>Your device might not be compatible.</h4>
-                <CompatibilityWarn></CompatibilityWarn>
-            </div>
-        </Delay>
+        <div>
+            <h4>Your device might not be compatible.</h4>
+            <CompatibilityWarn></CompatibilityWarn>
+        </div>
     {/if}
     {#if step === "NameDevice"}
-        <Delay>
-            <div transition:fade>
-                <h4>Name your device.</h4>
-                <NameDevice bind:page={step} bind:device={device}></NameDevice>
-            </div>
-        </Delay>
+        <div>
+            <h4>Name your device.</h4>
+            <NameDevice bind:page={step} bind:device={device}></NameDevice>
+        </div>
     {/if}
     {#if step === "SetupDone"}
-        <Delay>
-            <div transition:fade>
-                <h4>Setup complete.</h4>
-                <SetupDone device={device}></SetupDone>
-            </div>
-        </Delay>
+        <div>
+            <h4>Setup complete.</h4>
+            <SetupDone device={device}></SetupDone>
+        </div>
+    {/if}
+    {#if step === "FlashError"}
+        <div>
+            <h2>There was an error flashing to {device.friendlyName}.</h2>
+            <h3>This may be because the device was busy.<br>
+                Try closing any other application that is using this device.<br>
+                If this issue persists, try flashing firmware to the device manually.</h3>
+        </div>
     {/if}
 </main>
 <style>

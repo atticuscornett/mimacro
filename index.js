@@ -351,6 +351,35 @@ function flashDevice(event, index){
     }
 }
 
+function flashPort(event, port, type){
+    if (type === "Arduino Uno"){
+        console.log(port)
+        let avrgirl = new Avrgirl(
+            {
+                board: "uno",
+                port: port
+            }
+        );
+        try{
+            avrgirl.flash("./arduino/uno/build/arduino.avr.uno/uno.ino.hex", function(e){
+                if (e){
+                    console.log(e);
+                    mainWindow.webContents.send("portFlashResult", false);
+                }
+                else{
+                    console.log("Flash complete.");
+                    mainWindow.webContents.send("portFlashResult", true);
+                }
+            });
+        }
+        catch (e) {
+            console.log(e);
+            mainWindow.webContents.send("portFlashResult", false);
+        }
+
+    }
+}
+
 // Detect mimacro and Arduino devices.
 function autoDetectPorts(callback, timeout){
     let detectedPorts = {
@@ -730,6 +759,7 @@ ipcMain.handle("getParts", ()=>{return parts;});
 ipcMain.handle("removeDevice", removeDevice);
 ipcMain.handle("renameDevice", renameDevice);
 ipcMain.handle("flashDevice", flashDevice);
+ipcMain.handle("flashPort", flashPort);
 ipcMain.handle("writeDevice", writeDevice);
 ipcMain.handle("setDevicePinOut", setDevicePinOut);
 ipcMain.handle("setDevicePinProperties", setDevicePinProperties);
