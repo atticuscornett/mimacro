@@ -20,7 +20,9 @@
 <main>
 	<Background></Background>
 	<NavBar bind:page={page}></NavBar>
-	<svelte:component this={components[page]}></svelte:component>
+	<div class="mainApp">
+		<svelte:component class="mainApp" this={components[page]}></svelte:component>
+	</div>
 </main>
 
 <style>
@@ -31,6 +33,12 @@
 		--primary-green: #399E5A;
 		--secondary-green: #23CE6B;
 		--background-gray: #171717;
+	}
+
+	.mainApp {
+		margin-left: 10px;
+		margin-right: 10px;
+		margin-top: 10px;
 	}
 
 	@media (prefers-color-scheme: dark){
