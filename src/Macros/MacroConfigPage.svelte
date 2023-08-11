@@ -271,6 +271,22 @@
         border-color: dimgray;
     }
 
+    input[type="number"] {
+        border-radius: 13px;
+        background: var(--background);
+        color: var(--text-color);
+        border: var(--highlight) 2px solid;
+        padding: 9px;
+        min-width: 50px;
+        max-width: 75px;
+        text-align: center;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button {
+        opacity: 0;
+        -webkit-appearance: none;
+    }
+
     @media (prefers-color-scheme: light) {
         .dropdown {
             background-color: white;
@@ -284,6 +300,10 @@
             background-color: white;
             border-color: var(--secondary-blue);
             color: black;
+        }
+
+        input[type="number"] {
+            border-width: 3px;
         }
     }
 
