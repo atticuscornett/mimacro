@@ -29,7 +29,8 @@
                         "name": "Duration",
                         "type": "int"
                     }
-                ]
+                ],
+                "description": "if Button is held for %p seconds"
             }
         ]
     },
@@ -43,46 +44,43 @@
                 "name": "Value Change",
                 "type": "dynamic"
             },
-
             {
                 "name": "Above",
                 "type": "static",
-
                 "parameters": [
                     {
                         "name": "Value",
                         "type": "analogInt"
                     }
-                ]
+                ],
+                "description": "if Value is above %p"
             },
-
             {
                 "name": "Below",
                 "type": "static",
-
                 "parameters": [
                     {
                         "name": "Value",
                         "type": "analogInt"
                     }
-                ]
+                ],
+                "description": "if Value is below %p"
             },
 
             {
                 "name": "Between",
                 "type": "static",
-
                 "parameters": [
                     {
                         "name": "Low",
                         "type": "analogInt"
                     },
-
                     {
                         "name": "High",
                         "type": "analogInt"
                     }
-                ]
+                ],
+                "description": "if Value is between %p and %p"
             }
         ]
     }

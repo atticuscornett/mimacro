@@ -20,10 +20,15 @@
     let macroName: string;
     let device: ArduinoDevice;
 
-    let trigger: TriggerData = {
-        name: "",
-        pin: undefined
+    let triggerIndex: number;
+    let trigger: TriggerData;
 
+    trigger = {
+        name: "",
+        pin: undefined,
+        description: "",
+
+        parameters: []
     };
 
     let actions: Action[];
@@ -49,6 +54,25 @@
     $: {
         if (pin)
             part = getPart(pin.part);
+    }
+
+    $: {
+        if (part) {
+            if (triggerIndex != null) {
+                trigger.parameters = part.triggers[triggerIndex].parameters;
+            }
+        }
+    }
+
+    $: {
+        if (part && triggerIndex) {
+            trigger.description = part.triggers[triggerIndex].description;
+        }
+    }
+
+    $: {
+        if (part && triggerIndex)
+            trigger.name = part.triggers[triggerIndex].name;
     }
 
     // digital pin 0 part Nothing
@@ -136,20 +160,38 @@
 
             when trigger
 
-            <select bind:value={trigger.name} class="dropdown" disabled={!part || part.triggers.length < 1}
+            <select bind:value={triggerIndex} class="dropdown" disabled={!part || part.triggers.length < 1}
                     id="trigger-dropdown">
                 {#if part != null}
-                    {#each part.triggers as trigger}
-                        <option value={trigger.name}>
+                    {#each part.triggers as trigger, i}
+                        <option value={i}>
                             {trigger.name}
                         </option>
                     {/each}
                 {/if}
             </select>
 
-            's condition is met then
+            fires,
 
-            <br>
+            {#if trigger.parameters && trigger.parameters.length > 0}
+                {@const splitDescription = trigger.description.split("%p")}
+
+                {splitDescription[0]}
+
+                {#each trigger.description.match(/%p/g) as locale, i}
+                    {@const parameter = trigger.parameters[i]}
+
+                    {#if parameter.type === "int"}
+                        <input type="number">
+                    {:else if parameter.type === "analogInt"}
+                        <input type="number">
+                    {:else if parameter.type === "boolean"}
+                        <input type="checkbox">
+                    {/if}
+
+                    {splitDescription[i + 1]}
+                {/each}
+            {/if}
 
             run these actions in order:
 

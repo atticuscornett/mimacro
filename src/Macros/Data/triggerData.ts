@@ -1,11 +1,20 @@
 import type {Pin, PinType} from "./pin";
-import {getPin, parts} from "./pin";
-import {placeholderDevice} from "./device";
+import {parts} from "./pin";
 
 export interface TriggerData {
     pin: Pin,
     name: string,
+
+    description: string,
+    parameters: TriggerParameter[]
 }
+
+export interface TriggerParameter {
+    name: string,
+    type: ParameterType
+}
+
+export type ParameterType = "int" | "analogInt" | "boolean"
 
 export interface Part {
     id: string,
@@ -17,8 +26,9 @@ export interface Part {
 interface JSONTriggerData {
     name: string,
     type: TriggerType,
+    description: string,
 
-    [x: string]: unknown
+    parameters: TriggerParameter[]
 }
 
 export function getPart(id: number): Part {
@@ -33,39 +43,39 @@ export function getPart(id: number): Part {
 
 type TriggerType = "static" | "dynamic";
 
-export function placeholderTrigger(): TriggerData {
-   return  {
-       pin: getPin(placeholderDevice(), 0),
-       name: "Down",
-   }
-}
+// export function placeholderTrigger(): TriggerData {
+//    return  {
+//        pin: getPin(placeholderDevice(), 0),
+//        name: "Down",
+//    }
+// }
 
-export function placeholderPart(): Part {
-    return  {
-        "id": "1",
-        "name": "Button",
-        "type": "digital",
-        "triggers": [
-            {
-                "name": "Down",
-                "type": "static"
-            },
-
-            {
-                "name": "Up",
-                "type": "static"
-            },
-
-            {
-                "name": "Hold",
-                "type": "static",
-                "parameters": [
-                    {
-                        "name": "Duration",
-                        "type": "int"
-                    }
-                ]
-            }
-        ]
-    }
-}
+// export function placeholderPart(): Part {
+//     return  {
+//         "id": "1",
+//         "name": "Button",
+//         "type": "digital",
+//         "triggers": [
+//             {
+//                 "name": "Down",
+//                 "type": "static"
+//             },
+//
+//             {
+//                 "name": "Up",
+//                 "type": "static"
+//             },
+//
+//             {
+//                 "name": "Hold",
+//                 "type": "static",
+//                 "parameters": [
+//                     {
+//                         "name": "Duration",
+//                         "type": "int"
+//                     }
+//                 ]
+//             }
+//         ]
+//     }
+// }
