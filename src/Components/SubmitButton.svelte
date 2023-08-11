@@ -10,6 +10,8 @@
     export let left: number;
     export let right: number;
 
+    export let fixed: boolean;
+
     let absolute = false;
     $: absolute = (top != null || bottom != null || left != null || right != null);
 </script>
@@ -17,7 +19,10 @@
 <button
         disabled={disabled}
         on:click={() => dispatch("submit")}
-        style="position: {absolute ? 'absolute' : 'static'}; top: {top}px; bottom: {bottom}px; left: {left}px; right: {right}px; margin: 10px;"
+        style="position: {
+        fixed ? 'fixed' :
+        absolute ? 'absolute' : 'static'
+        }; top: {top}px; bottom: {bottom}px; left: {left}px; right: {right}px; margin: 10px;"
 >Submit
 </button>
 
