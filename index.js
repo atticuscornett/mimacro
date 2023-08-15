@@ -578,7 +578,7 @@ function handleTriggers(input, device){
                 }
             }
         }
-        console.log(userMacros[i]);
+        //console.log(userMacros[i]);
     }
 }
 
