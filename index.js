@@ -215,12 +215,13 @@ function pluginPackageJSON(pluginPath){
 }
 
 function loadPlugin(pluginPath) {
+    let pluginName;
     try {
         pluginAPI.require = createRequire(pluginPath);
         const code = readFileSync(join(pluginPath, 'index.js'), 'utf-8');
         const context = vm.createContext(pluginAPI);
         const packageJson = JSON.parse(readFileSync(join(pluginPath, "package.json"), 'utf-8'));
-        let pluginName = packageJson.name;
+        pluginName = packageJson.name;
         const pluginObj = {
             packageName: packageJson.name,
             pluginName: packageJson.displayName,
@@ -243,6 +244,7 @@ function loadPlugin(pluginPath) {
         }
     } catch (err) {
       console.error('Error loading plugin (' + pluginPath + '):', err);
+      installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].error = true;
     }
 }
 
