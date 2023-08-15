@@ -56,7 +56,7 @@ const pluginAPI = {
     },
     RegisterRunnable: () => console.log("WIP"),
     setTimeout: null,
-    setInterval: setInterval,
+    setInterval: null,
     Forever: null
 }
 
@@ -65,6 +65,7 @@ refreshInstalledPlugins();
 let pluginStorage = store.get("pluginStorage");
 let pluginForever = {};
 let pluginTimeouts = {};
+let pluginIntervals = {};
 let loadedPlugins = [];
 loadEnabledPlugins();
 
@@ -232,8 +233,9 @@ function loadPlugin(pluginPath) {
         pluginAPI.PluginEvents = createEvents(pluginObj.packageName);
         pluginAPI.PluginStorage = createStorage(pluginObj.packageName);
         pluginAPI.Forever = createForever(pluginObj.packageName);
-        pluginAPI.setTimeout = createSetTimeout(pluginObj.packageName)
-        console.log("Loading plugin: " + pluginName)
+        pluginAPI.setTimeout = createSetTimeout(pluginObj.packageName);
+        pluginAPI.setInterval = createSetInterval(pluginObj.packageName);
+        console.log("Loading plugin: " + pluginName);
         vm.runInContext(code, context, { timeout: 5000 });
         console.log("Plugin loaded.")
         if (getPlugin(pluginName).events.onEnable){
@@ -266,6 +268,13 @@ function createSetTimeout(pluginName){
     return (callback, timeout) => pluginTimeouts[pluginName].push(setTimeout(callback, timeout));
 }
 
+function createSetInterval(pluginName){
+    if (pluginIntervals[pluginName] === undefined){
+        pluginIntervals[pluginName] = [];
+    }
+    return (callback, timeout) => pluginIntervals[pluginName].push(setInterval(callback, timeout));
+}
+
 function enablePlugin(event, packageName){
     installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = true;
     loadPlugin(installedPlugins[getInstalledPluginIndexByPackageName(packageName)].path);
@@ -280,6 +289,11 @@ function disablePlugin(event, packageName){
     if (pluginTimeouts[packageName]){
         for (let i = 0; i < pluginTimeouts[packageName].length; i++){
             clearTimeout(pluginTimeouts[packageName][i]);
+        }
+    }
+    if (pluginIntervals[packageName]){
+        for (let i = 0; i < pluginIntervals[packageName].length; i++){
+            clearInterval(pluginIntervals[packageName][i]);
         }
     }
     installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = false;
