@@ -55,7 +55,7 @@ const pluginAPI = {
     PluginStorage: {
     },
     RegisterRunnable: () => console.log("WIP"),
-    setTimeout: setTimeout,
+    setTimeout: null,
     setInterval: setInterval,
     Forever: null
 }
@@ -64,6 +64,7 @@ let installedPlugins = store.get("installedPlugins");
 refreshInstalledPlugins();
 let pluginStorage = store.get("pluginStorage");
 let pluginForever = {};
+let pluginTimeouts = {};
 let loadedPlugins = [];
 loadEnabledPlugins();
 
@@ -231,6 +232,7 @@ function loadPlugin(pluginPath) {
         pluginAPI.PluginEvents = createEvents(pluginObj.packageName);
         pluginAPI.PluginStorage = createStorage(pluginObj.packageName);
         pluginAPI.Forever = createForever(pluginObj.packageName);
+        pluginAPI.setTimeout = createSetTimeout(pluginObj.packageName)
         console.log("Loading plugin: " + pluginName)
         vm.runInContext(code, context, { timeout: 5000 });
         console.log("Plugin loaded.")
@@ -257,6 +259,13 @@ function createForever(pluginName){
     return (callback) => {pluginForever[pluginName].push(callback);}
 }
 
+function createSetTimeout(pluginName){
+    if (pluginTimeouts[pluginName] === undefined){
+        pluginTimeouts[pluginName] = [];
+    }
+    return (callback, timeout) => pluginTimeouts[pluginName].push(setTimeout(callback, timeout));
+}
+
 function enablePlugin(event, packageName){
     installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = true;
     loadPlugin(installedPlugins[getInstalledPluginIndexByPackageName(packageName)].path);
@@ -268,6 +277,11 @@ function disablePlugin(event, packageName){
         getPlugin(packageName).events.onDisable();
     }
     pluginForever[packageName] = [];
+    if (pluginTimeouts[packageName]){
+        for (let i = 0; i < pluginTimeouts[packageName].length; i++){
+            clearTimeout(pluginTimeouts[packageName][i]);
+        }
+    }
     installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = false;
     store.set("installedPlugins", installedPlugins);
 }
