@@ -47,8 +47,8 @@
                 <div>
                     <button on:click={renameDevice}>Rename</button>
                     <br>
-                    {#if status != "disconnected"}
-                        <button on:click={flashDevice}>{(status == "connected") ? "Reflash":""}{(status == "outdated") ? "Flash Update":""}</button>
+                    {#if status !== "disconnected" && status !== "updating"}
+                        <button on:click={flashDevice}>{(status === "connected") ? "Reflash":""}{(status === "outdated") ? "Flash Update":""}</button>
                         <br>
                     {/if}
                     <button on:click={removeDevice}>Remove</button>
@@ -56,10 +56,13 @@
             </div>
         {/if}
     </div>
-    {#if status == "disconnected"}
+    {#if status === "disconnected"}
         <img id="disconnectIcon" src={"../src/Images/Icons/Error.svg"} alt="Device disconnected." title="Device disconnected.">
     {/if}
-    {#if status == "outdated"}
+    {#if status === "updating"}
+        <img id="disconnectIcon" src={"../src/Images/Icons/Warning.svg"} alt="Device updating." title="Device is updating firmware.">
+    {/if}
+    {#if status === "outdated"}
         <img id="disconnectIcon" src={"../src/Images/Icons/Warning.svg"} alt="Device outdated." title="Device software outdated.">
     {/if}
 </div>

@@ -362,11 +362,10 @@ function addPluginFromFile(event, filePath){
 }
 
 function flashDevice(event, index){
-    try{
+    if (serialPorts[index].isOpen){
         serialPorts[index].close()
     }
-    catch(e){}
-    devices[index].status = "disconnected";
+    devices[index].status = "updating";
     refreshRendererDevices()
     if (devices[index].mimacroType === "Arduino Uno"){
         let avrgirl = new Avrgirl(
@@ -642,7 +641,7 @@ function listenToDevice(index, devicePath){
         if (outdated){
             devices[index].status = "outdated";
         }
-        else{
+        else if (devices[index].status !== "updating"){
             devices[index].status = "disconnected";
         }
         refreshRendererDevices();
