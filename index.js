@@ -406,7 +406,12 @@ function flashPort(event, port, type){
                 }
                 else{
                     console.log("Flash complete.");
-                    mainWindow.webContents.send("portFlashResult", true);
+                    let tempPort = new SerialPort({path: port, baudRate: 9600});
+                    tempPort.write("MEMRESET\n");
+                    setTimeout(()=> {
+                        tempPort.close();
+                        mainWindow.webContents.send("portFlashResult", true);
+                    }, 1000);
                 }
             });
         }
