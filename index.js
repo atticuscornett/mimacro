@@ -684,7 +684,7 @@ function writeDevice(event, device, message){
 function setDevicePinOut(event, device, config){
     let pinMod = 0;
     for (let i = 0; i < config.digital.length; i++){
-        if (config.digital[i] !== devices[device].pinOut.digital[i]){
+        if (config.digital[i] !== String(devices[device].pinOut.digital[i])){
             console.log("DPIN S " + String(layouts[devices[device].mimacroType]["digital"][i]+pinMod).padStart(2, "0") + " " + String(config.digital[i]).padStart(2, "0"))
             writeDevice(null, device, "DPIN S " + String(layouts[devices[device].mimacroType]["digital"][i]+pinMod).padStart(2, "0") + " " + String(config.digital[i]).padStart(2, "0"))
         }
@@ -696,7 +696,7 @@ function setDevicePinOut(event, device, config){
         pinMod = -14;
     }
     for (let i = 0; i < config.analog.length; i++){
-        if (config.analog[i] !== devices[device].pinOut.analog[i]){
+        if (config.analog[i] !== String(devices[device].pinOut.analog[i])){
             console.log("APIN S " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog[i]).padStart(2, "0"))
             writeDevice(null, device, "APIN S " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog[i]).padStart(2, "0"))
         }
@@ -724,13 +724,6 @@ function setDevicePinProperties(event, device, config){
         if (newConf !== devices[device].pinProperties.analog.timeout[i]){
             console.log("APIN T " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
             writeDevice(null, device, "APIN T " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
-        }
-    }
-    for (let i = 0; i < config.analog.timeout.length; i++){
-        let newConf = config.analog.timeout[i];
-        if (newConf !== devices[device].pinProperties.analog.timeout[i]){
-            console.log("APIN V " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
-            writeDevice(null, device, "APIN V " + String(layouts[devices[device].mimacroType]["analog"][i]+pinMod).padStart(2, "0") + " " + String(config.analog.timeout[i]).padStart(3, "0"))
         }
     }
     for (let i = 0; i < config.analog.minChange.length; i++){
