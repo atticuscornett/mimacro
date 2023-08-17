@@ -454,23 +454,23 @@ usb.on('attach', () => {
 });
 
 function saveMacro(event, macro){
-    userMacros.push(JSON.parse(macro));
-    store.set("userMacros", userMacros);
+    global.userMacros.push(JSON.parse(macro));
+    store.set("userMacros", global.userMacros);
 }
 
 function setMacros(event, macros) {
-    userMacros = JSON.parse(macros);
-    store.set("userMacros", userMacros);
+    global.userMacros = JSON.parse(macros);
+    store.set("userMacros", global.userMacros);
 }
 
 function removeMacro(event, uuid) {
-    userMacros = userMacros.filter(macro => macro.uuid !== uuid);
-    store.set("userMacros", userMacros);
+    global.userMacros = userMacros.filter(macro => macro.uuid !== uuid);
+    store.set("userMacros", global.userMacros);
 }
 
 
 function getMacros(){
-    return userMacros;
+    return global.userMacros;
 }
 
 function setOpenAtLogin(event, shouldRun){
