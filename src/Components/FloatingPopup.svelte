@@ -1,13 +1,32 @@
 <script>
-    import {onMount} from "svelte";
+    import {afterUpdate, onDestroy, onMount} from "svelte";
+    import {get_current_component} from "svelte/internal";
 
     export let x;
     export let y;
+    export let show;
+
+    let clickListener = (event) => {
+        if (show){
+            // Check if the popup has been clicked out of
+            let popup = document.getElementById("floatPopup");
+            if (popup == null){
+                return;
+            }
+            let clickedObj = event.target;
+            if (clickedObj !== popup && !popup.contains(clickedObj)){
+                show = false;
+            }
+        }
+    };
 
     let placePopup = () => {
         let modX = x;
         let modY = y;
         let popup = document.getElementById("floatPopup");
+        if (popup == null){
+            return;
+        }
         if ((Number(x) + popup.offsetWidth) > window.innerWidth){
             modX -= popup.offsetWidth;
         }
@@ -17,12 +36,25 @@
         popup.style.left = modX + "px";
         popup.style.top = modY + "px";
     };
-    onMount(placePopup);
+
+    onDestroy(() => {document.removeEventListener("click", clickListener)});
     onresize = placePopup;
+
+    $: {
+        if (show){
+            placePopup();
+            setTimeout(() => {document.addEventListener("click", clickListener);}, 10);
+        }
+        else{
+            document.removeEventListener("click", clickListener);
+        }
+    }
 </script>
-<div class="floatPopup" id="floatPopup">
-    <slot></slot>
-</div>
+{#if show}
+    <div class="floatPopup" id="floatPopup">
+        <slot></slot>
+    </div>
+{/if}
 <style>
     .floatPopup {
         background-color: var(--background-gray);
