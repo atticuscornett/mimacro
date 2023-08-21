@@ -42,6 +42,7 @@
 
 	:global(body){
 		font-family: Kamit, sans-serif;
+		padding: 0;
 	}
 
 	.mainApp {

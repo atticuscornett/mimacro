@@ -4,6 +4,7 @@
 
     export let plugin;
     export let pluginList;
+
     let moreDetails = false;
     let readME = "";
     onMount(async () => {
@@ -43,14 +44,19 @@
         pluginList = await electronAPI.getInstalledPlugins();
     }
 </script>
-<div class="PluginTile">
-    <img class="iconImage" src={"../" + plugin.icon} alt={plugin.pluginName}>
-    <div>
-        <h2>{plugin.pluginName}</h2>
-        <h4>{plugin.version}</h4>
-        <h4>{plugin.author}</h4>
-        <button on:click={toggleDetails}>More Details</button>
-        <button on:click={togglePlugin} class={plugin.enabled ? "enabled" : "disabled"}>{plugin.enabled ? "Disable" : "Enable"}</button>
+<div class="PluginTileWrapper">
+    <div class="PluginTile">
+        <img class="iconImage" src={"../" + plugin.icon} alt={plugin.pluginName}>
+        <div>
+            <h2>{plugin.pluginName}</h2>
+            <h4>{plugin.version}</h4>
+            <h4>{plugin.author}</h4>
+            <button on:click={toggleDetails}>More Details</button>
+            <button on:click={togglePlugin} class={plugin.enabled ? "enabled" : "disabled"}>{plugin.enabled ? "Disable" : "Enable"}</button>
+        </div>
+        {#if plugin.error}
+            <img class="errorIcon" src={"../src/Images/Icons/Error.svg"} alt="Plugin error." title="Errors occurred on plugin load.">
+        {/if}
     </div>
 </div>
 {#if moreDetails}
@@ -76,6 +82,11 @@
         padding: 10px;
         margin-right: 30px;
         margin-bottom: 15px;
+    }
+
+    .PluginTileWrapper {
+        position: relative;
+        display: inline-block;
     }
 
     .iconImage {
@@ -132,6 +143,13 @@
 
     .closeImg {
         width: 30px;
+    }
+
+    .errorIcon {
+        position: absolute;
+        right: 33px;
+        top: 3px;
+        width: 25px;
     }
 
     @media (prefers-color-scheme: dark) {
