@@ -25,15 +25,18 @@
 </div>
 <style>
     .floatPopup {
-        background-color: white;
+        background-color: var(--background-gray);
         position: absolute;
         width: max-content;
         z-index: 9999;
+
+        border-radius: 15px;
+        padding: 15px;
     }
 
-    @media (prefers-color-scheme: dark){
+    @media (prefers-color-scheme: light) {
         .floatPopup {
-            background-color: black;
+            background-color: white;
         }
     }
 </style>
