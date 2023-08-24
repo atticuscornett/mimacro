@@ -59,8 +59,7 @@
         {/if}
     </div>
 </div>
-{#if moreDetails}
-    <Popup>
+    <Popup bind:show={moreDetails}>
         <h1>{plugin.pluginName}</h1>
         <h4>Package Name: {plugin.packageName}</h4>
         <h4>Package Author: {plugin.author}</h4>
@@ -73,7 +72,6 @@
         <h3>{@html readME}</h3>
         <button class="close" on:click={toggleDetails}><img class="closeImg" src="../src/Images/Icons/Close.svg" alt="Close"></button>
     </Popup>
-{/if}
 <style>
     .PluginTile {
         width: fit-content;

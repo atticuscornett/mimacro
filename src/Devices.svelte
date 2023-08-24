@@ -49,7 +49,7 @@
         </div>
 
         {#if action !== ""}
-            <Popup>
+            <Popup bind:show={action}>
                 {#if action.includes("flash")}
                     <h1>Flashing "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
                     <h2>Device Type: {deviceList[Number(action.split("-")[1])].mimacroType}</h2>

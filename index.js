@@ -13,7 +13,6 @@ const { join } = require('path');
 const fs = require("fs");
 const AdmZip = require("adm-zip");
 const PluginManager = require("./plugins")
-//const {install} = require("@sienci/avrgirl-arduino/lib/test-pilot-checker");
 
 let mainWindow;
 

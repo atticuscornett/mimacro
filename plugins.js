@@ -6,7 +6,6 @@ const {readFileSync} = require("fs");
 const Store = require('electron-store');
 const AdmZip = require("adm-zip");
 const store = new Store();
-const {getQuickJS} = require("quickjs-emscripten");
 
 function refreshInstalledPlugins(){
     console.log(installedPlugins);
@@ -127,7 +126,6 @@ function createPluginAPI(){
 function loadPlugin(pluginPath) {
     let pluginName;
     try {
-        const code = readFileSync(join(pluginPath, 'index.js'), 'utf-8');
         const packageJson = JSON.parse(readFileSync(join(pluginPath, "package.json"), 'utf-8'));
         pluginName = packageJson.name;
         const pluginObj = {
