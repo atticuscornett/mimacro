@@ -54,9 +54,6 @@ function initializeStores(){
     if (!store.has("installedPlugins")){
         store.set("installedPlugins", []);
     }
-    if (!store.has("pluginStorage")){
-        store.set("pluginStorage", {});
-    }
 }
 
 function addPluginDialog(){

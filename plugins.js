@@ -112,12 +112,52 @@ function pluginPackageJSON(pluginPath){
 
 function createPluginAPI(){
     global.storage = {
-        set: (pluginName, key, value) => {
-            pluginStorage[pluginName][key] = value;
+        set: (plugin, key, value) => {
+            pluginStorage[plugin.packageName][key] = value;
             store.set("pluginStorage", pluginStorage);
             return value;
         },
-        get: (pluginName, key) => {return pluginStorage[pluginName][key];}
+        get: (plugin, key) => {return pluginStorage[plugin.packageName][key];}
+    }
+
+    global.registerSetting = (plugin, settingID, settingLabel, settingDescription, settingType, settingDefault, options=null) => {
+        if (!pluginSettings[plugin.packageName][settingID]){
+            let settingTypes = ["boolean", "choice", "string", "number"]
+            if (settingType === "options" && options === null){
+                throw new Error("Error registering setting '" + settingID + "' for plugin '" + plugin.packageName + "': Options must be provided for choice setting.")
+            }
+            if (!settingTypes.includes(settingType)){
+                throw new Error("Error registering setting '" + settingID + "' for plugin '" + plugin.packageName + "': Unknown setting type.")
+            }
+            pluginSettings[plugin.packageName][settingID] = {
+                label: settingLabel,
+                description: settingDescription,
+                type: settingType,
+                value: settingDefault,
+                options: options
+            }
+            store.set("pluginSettings", pluginSettings);
+        }
+    }
+
+    global.getSetting = (plugin, settingID) => {
+        if (pluginSettings[plugin.packageName][settingID]) {
+            return pluginSettings[plugin.packageName][settingID];
+        }
+        else {
+            throw new Error("Error getting setting '" + settingID + "' for plugin '" + plugin.packageName + "': Setting has not been registered.")
+        }
+    }
+
+    global.setSetting = (plugin, settingID, value) => {
+        if (pluginSettings[plugin.packageName][settingID]) {
+            pluginSettings[plugin.packageName][settingID].value = value;
+            fireEventForPlugin(plugin.packageName, "onSettingUpdate", settingID, value)
+            return pluginSettings[plugin.packageName][settingID];
+        }
+        else {
+            throw new Error("Error setting setting '" + settingID + "' for plugin '" + plugin.packageName + "': Setting has not been registered.")
+        }
     }
 
     global.use = require;
@@ -137,10 +177,18 @@ function loadPlugin(pluginPath) {
             events: {}
         }
         loadedPlugins.push(pluginObj);
+        if (!pluginStorage[pluginName]){
+            pluginStorage[pluginName] = {};
+        }
+        if (!pluginSettings[pluginName]){
+            pluginSettings[pluginName] = {};
+        }
+        store.set("pluginStorage", pluginStorage);
+        store.set("pluginSettings", pluginSettings);
         console.log("Loading plugin: " + pluginName);
         pluginModules[pluginName] = require("./" + pluginPath);
         console.log("Plugin loaded.")
-        fireEventForPlugin(pluginName, "onEnable");
+        fireEventForPlugin(pluginName, "onEnable", pluginObj);
     } catch (err) {
         console.error('Error loading plugin (' + pluginPath + '):', err);
         installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].error = true;
@@ -227,11 +275,23 @@ function fireEventForPlugin(pluginName, event, ...args){
     if (event === "onDeviceMessage" && pluginModules[pluginName].onDeviceMessage){
         pluginModules[pluginName].onDeviceMessage(...args);
     }
+    if (event === "onSettingUpdate" && pluginModules[pluginName].onSettingUpdate){
+        pluginModules[pluginName].onSettingUpdate(...args);
+    }
 }
+
+if (!store.has("pluginStorage")){
+    store.set("pluginStorage", {});
+}
+if (!store.has("pluginSettings")){
+    store.set("pluginSettings", {});
+}
+
 createPluginAPI();
 let installedPlugins = store.get("installedPlugins");
 refreshInstalledPlugins();
 let pluginStorage = store.get("pluginStorage");
+let pluginSettings = store.get("pluginSettings");
 let loadedPlugins = [];
 let pluginModules = {};
 loadEnabledPlugins();
