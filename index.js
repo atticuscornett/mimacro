@@ -528,7 +528,7 @@ app.on("ready", () => {
             label: 'Quit',
             enabled: true,
             click: () => {
-                PluginManager.fireOnDisable();
+                PluginManager.fireEvent("onDisable");
                 app.quit()
                 process.exit(0);
             }

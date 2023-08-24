@@ -3,30 +3,11 @@ const fs = require("fs");
 const {join} = require("path");
 const path = require("path");
 const {readFileSync} = require("fs");
-const vm = require("vm");
 const Store = require('electron-store');
 const AdmZip = require("adm-zip");
 const store = new Store();
+const {getQuickJS} = require("quickjs-emscripten");
 
-const pluginAPI = {
-    require: null,
-    PluginEvents: {
-    },
-    PluginUtils: {
-        log: (message) => console.log(message),
-        getDevices: () => global.devices,
-        getDeviceLayouts: () => layouts,
-        getMacros: () => global.userMacros,
-        //TODO - Remove this, could make it possible for plugins to make themselves impossible to disable.
-        use: require
-    },
-    PluginStorage: {
-    },
-    RegisterRunnable: () => console.log("WIP"),
-    setTimeout: null,
-    setInterval: null,
-    Forever: null
-}
 
 function refreshInstalledPlugins(){
     console.log(installedPlugins);
@@ -155,12 +136,32 @@ function pluginPackageJSON(pluginPath){
     };
 }
 
-function loadPlugin(pluginPath) {
+function createPluginAPI(pluginPath, pluginName, vm){
+    return {
+        require: createRequire(pluginPath),
+        PluginEvents: createEvents(pluginName),
+        PluginUtils: {
+            log: (message) => console.log(message),
+            getDevices: () => global.devices,
+            getDeviceLayouts: () => layouts,
+            getMacros: () => global.userMacros,
+            //TODO - Remove this, could make it possible for plugins to make themselves impossible to disable.
+            use: require
+        },
+        PluginStorage: createStorage(pluginName),
+        RegisterRunnable: () => console.log("WIP"),
+        setTimeout: createSetTimeout(pluginName),
+        setInterval: createSetInterval(pluginName, vm),
+        Forever: createForever(pluginName)
+    }
+}
+
+async function loadPlugin(pluginPath) {
     let pluginName;
+    let quickJS = await getQuickJS();
+    let runtime = quickJS.newRuntime();
     try {
-        pluginAPI.require = createRequire(pluginPath);
         const code = readFileSync(join(pluginPath, 'index.js'), 'utf-8');
-        const context = vm.createContext(pluginAPI);
         const packageJson = JSON.parse(readFileSync(join(pluginPath, "package.json"), 'utf-8'));
         pluginName = packageJson.name;
         const pluginObj = {
@@ -172,17 +173,21 @@ function loadPlugin(pluginPath) {
             events: {}
         }
         loadedPlugins.push(pluginObj);
-        pluginAPI.PluginEvents = createEvents(pluginObj.packageName);
-        pluginAPI.PluginStorage = createStorage(pluginObj.packageName);
-        pluginAPI.Forever = createForever(pluginObj.packageName);
-        pluginAPI.setTimeout = createSetTimeout(pluginObj.packageName);
-        pluginAPI.setInterval = createSetInterval(pluginObj.packageName);
         console.log("Loading plugin: " + pluginName);
-        vm.runInContext(code, context, { timeout: 5000 });
+        let vm = quickJS.newContext();
+        let pluginAPI = createPluginAPI(pluginPath, pluginName, vm)
+        let PluginUtils = vm.newObject();
+        let test = vm.newFunction("log", (...args) => {console.log(...args.map(vm.dump))});
+        vm.setProp(PluginUtils, "log", test);
+        test.dispose();
+        vm.setProp(vm.global, "PluginUtils", PluginUtils)
+        PluginUtils.dispose();
+        //vm.setProp(vm.global, "setInterval", vm.newFunction("setInterval", pluginAPI.setInterval));
+        createRegisterEvent(pluginName, vm);
+        vm.evalCode(code);
+        pluginVMs.push(vm);
         console.log("Plugin loaded.")
-        if (getPlugin(pluginName).events.onEnable){
-            getPlugin(pluginName).events.onEnable();
-        }
+        fireEventForPlugin(pluginName, "onEnable");
     } catch (err) {
         console.error('Error loading plugin (' + pluginPath + '):', err);
         installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].error = true;
@@ -211,11 +216,31 @@ function createSetTimeout(pluginName){
     return (callback, timeout) => pluginTimeouts[pluginName].push(setTimeout(callback, timeout));
 }
 
-function createSetInterval(pluginName){
+function createSetInterval(pluginName, vm){
     if (pluginIntervals[pluginName] === undefined){
         pluginIntervals[pluginName] = [];
     }
-    return (callback, timeout) => pluginIntervals[pluginName].push(setInterval(callback, timeout));
+    return async (callback, timeout) => {
+        console.log("This is a test.")
+        let testing = vm.dump(callback);
+        console.log(testing)
+        //pluginIntervals[pluginName].push(setInterval(await vm.evalCodeAsync.bind(this, testing), Number(vm.dump(timeout))))
+    };
+}
+
+function createRegisterEvent(pluginName, vm){
+    if (!pluginEvents[pluginName]){
+        pluginEvents[pluginName] = [];
+    }
+    let regEvent = vm.newFunction("registerEvent", (event)=>{
+        event = vm.dump(event);
+        if (!pluginEvents[pluginName].includes(event)){
+            pluginEvents[pluginName].push(event);
+            console.log("Event registered for " + pluginName + ": " + event);
+        }
+    });
+    vm.setProp(vm.global, "registerEvent", regEvent);
+    regEvent.dispose();
 }
 
 function enablePlugin(event, packageName){
@@ -225,9 +250,7 @@ function enablePlugin(event, packageName){
 }
 
 function disablePlugin(event, packageName){
-    if (getPlugin(packageName).events.onDisable){
-        getPlugin(packageName).events.onDisable();
-    }
+    console.log("Disabling plugin: " + packageName)
     pluginForever[packageName] = [];
     if (pluginTimeouts[packageName]){
         for (let i = 0; i < pluginTimeouts[packageName].length; i++){
@@ -241,6 +264,10 @@ function disablePlugin(event, packageName){
     }
     installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = false;
     store.set("installedPlugins", installedPlugins);
+    fireEventForPlugin(packageName, "onDisable");
+    pluginVMs[getPluginIndexByPackageName(packageName)].dispose();
+    pluginVMs.splice(getPluginIndexByPackageName(packageName), 1);
+    loadedPlugins.splice(getPluginIndexByPackageName(packageName), 1);
 }
 
 function uninstallPlugin(event, pluginName){
@@ -306,11 +333,29 @@ function getLoadedPlugins(){
     return loadedPlugins;
 }
 
-function fireOnDisable(){
+function fireEvent(event, ...args){
+    let buildString = "";
+    for (let i = 0; i < args.length; i++){
+        buildString += JSON.stringify(args[i]) + ",";
+    }
+    buildString = event + "(" + buildString.slice(0, buildString.length-1) + ");";
+    console.log(buildString);
     for (let i = 0; i < loadedPlugins.length; i++){
-        if (loadedPlugins[i].events.onDisable){
-            loadedPlugins[i].events.onDisable();
+        if (pluginEvents[loadedPlugins[i].packageName].includes(event)){
+            pluginVMs[i].evalCode(buildString);
         }
+    }
+}
+
+function fireEventForPlugin(pluginName, event, ...args){
+    let buildString = "";
+    for (let i = 0; i < args.length; i++){
+        buildString += JSON.stringify(args[i]) + ",";
+    }
+    buildString = event + "(" + buildString.slice(0, buildString.length-1) + ");";
+    console.log(buildString);
+    if (pluginEvents[pluginName].includes(event)){
+        pluginVMs[getPluginIndexByPackageName(pluginName)].evalCode(buildString);
     }
 }
 
@@ -321,9 +366,11 @@ let pluginForever = {};
 let pluginTimeouts = {};
 let pluginIntervals = {};
 let loadedPlugins = [];
+let pluginVMs = [];
+let pluginEvents = {};
 loadEnabledPlugins();
 
 module.exports = {refreshInstalledPlugins, loadEnabledPlugins, getFoldersInDirectory, getPluginIndexByPackageName,
     getInstalledPluginIndexByPackageName, getPlugin, getPluginREADME, pluginPackageJSON, loadPlugin, enablePlugin,
-    disablePlugin, uninstallPlugin, fireForever, addPluginFromFile, getInstalledPlugins, getLoadedPlugins,
-    fireOnDisable, handleTriggers};
+    disablePlugin, uninstallPlugin, fireForever, addPluginFromFile, getInstalledPlugins, getLoadedPlugins, handleTriggers,
+    fireEvent};
