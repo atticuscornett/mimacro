@@ -200,6 +200,7 @@ function handleTriggers(input, device){
         }
         //console.log(userMacros[i]);
     }
+    fireEvent("onDeviceMessage", input, device);
 }
 
 function getInstalledPlugins(){
@@ -222,6 +223,9 @@ function fireEventForPlugin(pluginName, event, ...args){
     }
     if (event === "onDisable" && pluginModules[pluginName].onDisable){
         pluginModules[pluginName].onDisable(...args);
+    }
+    if (event === "onDeviceMessage" && pluginModules[pluginName].onDeviceMessage){
+        pluginModules[pluginName].onDeviceMessage(...args);
     }
 }
 createPluginAPI();
