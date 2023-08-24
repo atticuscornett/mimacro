@@ -556,4 +556,3 @@ app.on("ready", () => {
     });
     mainWindow.loadFile(path.join(__dirname, "public/index.html"));
 });
-setInterval(PluginManager.fireForever, 1);
