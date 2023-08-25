@@ -1,6 +1,7 @@
 <script>
     import Popup from "./Popup.svelte";
     import {onMount} from "svelte";
+    import IconHelp from "@tabler/icons-svelte/dist/svelte/icons/IconHelp.svelte";
 
     export let plugin;
     export let pluginList;
@@ -85,7 +86,28 @@
         <h1>{plugin.pluginName} Settings</h1>
         <div>
             {#each Object.entries(pluginSettings) as [key, setting]}
-                <h1>{key}</h1>
+                <div class="helpIcon">
+                    <IconHelp></IconHelp>
+                    <span>Type: {setting.type}<br>Description: {setting.description}</span>
+                </div>
+                <label for={"setting-" + key} style="display:inline;">{setting.label}: </label>
+                {#if setting.type === "string"}
+                    <input value={setting.value}>
+                {/if}
+                {#if setting.type === "boolean"}
+                    <input type="checkbox" checked={setting.value}>
+                {/if}
+                {#if setting.type === "number"}
+                    <input type="number" value={setting.value}>
+                {/if}
+                {#if setting.type === "choice"}
+                    <select>
+                        {#each setting.options as choice}
+                            <option value={choice}>{choice}</option>
+                        {/each}
+                    </select>
+                {/if}
+                <br>
             {/each}
         </div>
         <button class="close" on:click={toggleSettings}><img class="closeImg" src="../src/Images/Icons/Close.svg" alt="Close"></button>
@@ -137,42 +159,84 @@
         background-color: white;
     }
 
-    .enabled {
-        border: 0;
-        background-color: darkred;
-        color: white;
+    label {
+        font-size: 25px;
+        margin-right: 10px;
     }
 
-    .disabled {
-        border: 0;
-        background-color: darkgreen;
-        color: white;
+    input {
+        font-size: 12px;
+        font-weight: 900;
+        vertical-align: middle;
     }
 
-    .close {
+    input[type="checkbox"] {
+        scale: 1.5;
+    }
+
+    select {
+        font-size: 12px;
+        font-weight: 900;
+        vertical-align: middle;
+    }
+
+    span {
         position: absolute;
-        top: 10px;
-        right: 10px;
-        border: none;
-        background: none;
+        background-color: white;
+        color: black;
+        padding: 5px;
+        border-radius: 3px;
+        max-width: 55%;
+        visibility: hidden;
+        z-index: 99;
     }
 
-    .closeImg {
-        width: 30px;
+    .helpIcon:hover span {
+        visibility: visible;
     }
 
-    .errorIcon {
-        position: absolute;
-        right: 33px;
-        top: 3px;
-        width: 25px;
+    .helpIcon {
+        display: inline;
+        vertical-align: sub;
+        margin-right: 10px;
     }
 
-    @media (prefers-color-scheme: dark) {
-        button {
+        .enabled {
+            border: 0;
+            background-color: darkred;
             color: white;
-            background-color: black;
-            border: white 2px solid;
         }
-    }
+
+        .disabled {
+            border: 0;
+            background-color: darkgreen;
+            color: white;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none;
+            background: none;
+        }
+
+        .closeImg {
+            width: 30px;
+        }
+
+        .errorIcon {
+            position: absolute;
+            right: 33px;
+            top: 3px;
+            width: 25px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            button {
+                color: white;
+                background-color: black;
+                border: white 2px solid;
+            }
+        }
 </style>
