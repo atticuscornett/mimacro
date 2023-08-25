@@ -33,5 +33,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setOpenAtLogin: (openAtLogin) => ipcRenderer.invoke("setOpenAtLogin", openAtLogin),
   getOpenAtLogin: () => ipcRenderer.invoke("getOpenAtLogin"),
   getPluginREADME: (packageName) => ipcRenderer.invoke("getPluginREADME", packageName),
-  getPlugin: (packageName) => ipcRenderer.invoke("getPlugin", packageName)
+  getPlugin: (packageName) => ipcRenderer.invoke("getPlugin", packageName),
+  getPluginSettings: (packageName) => ipcRenderer.invoke("getPluginSettings", packageName),
+  setPluginSettings: (packageName, settings) => ipcRenderer.invoke("setPluginSettings", packageName, settings)
 });

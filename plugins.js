@@ -280,6 +280,15 @@ function fireEventForPlugin(pluginName, event, ...args){
     }
 }
 
+function getPluginSettings(event, pluginName){
+    return pluginSettings[pluginName];
+}
+
+function setPluginSettings(event, pluginName, settings){
+    pluginSettings[pluginName] = settings;
+    store.set("pluginStorage", pluginStorage);
+}
+
 if (!store.has("pluginStorage")){
     store.set("pluginStorage", {});
 }
@@ -299,4 +308,4 @@ loadEnabledPlugins();
 module.exports = {refreshInstalledPlugins, loadEnabledPlugins, getFoldersInDirectory, getPluginIndexByPackageName,
     getInstalledPluginIndexByPackageName, getPlugin, getPluginREADME, pluginPackageJSON, loadPlugin, enablePlugin,
     disablePlugin, uninstallPlugin, addPluginFromFile, getInstalledPlugins, getLoadedPlugins, handleTriggers,
-    fireEvent};
+    fireEvent, getPluginSettings, setPluginSettings};

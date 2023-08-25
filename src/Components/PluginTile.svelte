@@ -5,14 +5,16 @@
     export let plugin;
     export let pluginList;
 
+    let pluginSettings = {};
     let moreDetails = false;
+    let showSettings = false;
     let readME = "";
     onMount(async () => {
-        console
         readME = await getPluginREADME();
         if (readME === "")[
             readME = "No README provided."
         ]
+        pluginSettings = await electronAPI.getPluginSettings(plugin.packageName);
     })
 
     function togglePlugin(){
@@ -28,6 +30,10 @@
 
     function toggleDetails(){
         moreDetails = !moreDetails;
+    }
+
+    function toggleSettings(){
+        showSettings = !showSettings;
     }
 
     async function getPluginREADME() {
@@ -52,6 +58,9 @@
             <h4>{plugin.version}</h4>
             <h4>{plugin.author}</h4>
             <button on:click={toggleDetails}>More Details</button>
+            {#if Object.keys(pluginSettings).length !== 0}
+                <button on:click={toggleSettings}>Settings</button>
+            {/if}
             <button on:click={togglePlugin} class={plugin.enabled ? "enabled" : "disabled"}>{plugin.enabled ? "Disable" : "Enable"}</button>
         </div>
         {#if plugin.error}
@@ -72,10 +81,19 @@
         <h3>{@html readME}</h3>
         <button class="close" on:click={toggleDetails}><img class="closeImg" src="../src/Images/Icons/Close.svg" alt="Close"></button>
     </Popup>
+    <Popup bind:show={showSettings}>
+        <h1>{plugin.pluginName} Settings</h1>
+        <div>
+            {#each Object.entries(pluginSettings) as [key, setting]}
+                <h1>{key}</h1>
+            {/each}
+        </div>
+        <button class="close" on:click={toggleSettings}><img class="closeImg" src="../src/Images/Icons/Close.svg" alt="Close"></button>
+    </Popup>
 <style>
     .PluginTile {
         width: fit-content;
-        border: 3px solid gray;
+        border: 3px solid grey;
         border-radius: 7px;
         padding: 10px;
         margin-right: 30px;
@@ -103,7 +121,7 @@
     }
 
     h4 {
-        color: gray;
+        color: grey;
     }
 
     h1 {
