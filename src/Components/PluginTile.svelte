@@ -1,7 +1,6 @@
 <script>
     import Popup from "./Popup.svelte";
     import {onMount} from "svelte";
-    import IconHelp from "@tabler/icons-svelte/dist/svelte/icons/IconHelp.svelte";
 
     export let plugin;
     export let pluginList;
@@ -86,11 +85,10 @@
         <h1>{plugin.pluginName} Settings</h1>
         <div>
             {#each Object.entries(pluginSettings) as [key, setting]}
-                <div class="helpIcon">
-                    <IconHelp></IconHelp>
-                    <span>Type: {setting.type}<br>Description: {setting.description}</span>
-                </div>
-                <label for={"setting-" + key} style="display:inline;">{setting.label}: </label>
+                <label for={"setting-" + key} style="display:inline;">
+                    <span class="underline">{setting.label}</span>:
+                    <span class="hoverTip">Type: {setting.type}<br>Description: {setting.description}</span>
+                </label>
                 {#if setting.type === "string"}
                     <input value={setting.value}>
                 {/if}
@@ -107,7 +105,7 @@
                         {/each}
                     </select>
                 {/if}
-                <br>
+                <br><br>
             {/each}
         </div>
         <button class="close" on:click={toggleSettings}><img class="closeImg" src="../src/Images/Icons/Close.svg" alt="Close"></button>
@@ -162,25 +160,34 @@
     label {
         font-size: 25px;
         margin-right: 10px;
+        margin-bottom: 0;
+    }
+
+    .underline {
+        text-decoration-style: dotted;
+        text-decoration-line: underline;
     }
 
     input {
         font-size: 12px;
         font-weight: 900;
-        vertical-align: middle;
+        vertical-align: bottom;
+        margin-bottom: 0;
     }
 
     input[type="checkbox"] {
-        scale: 1.5;
+        width: 20px;
+        height: 20px;
+        vertical-align: sub;
     }
 
     select {
         font-size: 12px;
         font-weight: 900;
-        vertical-align: middle;
+        vertical-align: top;
     }
 
-    span {
+    .hoverTip {
         position: absolute;
         background-color: white;
         color: black;
@@ -189,16 +196,12 @@
         max-width: 55%;
         visibility: hidden;
         z-index: 99;
+        font-size: 15px;
+        text-decoration-line: none;
     }
 
-    .helpIcon:hover span {
+    label:hover > .hoverTip {
         visibility: visible;
-    }
-
-    .helpIcon {
-        display: inline;
-        vertical-align: sub;
-        margin-right: 10px;
     }
 
         .enabled {
