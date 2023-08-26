@@ -285,8 +285,15 @@ function getPluginSettings(event, pluginName){
 }
 
 function setPluginSettings(event, pluginName, settings){
+    let keys = Object.keys(settings);
+    let currentSettings = pluginSettings[pluginName];
     pluginSettings[pluginName] = settings;
     store.set("pluginStorage", pluginStorage);
+    for (let i = 0; i < keys.length; i++){
+        if (currentSettings[keys[i]].value !== settings[keys[i]].value){
+            fireEventForPlugin(pluginName, "onSettingUpdate", keys[i])
+        }
+    }
 }
 
 if (!store.has("pluginStorage")){

@@ -32,6 +32,22 @@
         moreDetails = !moreDetails;
     }
 
+    function getPluginSettings(){
+        let keys = Object.keys(pluginSettings);
+        for (let i = 0; i < keys.length; i++){
+            if (pluginSettings[keys[i]].type === "boolean"){
+                pluginSettings[keys[i]].value = document.getElementById("setting-"+plugin.packageName+"-"+keys[i]).checked;
+            }
+            else if (pluginSettings[keys[i]].type === "number"){
+                pluginSettings[keys[i]].value = Number(document.getElementById("setting-"+plugin.packageName+"-"+keys[i]).value);
+            }
+            else {
+                pluginSettings[keys[i]].value = document.getElementById("setting-"+plugin.packageName+"-"+keys[i]).value;
+            }
+        }
+        electronAPI.setPluginSettings(plugin.packageName, pluginSettings);
+    }
+
     function toggleSettings(){
         showSettings = !showSettings;
     }
@@ -83,23 +99,23 @@
     </Popup>
     <Popup bind:show={showSettings}>
         <h1>{plugin.pluginName} Settings</h1>
-        <div>
+        <div on:change={getPluginSettings}>
             {#each Object.entries(pluginSettings) as [key, setting]}
-                <label for={"setting-" + key} style="display:inline;">
+                <label for="setting-{plugin.packageName}-{key}" style="display:inline;">
                     <span class="underline">{setting.label}</span>:
                     <span class="hoverTip">Type: {setting.type}<br>Description: {setting.description}</span>
                 </label>
                 {#if setting.type === "string"}
-                    <input value={setting.value}>
+                    <input id="setting-{plugin.packageName}-{key}" value={setting.value}>
                 {/if}
                 {#if setting.type === "boolean"}
-                    <input type="checkbox" checked={setting.value}>
+                    <input id="setting-{plugin.packageName}-{key}" type="checkbox" checked={setting.value}>
                 {/if}
                 {#if setting.type === "number"}
-                    <input type="number" value={setting.value}>
+                    <input id="setting-{plugin.packageName}-{key}" type="number" value={setting.value}>
                 {/if}
                 {#if setting.type === "choice"}
-                    <select>
+                    <select id="setting-{plugin.packageName}-{key}">
                         {#each setting.options as choice}
                             <option value={choice}>{choice}</option>
                         {/each}
