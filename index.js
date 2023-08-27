@@ -479,6 +479,17 @@ function getOpenAtLogin(){
     return app.getLoginItemSettings().openAtLogin;
 }
 
+function getAllActions(){
+    let allActions = PluginManager.fireEvent("onGetActions")
+    let fullList = [];
+    for (let i = 0; i < allActions.length; i++){
+        if (allActions[i] !== undefined){
+            fullList = fullList.concat(allActions[i]);
+        }
+    }
+    return fullList;
+}
+
 connectToDevices();
 
 ipcMain.on("autoDetectDevices", () => autoDetectPorts(sendAutoPorts, 5000))
@@ -511,6 +522,7 @@ ipcMain.handle("getPluginREADME", PluginManager.getPluginREADME);
 ipcMain.handle("getPlugin", (event, packageName)=>{return JSON.parse(JSON.stringify(PluginManager.getPlugin(packageName)))});
 ipcMain.handle("getPluginSettings", PluginManager.getPluginSettings);
 ipcMain.handle("setPluginSettings", PluginManager.setPluginSettings);
+ipcMain.handle("getAllActions", getAllActions);
 
 app.on("ready", () => {
     tray = new Tray("icon.png");

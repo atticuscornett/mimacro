@@ -35,5 +35,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getPluginREADME: (packageName) => ipcRenderer.invoke("getPluginREADME", packageName),
   getPlugin: (packageName) => ipcRenderer.invoke("getPlugin", packageName),
   getPluginSettings: (packageName) => ipcRenderer.invoke("getPluginSettings", packageName),
-  setPluginSettings: (packageName, settings) => ipcRenderer.invoke("setPluginSettings", packageName, settings)
+  setPluginSettings: (packageName, settings) => ipcRenderer.invoke("setPluginSettings", packageName, settings),
+  getAllActions: () => ipcRenderer.invoke("getAllActions")
 });

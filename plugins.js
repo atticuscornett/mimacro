@@ -260,23 +260,32 @@ function getLoadedPlugins(){
 }
 
 function fireEvent(event, ...args){
+    let returns = [];
     for (let pluginName in pluginModules){
-        fireEventForPlugin(pluginName, event, ...args)
+        returns.push(fireEventForPlugin(pluginName, event, ...args));
     }
+    return returns;
 }
 
 function fireEventForPlugin(pluginName, event, ...args){
     if (event === "onEnable" && pluginModules[pluginName].onEnable){
-        pluginModules[pluginName].onEnable(...args);
+        return pluginModules[pluginName].onEnable(...args);
     }
     if (event === "onDisable" && pluginModules[pluginName].onDisable){
-        pluginModules[pluginName].onDisable(...args);
+        return pluginModules[pluginName].onDisable(...args);
     }
     if (event === "onDeviceMessage" && pluginModules[pluginName].onDeviceMessage){
-        pluginModules[pluginName].onDeviceMessage(...args);
+        return pluginModules[pluginName].onDeviceMessage(...args);
     }
     if (event === "onSettingUpdate" && pluginModules[pluginName].onSettingUpdate){
-        pluginModules[pluginName].onSettingUpdate(...args);
+        return pluginModules[pluginName].onSettingUpdate(...args);
+    }
+    if (event === "onGetActions" && pluginModules[pluginName].onGetActions){
+        let modules = pluginModules[pluginName].onGetActions(...args);
+        for (let i = 0; i < modules.length; i++){
+            modules[i].pluginId = pluginName;
+        }
+        return modules;
     }
 }
 
