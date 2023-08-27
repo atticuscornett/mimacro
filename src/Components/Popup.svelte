@@ -1,15 +1,37 @@
 <script>
     import {onDestroy, onMount} from "svelte";
 
-    onMount(() => {document.body.style.overflowY = "hidden";});
+    onMount(() => {if(show){document.body.style.overflowY = "hidden";}});
     onDestroy(() => {document.body.style.overflowY = "auto";});
+
+    $: {
+        if (show){
+            document.body.style.overflowY = "hidden";
+        }
+        else{
+            document.body.style.overflowY = "auto";
+        }
+    }
+
+    export let show = true;
+
+    function hide(){
+        if (show instanceof String){
+            show="";
+        }
+        else{
+            show=false;
+        }
+    }
 </script>
 
-<div class="container">
-    <div class="popup">
-        <slot></slot>
+{#if show}
+    <div class="container" on:click={hide}>
+        <div class="popup" on:click={(event) => {event.stopPropagation();}}>
+            <slot></slot>
+        </div>
     </div>
-</div>
+{/if}
 
 <style>
     .container {

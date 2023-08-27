@@ -3,30 +3,9 @@ const fs = require("fs");
 const {join} = require("path");
 const path = require("path");
 const {readFileSync} = require("fs");
-const vm = require("vm");
 const Store = require('electron-store');
 const AdmZip = require("adm-zip");
 const store = new Store();
-
-const pluginAPI = {
-    require: null,
-    PluginEvents: {
-    },
-    PluginUtils: {
-        log: (message) => console.log(message),
-        getDevices: () => global.devices,
-        getDeviceLayouts: () => layouts,
-        getMacros: () => global.userMacros,
-        //TODO - Remove this, could make it possible for plugins to make themselves impossible to disable.
-        use: require
-    },
-    PluginStorage: {
-    },
-    RegisterRunnable: () => console.log("WIP"),
-    setTimeout: null,
-    setInterval: null,
-    Forever: null
-}
 
 function refreshInstalledPlugins(){
     console.log(installedPlugins);
@@ -119,30 +98,6 @@ function getPluginREADME(event, packageName){
     }
 }
 
-function createEvents(pluginName){
-    return {
-        onEnable: (callback) => {getPlugin(pluginName).events.onEnable = callback;},
-        onDisable: (callback) => {getPlugin(pluginName).events.onDisable = callback;},
-        onRunnable: (callback) => {getPlugin(pluginName).events.onRunnable = callback;},
-        onDeviceMessage: (callback) => {getPlugin(pluginName).events.onDeviceMessage = callback;}
-    }
-}
-
-function createStorage(pluginName){
-    if (!pluginStorage[pluginName]){
-        pluginStorage[pluginName] = {};
-        store.set("pluginStorage", pluginStorage);
-    }
-    return {
-        set: (key, value) => {
-            pluginStorage[pluginName][key] = value;
-            store.set("pluginStorage", pluginStorage);
-            return value;
-        },
-        get: (key) => {return pluginStorage[pluginName][key];}
-    }
-}
-
 function pluginPackageJSON(pluginPath){
     const packageJson = JSON.parse(readFileSync(join(pluginPath, "package.json"), 'utf-8'));
     return {
@@ -155,12 +110,62 @@ function pluginPackageJSON(pluginPath){
     };
 }
 
+function createPluginAPI(){
+    global.storage = {
+        set: (plugin, key, value) => {
+            pluginStorage[plugin.packageName][key] = value;
+            store.set("pluginStorage", pluginStorage);
+            return value;
+        },
+        get: (plugin, key) => {return pluginStorage[plugin.packageName][key];}
+    }
+
+    global.registerSetting = (plugin, settingID, settingLabel, settingDescription, settingType, settingDefault, options=null) => {
+        if (!pluginSettings[plugin.packageName][settingID]){
+            let settingTypes = ["boolean", "choice", "string", "number"]
+            if (settingType === "options" && options === null){
+                throw new Error("Error registering setting '" + settingID + "' for plugin '" + plugin.packageName + "': Options must be provided for choice setting.")
+            }
+            if (!settingTypes.includes(settingType)){
+                throw new Error("Error registering setting '" + settingID + "' for plugin '" + plugin.packageName + "': Unknown setting type.")
+            }
+            pluginSettings[plugin.packageName][settingID] = {
+                label: settingLabel,
+                description: settingDescription,
+                type: settingType,
+                value: settingDefault,
+                options: options
+            }
+            store.set("pluginSettings", pluginSettings);
+        }
+    }
+
+    global.getSetting = (plugin, settingID) => {
+        if (pluginSettings[plugin.packageName][settingID]) {
+            return pluginSettings[plugin.packageName][settingID];
+        }
+        else {
+            throw new Error("Error getting setting '" + settingID + "' for plugin '" + plugin.packageName + "': Setting has not been registered.")
+        }
+    }
+
+    global.setSetting = (plugin, settingID, value) => {
+        if (pluginSettings[plugin.packageName][settingID]) {
+            pluginSettings[plugin.packageName][settingID].value = value;
+            fireEventForPlugin(plugin.packageName, "onSettingUpdate", settingID, value)
+            return pluginSettings[plugin.packageName][settingID];
+        }
+        else {
+            throw new Error("Error setting setting '" + settingID + "' for plugin '" + plugin.packageName + "': Setting has not been registered.")
+        }
+    }
+
+    global.use = require;
+}
+
 function loadPlugin(pluginPath) {
     let pluginName;
     try {
-        pluginAPI.require = createRequire(pluginPath);
-        const code = readFileSync(join(pluginPath, 'index.js'), 'utf-8');
-        const context = vm.createContext(pluginAPI);
         const packageJson = JSON.parse(readFileSync(join(pluginPath, "package.json"), 'utf-8'));
         pluginName = packageJson.name;
         const pluginObj = {
@@ -172,50 +177,22 @@ function loadPlugin(pluginPath) {
             events: {}
         }
         loadedPlugins.push(pluginObj);
-        pluginAPI.PluginEvents = createEvents(pluginObj.packageName);
-        pluginAPI.PluginStorage = createStorage(pluginObj.packageName);
-        pluginAPI.Forever = createForever(pluginObj.packageName);
-        pluginAPI.setTimeout = createSetTimeout(pluginObj.packageName);
-        pluginAPI.setInterval = createSetInterval(pluginObj.packageName);
-        console.log("Loading plugin: " + pluginName);
-        vm.runInContext(code, context, { timeout: 5000 });
-        console.log("Plugin loaded.")
-        if (getPlugin(pluginName).events.onEnable){
-            getPlugin(pluginName).events.onEnable();
+        if (!pluginStorage[pluginName]){
+            pluginStorage[pluginName] = {};
         }
+        if (!pluginSettings[pluginName]){
+            pluginSettings[pluginName] = {};
+        }
+        store.set("pluginStorage", pluginStorage);
+        store.set("pluginSettings", pluginSettings);
+        console.log("Loading plugin: " + pluginName);
+        pluginModules[pluginName] = require("./" + pluginPath);
+        console.log("Plugin loaded.")
+        fireEventForPlugin(pluginName, "onEnable", pluginObj);
     } catch (err) {
         console.error('Error loading plugin (' + pluginPath + '):', err);
         installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].error = true;
     }
-}
-
-function createRequire(pluginPath) {
-    return (moduleName) => {
-        const modulePath = require.resolve(moduleName, { paths: [pluginPath] });
-        delete require.cache[modulePath];
-        return require(modulePath);
-    };
-}
-
-function createForever(pluginName){
-    if (pluginForever[pluginName] === undefined){
-        pluginForever[pluginName] = [];
-    }
-    return (callback) => {pluginForever[pluginName].push(callback);}
-}
-
-function createSetTimeout(pluginName){
-    if (pluginTimeouts[pluginName] === undefined){
-        pluginTimeouts[pluginName] = [];
-    }
-    return (callback, timeout) => pluginTimeouts[pluginName].push(setTimeout(callback, timeout));
-}
-
-function createSetInterval(pluginName){
-    if (pluginIntervals[pluginName] === undefined){
-        pluginIntervals[pluginName] = [];
-    }
-    return (callback, timeout) => pluginIntervals[pluginName].push(setInterval(callback, timeout));
 }
 
 function enablePlugin(event, packageName){
@@ -225,22 +202,11 @@ function enablePlugin(event, packageName){
 }
 
 function disablePlugin(event, packageName){
-    if (getPlugin(packageName).events.onDisable){
-        getPlugin(packageName).events.onDisable();
-    }
-    pluginForever[packageName] = [];
-    if (pluginTimeouts[packageName]){
-        for (let i = 0; i < pluginTimeouts[packageName].length; i++){
-            clearTimeout(pluginTimeouts[packageName][i]);
-        }
-    }
-    if (pluginIntervals[packageName]){
-        for (let i = 0; i < pluginIntervals[packageName].length; i++){
-            clearInterval(pluginIntervals[packageName][i]);
-        }
-    }
+    console.log("Disabling plugin: " + packageName)
     installedPlugins[getInstalledPluginIndexByPackageName(packageName)].enabled = false;
     store.set("installedPlugins", installedPlugins);
+    fireEventForPlugin(packageName, "onDisable");
+    loadedPlugins.splice(getPluginIndexByPackageName(packageName), 1);
 }
 
 function uninstallPlugin(event, pluginName){
@@ -250,20 +216,6 @@ function uninstallPlugin(event, pluginName){
     fs.rmSync(installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].path, { recursive: true, force: true });
     refreshInstalledPlugins();
 }
-
-function fireForever(){
-    for (let key in pluginForever){
-        for (let index in pluginForever[key]){
-            try{
-                pluginForever[key][index]();
-            }
-            catch(e){
-                console.log("Error running forever callback for " + key + " (index " + index + ")")
-            }
-        }
-    }
-}
-
 function addPluginFromFile(event, filePath){
     console.log(filePath)
     try{
@@ -296,6 +248,7 @@ function handleTriggers(input, device){
         }
         //console.log(userMacros[i]);
     }
+    fireEvent("onDeviceMessage", input, device);
 }
 
 function getInstalledPlugins(){
@@ -306,24 +259,60 @@ function getLoadedPlugins(){
     return loadedPlugins;
 }
 
-function fireOnDisable(){
-    for (let i = 0; i < loadedPlugins.length; i++){
-        if (loadedPlugins[i].events.onDisable){
-            loadedPlugins[i].events.onDisable();
+function fireEvent(event, ...args){
+    for (let pluginName in pluginModules){
+        fireEventForPlugin(pluginName, event, ...args)
+    }
+}
+
+function fireEventForPlugin(pluginName, event, ...args){
+    if (event === "onEnable" && pluginModules[pluginName].onEnable){
+        pluginModules[pluginName].onEnable(...args);
+    }
+    if (event === "onDisable" && pluginModules[pluginName].onDisable){
+        pluginModules[pluginName].onDisable(...args);
+    }
+    if (event === "onDeviceMessage" && pluginModules[pluginName].onDeviceMessage){
+        pluginModules[pluginName].onDeviceMessage(...args);
+    }
+    if (event === "onSettingUpdate" && pluginModules[pluginName].onSettingUpdate){
+        pluginModules[pluginName].onSettingUpdate(...args);
+    }
+}
+
+function getPluginSettings(event, pluginName){
+    return pluginSettings[pluginName];
+}
+
+function setPluginSettings(event, pluginName, settings){
+    let keys = Object.keys(settings);
+    let currentSettings = pluginSettings[pluginName];
+    pluginSettings[pluginName] = settings;
+    store.set("pluginStorage", pluginStorage);
+    for (let i = 0; i < keys.length; i++){
+        if (currentSettings[keys[i]].value !== settings[keys[i]].value){
+            fireEventForPlugin(pluginName, "onSettingUpdate", keys[i])
         }
     }
 }
 
+if (!store.has("pluginStorage")){
+    store.set("pluginStorage", {});
+}
+if (!store.has("pluginSettings")){
+    store.set("pluginSettings", {});
+}
+
+createPluginAPI();
 let installedPlugins = store.get("installedPlugins");
 refreshInstalledPlugins();
 let pluginStorage = store.get("pluginStorage");
-let pluginForever = {};
-let pluginTimeouts = {};
-let pluginIntervals = {};
+let pluginSettings = store.get("pluginSettings");
 let loadedPlugins = [];
+let pluginModules = {};
 loadEnabledPlugins();
 
 module.exports = {refreshInstalledPlugins, loadEnabledPlugins, getFoldersInDirectory, getPluginIndexByPackageName,
     getInstalledPluginIndexByPackageName, getPlugin, getPluginREADME, pluginPackageJSON, loadPlugin, enablePlugin,
-    disablePlugin, uninstallPlugin, fireForever, addPluginFromFile, getInstalledPlugins, getLoadedPlugins,
-    fireOnDisable, handleTriggers};
+    disablePlugin, uninstallPlugin, addPluginFromFile, getInstalledPlugins, getLoadedPlugins, handleTriggers,
+    fireEvent, getPluginSettings, setPluginSettings};

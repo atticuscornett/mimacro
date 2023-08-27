@@ -13,7 +13,6 @@ const { join } = require('path');
 const fs = require("fs");
 const AdmZip = require("adm-zip");
 const PluginManager = require("./plugins")
-//const {install} = require("@sienci/avrgirl-arduino/lib/test-pilot-checker");
 
 let mainWindow;
 
@@ -54,9 +53,6 @@ function initializeStores(){
     }
     if (!store.has("installedPlugins")){
         store.set("installedPlugins", []);
-    }
-    if (!store.has("pluginStorage")){
-        store.set("pluginStorage", {});
     }
 }
 
@@ -513,6 +509,8 @@ ipcMain.handle("setOpenAtLogin", setOpenAtLogin);
 ipcMain.handle("getOpenAtLogin", getOpenAtLogin);
 ipcMain.handle("getPluginREADME", PluginManager.getPluginREADME);
 ipcMain.handle("getPlugin", (event, packageName)=>{return JSON.parse(JSON.stringify(PluginManager.getPlugin(packageName)))});
+ipcMain.handle("getPluginSettings", PluginManager.getPluginSettings);
+ipcMain.handle("setPluginSettings", PluginManager.setPluginSettings);
 
 app.on("ready", () => {
     tray = new Tray("icon.png");
@@ -528,7 +526,7 @@ app.on("ready", () => {
             label: 'Quit',
             enabled: true,
             click: () => {
-                PluginManager.fireOnDisable();
+                PluginManager.fireEvent("onDisable");
                 app.quit()
                 process.exit(0);
             }
@@ -556,4 +554,3 @@ app.on("ready", () => {
     });
     mainWindow.loadFile(path.join(__dirname, "public/index.html"));
 });
-setInterval(PluginManager.fireForever, 1);

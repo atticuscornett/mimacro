@@ -133,43 +133,41 @@
     </div>
     <button style="position:fixed; bottom: 10px; left: 20px;" on:click={()=>{showAdvanced=true;}}>Show Advanced Options</button>
     <button style="position:fixed; bottom: 10px; right: 20px;" on:click={()=>{viewingDevice=false;}}>Save Config</button>
-    {#if showAdvanced}
-        <Popup id="advancedOptions">
-            <h2 style="margin-top:0;">Advanced Options</h2>
-            <h3>Digital Pins</h3>
-            <hr>
-            <h4>Timeout sets how often the state of the pin is allowed to refresh. A digital timeout helps prevent false double presses from being recorded. Units are in milliseconds.</h4>
-            <div class="flexList" on:change={validateAdvancedInputs}>
-                {#each devices[device].pinProperties.digital.timeout as t, i}
-                    <div>
-                        <label for={"digitaltimeout-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["digital"][i]} Timeout</label>
-                        <input type="number" value={t} id={"digitaltimeout-" + i} min="1" max="255">
-                    </div>
-                {/each}
-            </div>
-            <h3>Analog Pins</h3>
-            <hr>
-            <h4>Timeout sets how often the state of the pin is allowed to refresh. An analog timeout helps prevent the serial connection from sending messages too often. Units are in milliseconds.</h4>
-            <div class="flexList" on:change={validateAdvancedInputs}>
-                {#each devices[device].pinProperties.analog.timeout as t, i}
-                    <div>
-                        <label for={"analogtimeout-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["analog"][i]} Timeout</label>
-                        <input type="number" value={t} id={"analogtimeout-" + i} min="1" max="255">
-                    </div>
-                {/each}
-            </div>
-            <h4>Minimum change (minchange) sets the minimum change in analog value (0-1023) that will be registered by the device, altering its sensitivity.  A minimum change value helps the device ignore regular variations in voltage readings.</h4>
-            <div class="flexList" on:change={validateAdvancedInputs}>
-                {#each devices[device].pinProperties.analog.minChange as t, i}
-                    <div>
-                        <label for={"analogminchange-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["analog"][i]} Minchange</label>
-                        <input type="number" value={t} id={"analogminchange-" + i} min="1" max="255">
-                    </div>
-                {/each}
-            </div>
-            <button on:click={saveAdvanced} style="width:100%;position:sticky;bottom:0;margin-top:20px;">Save Changes</button>
-        </Popup>
-    {/if}
+    <Popup bind:show={showAdvanced} id="advancedOptions">
+        <h2 style="margin-top:0;">Advanced Options</h2>
+        <h3>Digital Pins</h3>
+        <hr>
+        <h4>Timeout sets how often the state of the pin is allowed to refresh. A digital timeout helps prevent false double presses from being recorded. Units are in milliseconds.</h4>
+        <div class="flexList" on:change={validateAdvancedInputs}>
+            {#each devices[device].pinProperties.digital.timeout as t, i}
+                <div>
+                    <label for={"digitaltimeout-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["digital"][i]} Timeout</label>
+                    <input type="number" value={t} id={"digitaltimeout-" + i} min="1" max="255">
+                </div>
+            {/each}
+        </div>
+        <h3>Analog Pins</h3>
+        <hr>
+        <h4>Timeout sets how often the state of the pin is allowed to refresh. An analog timeout helps prevent the serial connection from sending messages too often. Units are in milliseconds.</h4>
+        <div class="flexList" on:change={validateAdvancedInputs}>
+            {#each devices[device].pinProperties.analog.timeout as t, i}
+                <div>
+                    <label for={"analogtimeout-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["analog"][i]} Timeout</label>
+                    <input type="number" value={t} id={"analogtimeout-" + i} min="1" max="255">
+                </div>
+            {/each}
+        </div>
+        <h4>Minimum change (minchange) sets the minimum change in analog value (0-1023) that will be registered by the device, altering its sensitivity.  A minimum change value helps the device ignore regular variations in voltage readings.</h4>
+        <div class="flexList" on:change={validateAdvancedInputs}>
+            {#each devices[device].pinProperties.analog.minChange as t, i}
+                <div>
+                    <label for={"analogminchange-" + i}>Pin {deviceLayouts[devices[device].mimacroType]["analog"][i]} Minchange</label>
+                    <input type="number" value={t} id={"analogminchange-" + i} min="1" max="255">
+                </div>
+            {/each}
+        </div>
+        <button on:click={saveAdvanced} style="width:100%;position:sticky;bottom:0;margin-top:20px;">Save Changes</button>
+    </Popup>
 {/if}
 
 <style>
