@@ -6,8 +6,15 @@ export interface Action {
     pluginId: string,
 
     meta?: object[],
-    ui?: object,
+    ui?: { [Name: string]: UIComponent },
 }
+
+export interface UIComponent {
+    type: Type,
+    options?: string[]
+}
+
+type Type = "string" | "number" | "options-select" | "checkbox"
 
 actionRegistry.push({
     displayName: "Keypress",
@@ -15,7 +22,13 @@ actionRegistry.push({
     pluginId: "default",
 
     ui: {
-        keycode: "string"
+        keycode: {
+            type: "options-select",
+            options: [
+                "opt1",
+                "opt2",
+            ]
+        }
     }
 } as Action)
 
@@ -25,7 +38,9 @@ actionRegistry.push({
     pluginId: "default",
 
     ui: {
-        keycode: "string"
+        keycode: {
+            type: "string"
+        }
     }
 } as Action)
 
@@ -35,7 +50,9 @@ actionRegistry.push({
     pluginId: "default",
 
     ui: {
-        keycode: "string"
+        keycode: {
+            type: "checkbox"
+        }
     }
 } as Action)
 
@@ -45,7 +62,9 @@ actionRegistry.push({
     pluginId: "default",
 
     ui: {
-        keycode: "string"
+        keycode: {
+            type: "number"
+        }
     }
 } as Action)
 
