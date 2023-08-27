@@ -75,16 +75,42 @@
 
     {#if popupIsShowing}
         <FloatingPopup x={mouseX} y={mouseY}>
-            Pick an Action To Add
-            {#each getRegistry() as actionData}
-                <button on:click={() => {selectAction(actionData)}}>{actionData.displayName}</button>
-            {/each}
+            <h2 style="margin-top: 5px;">Pick an Action To Add</h2>
+
+            <ul class="available-actions">
+                {#each getRegistry() as actionData}
+                    <li>
+                        <button class="available-action"
+                                on:click={() => {selectAction(actionData)}}>{actionData.displayName}</button>
+                    </li>
+                {/each}
+            </ul>
         </FloatingPopup>
     {/if}
 </main>
 
 <style>
-    li {
-        list-style: none;
+    .available-actions {
+        display: flex;
+        flex-direction: column;
+        max-height: 250px;
+        overflow: auto;
+    }
+
+    .available-action {
+        left: 110px;
+        top: 453px;
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+        background-color: var(--background-gray);
+        color: white;
+        border: none;
+        font-size: large;
+        max-height: 500px;
+    }
+
+    li:has(> .available-action) {
+        font-size: x-large;
     }
 </style>
