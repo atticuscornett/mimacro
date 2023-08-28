@@ -199,7 +199,17 @@
         </p>
     </div>
 
-    <SubmitButton bottom={0} class="submit-button" disabled={!canProgress} fixed={true} on:submit={next} right={0}/>
+    <div class="submit-button">
+
+        <SubmitButton bottom={0}
+                      disabled={!canProgress}
+                      fixed={true}
+                      left={undefined}
+                      on:submit={next}
+                      right={0}
+                      top={undefined}
+        />
+    </div>
 </main>
 
 <style>

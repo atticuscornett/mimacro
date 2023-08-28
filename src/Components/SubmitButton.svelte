@@ -5,10 +5,10 @@
 
     export let disabled: boolean;
 
-    export let top: number;
-    export let bottom: number;
-    export let left: number;
-    export let right: number;
+    export let top: number | undefined = undefined;
+    export let bottom: number | undefined = undefined;
+    export let left: number | undefined = undefined;
+    export let right: number | undefined = undefined;
 
     export let fixed: boolean;
 
