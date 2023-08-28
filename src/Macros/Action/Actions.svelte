@@ -25,7 +25,7 @@
         mouseY = event.clientY + scrollY;
     }
 
-    let selectAction = (actionData) => {
+    let selectAction = (actionData: ActionData) => {
         popupIsShowing = false;
 
         actions = [...actions, actionData]
@@ -73,20 +73,18 @@
 
     <button on:click={showPopup}>Add New Action</button>
 
-    {#if popupIsShowing}
-        <FloatingPopup x={mouseX} y={mouseY}>
-            <h2 style="margin-top: 5px;">Pick an Action To Add</h2>
+    <FloatingPopup bind:show={popupIsShowing} x={mouseX} y={mouseY}>
+        <h2 style="margin-top: 5px;">Pick an Action To Add</h2>
 
-            <ul class="available-actions">
-                {#each getRegistry() as actionData}
-                    <li>
-                        <button class="available-action"
-                                on:click={() => {selectAction(actionData)}}>{actionData.displayName}</button>
-                    </li>
-                {/each}
-            </ul>
-        </FloatingPopup>
-    {/if}
+        <ul class="available-actions">
+            {#each getRegistry() as actionData}
+                <li>
+                    <button class="available-action"
+                            on:click={() => {selectAction(actionData)}}>{actionData.displayName}</button>
+                </li>
+            {/each}
+        </ul>
+    </FloatingPopup>
 </main>
 
 <style>
