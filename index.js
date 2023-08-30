@@ -491,6 +491,7 @@ function getAllActions(){
 }
 
 connectToDevices();
+global.writeDevice = writeDevice;
 
 ipcMain.on("autoDetectDevices", () => autoDetectPorts(sendAutoPorts, 5000))
 ipcMain.on("addDevice", (event, device) => addDevice(device));

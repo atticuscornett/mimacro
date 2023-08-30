@@ -153,12 +153,15 @@ function createPluginAPI(){
         if (pluginSettings[plugin.packageName][settingID]) {
             pluginSettings[plugin.packageName][settingID].value = value;
             fireEventForPlugin(plugin.packageName, "onSettingUpdate", settingID, value)
+            store.set("pluginSettings", pluginSettings)
             return pluginSettings[plugin.packageName][settingID];
         }
         else {
             throw new Error("Error setting setting '" + settingID + "' for plugin '" + plugin.packageName + "': Setting has not been registered.")
         }
     }
+
+    global.sendMessageToDevice = (device, message) => {writeDevice(null, device, message)}
 
     global.use = require;
 }
@@ -297,7 +300,7 @@ function setPluginSettings(event, pluginName, settings){
     let keys = Object.keys(settings);
     let currentSettings = pluginSettings[pluginName];
     pluginSettings[pluginName] = settings;
-    store.set("pluginStorage", pluginStorage);
+    store.set("pluginSettings", pluginSettings);
     for (let i = 0; i < keys.length; i++){
         if (currentSettings[keys[i]].value !== settings[keys[i]].value){
             fireEventForPlugin(pluginName, "onSettingUpdate", keys[i])
@@ -314,11 +317,11 @@ if (!store.has("pluginSettings")){
 
 createPluginAPI();
 let installedPlugins = store.get("installedPlugins");
-refreshInstalledPlugins();
 let pluginStorage = store.get("pluginStorage");
 let pluginSettings = store.get("pluginSettings");
 let loadedPlugins = [];
 let pluginModules = {};
+refreshInstalledPlugins();
 loadEnabledPlugins();
 
 module.exports = {refreshInstalledPlugins, loadEnabledPlugins, getFoldersInDirectory, getPluginIndexByPackageName,

@@ -51,7 +51,7 @@
     }
 </script>
 {#if show}
-    <div class="floatPopup" id="floatPopup">
+    <div class="floatPopup" id="floatPopup" use:placePopup>
         <slot></slot>
     </div>
 {/if}
