@@ -58,7 +58,7 @@
 </script>
 
 <main>
-    <ul>
+    <ul class="actions">
         {#if $macro.actions}
             {#each $macro.actions as actionData, i}
                 <li>
@@ -109,6 +109,11 @@
         border: none;
         font-size: large;
         max-height: 500px;
+    }
+
+    .actions {
+        list-style-type: none;
+        padding-left: 0;
     }
 
     li:has(> .available-action) {
