@@ -1,12 +1,14 @@
 <script lang="ts">
     import type {MacroData} from "./Data/macro";
     import {type ArduinoDevice, devices} from "./Data/device";
-    import {getPart, Part, TriggerData} from "./Data/triggerData";
-    import {getPopulatedPins, parts, Pin, pinFromString, pinToString} from "./Data/pin";
-    import {Action, getRegistry} from "./Data/action";
+    import type {Part, TriggerData} from "./Data/triggerData";
+    import {getPart} from "./Data/triggerData";
+    import type {Pin} from "./Data/pin"
+    import {getPopulatedPins, parts, pinFromString, pinToString} from "./Data/pin";
+    import {Action} from "./Data/action";
     import {v4 as uuidv4} from 'uuid'
     import {getContext} from "svelte";
-    import {writable} from "svelte/store";
+    import type {Writable} from "svelte/store";
     import SubmitButton from "../Components/SubmitButton.svelte";
     import Actions from "./Action/Actions.svelte";
 
@@ -15,7 +17,7 @@
     export let canRegress: boolean;
     canRegress = true;
 
-    let macro: writable<MacroData> = getContext("wipMacro");
+    let macro: Writable<MacroData> = getContext("wipMacro");
 
     let macroName: string;
     let device: ArduinoDevice;
@@ -79,9 +81,6 @@
     let stringPin: string = "d0p0";
     $: pin = pinFromString(stringPin);
 
-    let selectedActionIndex;
-    $: action = getRegistry()[selectedActionIndex];
-
     function checkCanProgress(trigger: TriggerData, action: Action, pin: Pin, macroName: string, device: ArduinoDevice, part: Part): boolean {
         if (!trigger) return false;
         if (!trigger.name) return false;
@@ -98,7 +97,7 @@
     }
 
     export let canProgress: boolean;
-    $: canProgress = checkCanProgress(trigger, action, pin, macroName, device, part);
+    $: canProgress = checkCanProgress(trigger, actions, pin, macroName, device, part);
 
     export let onProgress: () => void
     onProgress = () => {

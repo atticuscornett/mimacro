@@ -1,12 +1,12 @@
 <script lang="ts">
-    import {writable} from "svelte/store";
+    import {Writable} from "svelte/store";
     import {MacroData} from "../Data/macro";
     import {getContext} from "svelte";
     import {Action as ActionData, getRegistry} from "../Data/action";
     import Action from "./Action.svelte";
     import FloatingPopup from "../../Components/FloatingPopup.svelte";
 
-    let macro: writable<MacroData> = getContext("wipMacro");
+    let macro: Writable<MacroData> = getContext("wipMacro");
 
     $macro.actions = [];
 
@@ -52,6 +52,9 @@
 
         deleteAction(index + 1)
     }
+
+    let availableActions: ActionData[] = [];
+    getRegistry().then((p) => availableActions = p);
 </script>
 
 <main>
@@ -77,7 +80,7 @@
         <h2 style="margin-top: 5px;">Pick an Action To Add</h2>
 
         <ul class="available-actions">
-            {#each getRegistry() as actionData}
+            {#each availableActions as actionData}
                 <li>
                     <button class="available-action"
                             on:click={() => {selectAction(actionData)}}>{actionData.displayName}</button>

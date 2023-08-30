@@ -15,6 +15,8 @@
     const dispatch = createEventDispatcher();
 
     export let ordinal: number;
+
+    console.log(action.id);
 </script>
 
 <div class="action">
