@@ -321,6 +321,7 @@ let pluginStorage = store.get("pluginStorage");
 let pluginSettings = store.get("pluginSettings");
 let loadedPlugins = [];
 let pluginModules = {};
+loadPlugin("./bundled-plugins/keyboard");
 refreshInstalledPlugins();
 loadEnabledPlugins();
 
