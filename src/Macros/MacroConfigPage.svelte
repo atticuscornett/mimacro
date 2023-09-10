@@ -110,7 +110,7 @@
             uuid: uuidv4()
         }
 
-        console.log($macro.actions);
+        // console.log($macro.actions);
 
         console.log("Submitted Macro: " + JSON.stringify(result));
 
