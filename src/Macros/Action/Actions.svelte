@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type {Action as ActionData} from "../Data/action.mjs"
-    import {getRegistry} from "../Data/action.mjs";
+    import type {Action as ActionData} from "../Data/action"
+    import {getRegistry} from "../Data/action";
     import Action from "./Action.svelte";
     import FloatingPopup from "../../Components/FloatingPopup.svelte";
 

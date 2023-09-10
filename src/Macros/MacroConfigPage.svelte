@@ -5,7 +5,7 @@
     import {getPart} from "./Data/triggerData";
     import type {Pin} from "./Data/pin"
     import {getPopulatedPins, parts, pinFromString, pinToString} from "./Data/pin";
-    import {Action} from "./Data/action.mjs";
+    import {Action} from "./Data/action";
     import {v4 as uuidv4} from 'uuid'
     import {getContext} from "svelte";
     import type {Writable} from "svelte/store";
