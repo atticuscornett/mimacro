@@ -1,5 +1,5 @@
-import type {Pin, PinType} from "./pin.mjs";
-import {parts} from "./pin.mjs";
+import type {Pin, PinType} from "./pin";
+import {parts} from "./pin";
 
 export interface TriggerData {
     pin: Pin,

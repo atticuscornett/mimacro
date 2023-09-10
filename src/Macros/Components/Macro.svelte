@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {MacroData} from "../Data/macro.mjs";
+    import {MacroData} from "../Data/macro";
     import {writable} from "svelte/store";
     import {getContext} from "svelte";
 
