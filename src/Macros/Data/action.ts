@@ -9,8 +9,6 @@ export interface Action {
 export interface UIComponent {
     type: Type,
     id: string,
-
-    [x: string | number | symbol]: unknown;
 }
 
 type Type = "string" | "number" | "options" | "checkbox"

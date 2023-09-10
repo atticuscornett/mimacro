@@ -3,8 +3,9 @@
     import IconMinus from "@tabler/icons-svelte/dist/svelte/icons/IconMinus.svelte"
     import IconArrowBarToUp from "@tabler/icons-svelte/dist/svelte/icons/IconArrowBarToUp.svelte"
     import IconArrowBarToDown from "@tabler/icons-svelte/dist/svelte/icons/IconArrowBarToDown.svelte"
-    import {getPrimaryThemeColor} from "../../utilities";
+    import {capitalize, getPrimaryThemeColor} from "../../utilities";
     import {createEventDispatcher} from "svelte";
+    import Popup from "../../Components/Popup.svelte";
 
     export let action: Action;
 
@@ -16,26 +17,40 @@
 
     export let ordinal: number;
 
-    console.log(action.id);
+    let showPopup = false;
 </script>
 
 <div class="action">
-    {ordinal + 1}. {action.displayName}
+    <button on:click={() => showPopup = true}>
+        {ordinal + 1}. {action.displayName}
 
-    <div class="buttons">
-        <button on:click={() => dispatch('delete')}>
-            <IconMinus color={iconColor} size={iconSize} stroke={iconStroke}/>
-        </button>
-        <button on:click={() => dispatch('shiftup')}>
-            <IconArrowBarToUp color={iconColor} size={iconSize} stroke={iconStroke}/>
-        </button>
-        <button on:click={() => dispatch('shiftdown')}>
-            <IconArrowBarToDown color={iconColor} size={iconSize} stroke={iconStroke}/>
-        </button>
-    </div>
+        <div class="buttons">
+            <button on:click={() => dispatch('delete')}>
+                <IconMinus color={iconColor} size={iconSize} stroke={iconStroke}/>
+            </button>
+            <button on:click={() => dispatch('shiftup')}>
+                <IconArrowBarToUp color={iconColor} size={iconSize} stroke={iconStroke}/>
+            </button>
+            <button on:click={() => dispatch('shiftdown')}>
+                <IconArrowBarToDown color={iconColor} size={iconSize} stroke={iconStroke}/>
+            </button>
+        </div>
+    </button>
+
+    <Popup bind:show={showPopup}>
+        <div class="popup">
+            {#each action.ui as {type, id}}
+                {id.split("-").map((s) => capitalize(s))}
+            {/each}
+        </div>
+    </Popup>
 </div>
 
 <style>
+    .popup {
+
+    }
+
     .buttons {
         display: inline-flex;
         opacity: 0;
@@ -55,6 +70,23 @@
         border: none;
     }
 
+    .action > button {
+        background: none;
+        display: flex;
+        width: 100%;
+        text-align: left;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: row;
+        color: white;
+        border: none;
+        margin: 0;
+    }
+
+    .action > button:active {
+        transform: none;
+    }
+
     .buttons > button:hover {
         filter: brightness(150%);
     }
@@ -66,6 +98,7 @@
     }
 
     .action {
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: space-between;
