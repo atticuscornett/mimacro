@@ -60,21 +60,26 @@
 
     $: {
         if (part) {
-            if (triggerIndex != null) {
+            if (triggerIndexDefined()) {
+                console.log(triggerIndex);
                 trigger.parameters = part.triggers[triggerIndex].parameters;
             }
         }
     }
 
     $: {
-        if (part && triggerIndex) {
+        if (part && triggerIndexDefined()) {
             trigger.description = part.triggers[triggerIndex].description;
         }
     }
 
     $: {
-        if (part && triggerIndex)
+        if (part && triggerIndexDefined())
             trigger.name = part.triggers[triggerIndex].name;
+    }
+
+    function triggerIndexDefined(): boolean {
+        return triggerIndex != null && triggerIndex != -1;
     }
 
     // digital pin 0 part Nothing
@@ -161,6 +166,9 @@
 
             <select bind:value={triggerIndex} class="dropdown" disabled={!part || part.triggers.length < 1}
                     id="trigger-dropdown">
+                <!-- Empty option that you can't reselect -->
+                <option disabled hidden selected value={-1}></option>
+
                 {#if part != null}
                     {#each part.triggers as trigger, i}
                         <option value={i}>
