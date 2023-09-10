@@ -2,7 +2,7 @@
     import MacroViewingPage from "./Macros/MacroViewingPage.svelte";
     import PageHandler from "./Components/PageHandler.svelte";
     import {writable} from "svelte/store";
-    import {MacroData} from "./Macros/Data/macro";
+    import {MacroData} from "./Macros/Data/macro.mjs";
     import {setContext} from "svelte";
     import MacroConfigPage from "./Macros/MacroConfigPage.svelte";
 

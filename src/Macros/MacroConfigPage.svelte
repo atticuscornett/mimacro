@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type {MacroData} from "./Data/macro";
-    import {type ArduinoDevice, devices} from "./Data/device";
-    import type {Part, TriggerData} from "./Data/triggerData";
-    import {getPart} from "./Data/triggerData";
-    import type {Pin} from "./Data/pin"
-    import {getPopulatedPins, parts, pinFromString, pinToString} from "./Data/pin";
+    import type {MacroData} from "./Data/macro.mjs";
+    import {type ArduinoDevice, devices} from "./Data/device.mjs";
+    import type {Part, TriggerData} from "./Data/triggerData.mjs";
+    import {getPart} from "./Data/triggerData.mjs";
+    import type {Pin} from "./Data/pin.mjs"
+    import {getPopulatedPins, parts, pinFromString, pinToString} from "./Data/pin.mjs";
     import {Action} from "./Data/action.mjs";
     import {v4 as uuidv4} from 'uuid'
     import {getContext} from "svelte";

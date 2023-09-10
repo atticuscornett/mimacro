@@ -1,6 +1,6 @@
 <script lang="ts">
     import Macro from "./Components/Macro.svelte";
-    import type {MacroData} from "./Data/macro";
+    import type {MacroData} from "./Data/macro.mjs";
     import {getContext} from "svelte";
     import {writable} from "svelte/store";
 

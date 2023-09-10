@@ -1,5 +1,5 @@
-import type {ArduinoDevice} from "./device";
-import type {Part} from "./triggerData";
+import type {ArduinoDevice} from "./device.mjs";
+import type {Part} from "./triggerData.mjs";
 
 export interface Pin {
     type: PinType,
