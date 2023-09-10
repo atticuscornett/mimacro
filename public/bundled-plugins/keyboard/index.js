@@ -14,35 +14,45 @@ function onGetActions(){
             id: "keydown",
             pluginId: "default",
 
-            ui: {
-                keycode: {
+            ui: [
+                {
+                    id: "keycode",
+                    label: "Keycode",
                     type: "string"
                 }
-            }
+            ]
         },
         {
             displayName: "Key Up",
             id: "keyup",
             pluginId: "default",
 
-            ui: {
-                keycode: {
+            ui: [
+                {
+                    id: "keycode",
+                    label: "Keycode",
                     type: "string"
                 }
-            }
+            ]
         },
         {
             displayName: "Type",
             id: "type",
             pluginId: "default",
 
-            ui: {
-                typestring: {
+            ui: [
+                {
+                    id: "typestring",
+                    label: "Type String",
                     type: "string"
                 }
-            }
+            ]
         }
     ]
 }
 
-module.exports = {onEnable, onDisable, onGetActions}
+function onAction(actionId){
+    console.log("I am supposed to run " + actionId);
+}
+
+module.exports = {onEnable, onDisable, onAction, onGetActions}

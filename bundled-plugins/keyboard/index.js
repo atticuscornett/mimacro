@@ -45,4 +45,8 @@ function onGetActions(){
     ]
 }
 
-module.exports = {onEnable, onDisable, onGetActions}
+function onAction(actionId){
+    console.log("I am supposed to run " + actionId);
+}
+
+module.exports = {onEnable, onDisable, onAction, onGetActions}

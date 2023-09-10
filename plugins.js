@@ -263,16 +263,33 @@ function handleTriggers(input, device){
     let command = input.split(" ");
     console.log(command);
     for (let i = 0; i < global.userMacros.length; i++){
-        if (global.userMacros[i].device.serialNumber === device.serialNumber){
-            if (command[0] === "POTENT" && userMacros[i].part.id === "40"){
-                if (String(global.userMacros[i].trigger.pin.pinNumber) === command[1]){
+        let thisMacro = global.userMacros[i];
+        if (thisMacro.device.serialNumber === device.serialNumber){
+            if (command[0] === "POTENT" && thisMacro.part.id === "40"){
+                if (String(thisMacro.trigger.pin.pinNumber) === command[1]){
                     console.log("Check trigger conditions")
+                }
+            }
+            if (command[0] === "BUTTON" && thisMacro.part.id === "1"){
+                if (String(thisMacro.trigger.pin.pinNumber) === command[1]){
+                    if (thisMacro.trigger.name === "Up" && command[2] === "UP"){
+                        runActions(thisMacro.actions)
+                    }
+                    if (thisMacro.trigger.name === "Down" && command[2] === "DOWN"){
+                        runActions(thisMacro.actions)
+                    }
                 }
             }
         }
         //console.log(userMacros[i]);
     }
     fireEvent("onDeviceMessage", input, device);
+}
+
+function runActions(actions){
+    for (let i = 0; i < actions.length; i++){
+        fireEventForPlugin(actions[i].pluginId, "onAction", actions[i].id);
+    }
 }
 
 function getInstalledPlugins(){
@@ -310,6 +327,9 @@ function fireEventForPlugin(pluginName, event, ...args){
             modules[i].pluginId = pluginName;
         }
         return modules;
+    }
+    if (event === "onAction" && pluginModules[pluginName].onAction){
+        return pluginModules[pluginName].onAction(...args);
     }
 }
 
