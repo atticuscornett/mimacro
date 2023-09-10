@@ -6,17 +6,19 @@ const {readFileSync} = require("fs");
 const Store = require('electron-store');
 const AdmZip = require("adm-zip");
 const store = new Store();
+const { app} = require("electron")
+
 
 function refreshInstalledPlugins(){
     console.log(installedPlugins);
     if (!fs.existsSync("./plugins")){
         fs.mkdirSync("./plugins");
     }
-    let pluginFolderList = getFoldersInDirectory("./plugins");
+    let pluginFolderList = getFoldersInDirectory(getPluginDir());
     let tempInstalledPlugins = [];
     for (let folder in pluginFolderList){
         try{
-            let folderPath = join("./plugins", pluginFolderList[folder]);
+            let folderPath = join(getPluginDir(), pluginFolderList[folder]);
             let packageObj = pluginPackageJSON(folderPath);
             packageObj.path = folderPath;
             if (getInstalledPluginIndexByPackageName(packageObj.packageName) > -1){
@@ -33,6 +35,7 @@ function refreshInstalledPlugins(){
             tempInstalledPlugins.push(packageObj);
         }
         catch(e){
+            console.log(e);
         }
     }
     installedPlugins = tempInstalledPlugins;
@@ -166,6 +169,16 @@ function createPluginAPI(){
     global.use = require;
 }
 
+// Get plugin directory, which is different when in dev vs production.
+function getPluginDir(){
+    if (app.getAppPath().endsWith(".asar")){
+        return join(path.dirname(app.getPath("exe")), "/plugins")
+    }
+    else {
+        return join(app.getAppPath(), "/plugins");
+    }
+}
+
 function loadPlugin(pluginPath) {
     let pluginName;
     try {
@@ -189,12 +202,15 @@ function loadPlugin(pluginPath) {
         store.set("pluginStorage", pluginStorage);
         store.set("pluginSettings", pluginSettings);
         console.log("Loading plugin: " + pluginName);
-        pluginModules[pluginName] = require("./" + pluginPath);
+        pluginModules[pluginName] = require(pluginPath);
         console.log("Plugin loaded.")
         fireEventForPlugin(pluginName, "onEnable", pluginObj);
     } catch (err) {
         console.error('Error loading plugin (' + pluginPath + '):', err);
-        installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].error = true;
+        if (installedPlugins[getInstalledPluginIndexByPackageName(pluginName)]){
+            installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].error = true;
+            installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].errorDetails = err;
+        }
     }
 }
 
@@ -214,7 +230,12 @@ function disablePlugin(event, packageName){
 
 function uninstallPlugin(event, pluginName){
     if (getPluginIndexByPackageName(pluginName) >= 0){
-        disablePlugin(null, pluginName);
+        try{
+            disablePlugin(null, pluginName);
+        }
+        catch(e){
+            console.log("Could not disable plugin.");
+        }
     }
     fs.rmSync(installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].path, { recursive: true, force: true });
     refreshInstalledPlugins();
@@ -242,16 +263,33 @@ function handleTriggers(input, device){
     let command = input.split(" ");
     console.log(command);
     for (let i = 0; i < global.userMacros.length; i++){
-        if (global.userMacros[i].device.serialNumber === device.serialNumber){
-            if (command[0] === "POTENT" && userMacros[i].part.id === "40"){
-                if (String(global.userMacros[i].trigger.pin.pinNumber) === command[1]){
+        let thisMacro = global.userMacros[i];
+        if (thisMacro.device.serialNumber === device.serialNumber){
+            if (command[0] === "POTENT" && thisMacro.part.id === "40"){
+                if (String(thisMacro.trigger.pin.pinNumber) === command[1]){
                     console.log("Check trigger conditions")
+                }
+            }
+            if (command[0] === "BUTTON" && thisMacro.part.id === "1"){
+                if (String(thisMacro.trigger.pin.pinNumber) === command[1]){
+                    if (thisMacro.trigger.name === "Up" && command[2] === "UP"){
+                        runActions(thisMacro.actions)
+                    }
+                    if (thisMacro.trigger.name === "Down" && command[2] === "DOWN"){
+                        runActions(thisMacro.actions)
+                    }
                 }
             }
         }
         //console.log(userMacros[i]);
     }
     fireEvent("onDeviceMessage", input, device);
+}
+
+function runActions(actions){
+    for (let i = 0; i < actions.length; i++){
+        fireEventForPlugin(actions[i].pluginId, "onAction", actions[i].id);
+    }
 }
 
 function getInstalledPlugins(){
@@ -290,6 +328,9 @@ function fireEventForPlugin(pluginName, event, ...args){
         }
         return modules;
     }
+    if (event === "onAction" && pluginModules[pluginName].onAction){
+        return pluginModules[pluginName].onAction(...args);
+    }
 }
 
 function getPluginSettings(event, pluginName){
@@ -321,7 +362,9 @@ let pluginStorage = store.get("pluginStorage");
 let pluginSettings = store.get("pluginSettings");
 let loadedPlugins = [];
 let pluginModules = {};
-loadPlugin("./bundled-plugins/keyboard");
+
+loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/keyboard"));
+loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/mouse"))
 refreshInstalledPlugins();
 loadEnabledPlugins();
 
