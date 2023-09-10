@@ -526,7 +526,7 @@ ipcMain.handle("setPluginSettings", PluginManager.setPluginSettings);
 ipcMain.handle("getAllActions", getAllActions);
 
 app.on("ready", () => {
-    tray = new Tray("icon.png");
+    tray = new Tray(__dirname + "/icon.png");
     tray.setToolTip("mimacro");
     const trayMenuTemplate = [{
         label: 'mimacro',
@@ -559,7 +559,7 @@ app.on("ready", () => {
         autoHideMenuBar: true,
         minWidth: 800,
         minHeight: 600,
-        icon: "icon.png",
+        icon: __dirname + "/icon.png",
         show: !getOpenAtLogin()
     });
     mainWindow.on('close', e => {

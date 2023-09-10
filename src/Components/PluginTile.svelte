@@ -68,7 +68,7 @@
 </script>
 <div class="PluginTileWrapper">
     <div class="PluginTile">
-        <img class="iconImage" src={"../" + plugin.icon} alt={plugin.pluginName}>
+        <img class="iconImage" src={plugin.icon} alt={plugin.pluginName}>
         <div>
             <h2>{plugin.pluginName}</h2>
             <h4>{plugin.version}</h4>

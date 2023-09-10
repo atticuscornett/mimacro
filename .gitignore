@@ -126,9 +126,17 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# Rollup builds
 /public/build/
+
+# User-installed plugins
 /plugins
+
+# Temporary plugin installation files
 /temp
+
+# electron-builder builds
+/dist
 
 /.idea
 
