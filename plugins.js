@@ -363,8 +363,8 @@ let pluginSettings = store.get("pluginSettings");
 let loadedPlugins = [];
 let pluginModules = {};
 
-console.log(join(app.getAppPath(), "/public/bundled-plugins/keyboard"))
 loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/keyboard"));
+loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/mouse"))
 refreshInstalledPlugins();
 loadEnabledPlugins();
 
