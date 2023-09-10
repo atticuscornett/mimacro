@@ -559,6 +559,7 @@ app.on("ready", () => {
         autoHideMenuBar: true,
         minWidth: 800,
         minHeight: 600,
+        icon: "icon.png",
         show: !getOpenAtLogin()
     });
     mainWindow.on('close', e => {
