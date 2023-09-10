@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {Action} from "../Data/action";
+    import type {Action} from "../Data/action.mjs";
     import IconMinus from "@tabler/icons-svelte/dist/svelte/icons/IconMinus.svelte"
     import IconArrowBarToUp from "@tabler/icons-svelte/dist/svelte/icons/IconArrowBarToUp.svelte"
     import IconArrowBarToDown from "@tabler/icons-svelte/dist/svelte/icons/IconArrowBarToDown.svelte"

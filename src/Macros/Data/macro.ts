@@ -1,6 +1,6 @@
 import type {ArduinoDevice} from "./device";
 import type {Part, TriggerData} from "./triggerData";
-import type {Action} from "./action";
+import type {Action} from "./action.mjs";
 
 export interface MacroData {
     name: string,

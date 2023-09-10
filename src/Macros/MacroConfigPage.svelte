@@ -5,7 +5,7 @@
     import {getPart} from "./Data/triggerData";
     import type {Pin} from "./Data/pin"
     import {getPopulatedPins, parts, pinFromString, pinToString} from "./Data/pin";
-    import {Action} from "./Data/action";
+    import {Action} from "./Data/action.mjs";
     import {v4 as uuidv4} from 'uuid'
     import {getContext} from "svelte";
     import type {Writable} from "svelte/store";
@@ -25,6 +25,8 @@
     let triggerIndex: number;
     let trigger: TriggerData;
 
+    let actions: Action[];
+
     trigger = {
         name: "",
         pin: undefined,
@@ -33,7 +35,6 @@
         parameters: []
     };
 
-    let actions: Action[];
     let pin: Pin;
 
     $: {
@@ -61,7 +62,6 @@
     $: {
         if (part) {
             if (triggerIndexDefined()) {
-                console.log(triggerIndex);
                 trigger.parameters = part.triggers[triggerIndex].parameters;
             }
         }
@@ -86,23 +86,18 @@
     let stringPin: string = "d0p0";
     $: pin = pinFromString(stringPin);
 
-    function checkCanProgress(trigger: TriggerData, action: Action, pin: Pin, macroName: string, device: ArduinoDevice, part: Part): boolean {
-        if (!trigger) return false;
-        if (!trigger.name) return false;
-        // if (!action) return false;
-        if (!pin) return false;
-
-        if (!macroName) return false;
-
-        if (!device) return false;
-
-        if (!part) return false;
-
-        return true;
-    }
-
     export let canProgress: boolean;
-    $: canProgress = checkCanProgress(trigger, actions, pin, macroName, device, part);
+    $: {
+        canProgress =
+            trigger != null &&
+            trigger.name != null &&
+            actions != null &&
+            actions.length > 0 &&
+            pin != null &&
+            macroName != null &&
+            device != null &&
+            part != null;
+    }
 
     export let onProgress: () => void
     onProgress = () => {
@@ -111,9 +106,11 @@
             device: device,
             part: part,
             trigger: trigger,
-            actions: actions,
+            actions: $macro.actions,
             uuid: uuidv4()
         }
+
+        console.log($macro.actions);
 
         console.log("Submitted Macro: " + JSON.stringify(result));
 
@@ -202,7 +199,7 @@
 
             run these actions in order:
 
-            <Actions/>
+            <Actions bind:actions={actions}/>
         </p>
     </div>
 

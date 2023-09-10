@@ -1,17 +1,14 @@
 <script lang="ts">
-    import {Writable} from "svelte/store";
-    import {MacroData} from "../Data/macro";
-    import {getContext} from "svelte";
-    import {Action as ActionData, getRegistry} from "../Data/action";
+    import type {Action as ActionData} from "../Data/action.mjs"
+    import {getRegistry} from "../Data/action.mjs";
     import Action from "./Action.svelte";
     import FloatingPopup from "../../Components/FloatingPopup.svelte";
 
-    let macro: Writable<MacroData> = getContext("wipMacro");
+    export let actions: ActionData[] = [];
 
-    $macro.actions = [];
-
-    let actions: ActionData[] = $macro.actions;
-    $: $macro.actions = actions;
+    $: {
+        console.log(actions);
+    }
 
     let popupIsShowing = false;
 
@@ -28,7 +25,10 @@
     let selectAction = (actionData: ActionData) => {
         popupIsShowing = false;
 
-        actions = [...actions, actionData]
+        // actions.push(actionData);
+        // actions = actions;
+
+        actions = [...actions, actionData];
     }
 
     function deleteAction(index: number): void {
@@ -59,8 +59,8 @@
 
 <main>
     <ul class="actions">
-        {#if $macro && $macro.actions}
-            {#each $macro.actions as actionData, i}
+        {#if actions.length > 0}
+            {#each actions as actionData, i}
                 <li>
                     <Action bind:action={actionData} ordinal={i}
                             on:delete={() => deleteAction(i)}
@@ -70,7 +70,7 @@
                 </li>
             {/each}
         {:else}
-            Nothing
+            You have not selected any actions for this Macro! You must define at least one action.
         {/if}
     </ul>
 
