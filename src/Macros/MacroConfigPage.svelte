@@ -106,7 +106,7 @@
             device: device,
             part: part,
             trigger: trigger,
-            actions: $macro.actions,
+            actions: actions,
             uuid: uuidv4()
         }
 
