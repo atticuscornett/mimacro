@@ -4,7 +4,6 @@
     import {writable} from "svelte/store";
     import {MacroData} from "./Macros/Data/macro";
     import {setContext} from "svelte";
-    import ActionConfigPage from "./Macros/ActionConfigPage.svelte";
     import MacroConfigPage from "./Macros/MacroConfigPage.svelte";
 
     let macros = writable([] as MacroData[]);
@@ -42,6 +41,5 @@
              pages={[
     MacroViewingPage,
     MacroConfigPage,
-    ActionConfigPage
 ]}
 />
