@@ -37,8 +37,6 @@
         color: white;
 
         font-weight: bold;
-
-        pointer-events: none;
     }
 
     button[disabled] {

@@ -59,7 +59,7 @@
 
 <main>
     <ul class="actions">
-        {#if $macro.actions}
+        {#if $macro && $macro.actions}
             {#each $macro.actions as actionData, i}
                 <li>
                     <Action bind:action={actionData} ordinal={i}
