@@ -60,13 +60,22 @@
         </div>
 
         <div class="buttons">
-            <button on:click={() => dispatch('delete')}>
+            <button on:click={(e) => {
+                e.stopPropagation();
+                dispatch('delete');
+            }}>
                 <IconMinus color={iconColor} size={iconSize} stroke={iconStroke}/>
             </button>
-            <button on:click={() => dispatch('shiftup')}>
+            <button on:click={(e) => {
+                e.stopPropagation();
+                dispatch('shiftup');
+            }}>
                 <IconArrowBarToUp color={iconColor} size={iconSize} stroke={iconStroke}/>
             </button>
-            <button on:click={() => dispatch('shiftdown')}>
+            <button on:click={(e) => {
+                e.stopPropagation();
+                dispatch('shiftdown');
+            }}>
                 <IconArrowBarToDown color={iconColor} size={iconSize} stroke={iconStroke}/>
             </button>
         </div>
