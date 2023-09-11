@@ -25,6 +25,38 @@ function onGetActions(){
 
             ui: [
             ]
+        },
+        {
+            displayName: "Volume Up",
+            id: "volUp",
+            pluginId: "default",
+
+            ui: [
+            ]
+        },
+        {
+            displayName: "Volume Down",
+            id: "volDown",
+            pluginId: "default",
+
+            ui: [
+            ]
+        },
+        {
+            displayName: "Next Song",
+            id: "nextSong",
+            pluginId: "default",
+
+            ui: [
+            ]
+        },
+        {
+            displayName: "Previous Song",
+            id: "prevSong",
+            pluginId: "default",
+
+            ui: [
+            ]
         }
     ]
 }
@@ -37,6 +69,22 @@ async function onAction(actionId) {
     if (actionId === "muteMedia"){
         await keyboard.pressKey(Key.AudioMute);
         await keyboard.releaseKey(Key.AudioMute);
+    }
+    if (actionId === "volUp"){
+        await keyboard.pressKey(Key.AudioVolUp);
+        await keyboard.releaseKey(Key.AudioVolUp);
+    }
+    if (actionId === "volDown"){
+        await keyboard.pressKey(Key.AudioVolDown);
+        await keyboard.releaseKey(Key.AudioVolDown);
+    }
+    if (actionId === "nextSong"){
+        await keyboard.pressKey(Key.AudioNext);
+        await keyboard.releaseKey(Key.AudioNext);
+    }
+    if (actionId === "prevSong"){
+        await keyboard.pressKey(Key.AudioPrev);
+        await keyboard.releaseKey(Key.AudioPrev);
     }
 }
 

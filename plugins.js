@@ -290,7 +290,10 @@ function handleTriggers(input, device){
 
 function runActions(actions){
     for (let i = 0; i < actions.length; i++){
-        fireEventForPlugin(actions[i].pluginId, "onAction", actions[i].id);
+        let actionId = actions[i].id;
+        let ordinal = actions[i].ordinal;
+        actionId = actionId.slice(0, String(ordinal).length*-1);
+        fireEventForPlugin(actions[i].pluginId, "onAction", actionId);
     }
 }
 
