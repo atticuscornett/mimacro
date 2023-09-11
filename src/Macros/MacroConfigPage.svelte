@@ -86,6 +86,8 @@
     let stringPin: string = "d0p0";
     $: pin = pinFromString(stringPin);
 
+    let actionsDefined = false;
+
     export let canProgress: boolean;
     $: {
         canProgress =
@@ -93,6 +95,7 @@
             trigger.name != null &&
             actions != null &&
             actions.length > 0 &&
+            actionsDefined &&
             pin != null &&
             macroName != null &&
             device != null &&
@@ -201,7 +204,7 @@
 
             run these actions in order:
 
-            <Actions bind:actions={actions}/>
+            <Actions bind:actions={actions} bind:canLeave={actionsDefined}/>
         </p>
     </div>
 

@@ -29,16 +29,13 @@
 
     action.ui.forEach((uiComponent: UIComponent) => {
         uiComponent.id = uiComponent.id + ordinal;
-        console.log(uiComponent.id);
-
-        console.log(uiComponent);
     })
 
     action.id += ordinal;
 
     action.ui.forEach((c) => console.log(c))
 
-    let fullyDefined = false;
+    export let fullyDefined = false;
     $: {
         if (!fullyDefined) {
             fullyDefined = isActionFullyDefined(action);
@@ -48,7 +45,7 @@
 
     $: {
         for (let metaDataKey in action.metaData) {
-            let val: string = action.metaData[metaDataKey];
+            let val: string = action.metaData[metaDataKey].toString();
 
             if (val.length <= 0) {
                 fullyDefined = false;

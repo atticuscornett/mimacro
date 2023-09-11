@@ -1,20 +1,17 @@
 <script lang="ts">
     import type {Action as ActionData} from "../Data/action"
-    import {getRegistry, isActionFullyDefined} from "../Data/action";
+    import {getRegistry} from "../Data/action";
     import Action from "./Action.svelte";
     import FloatingPopup from "../../Components/FloatingPopup.svelte";
 
     export let actions: ActionData[] = [];
 
-    export let canLeave: boolean = false;
+    export let canLeave: boolean = true;
     $: {
-        canLeave = true;
-        for (let action of actions) {
-            if (!isActionFullyDefined(action)) {
-                canLeave = false;
-            }
-        }
+        canLeave = actionDefinedList.every(b => b);
     }
+
+    let actionDefinedList: boolean[] = []
 
     let popupIsShowing = false;
 
@@ -65,7 +62,7 @@
         {#if actions.length > 0}
             {#each actions as actionData, i}
                 <li>
-                    <Action bind:action={actionData} ordinal={i}
+                    <Action bind:action={actionData} ordinal={i} bind:fullyDefined={actionDefinedList[i]}
                             on:delete={() => deleteAction(i)}
                             on:shiftup={() => shiftActionUp(i)}
                             on:shiftdown={() => shiftActionUp(i + 1)}
