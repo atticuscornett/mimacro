@@ -1,9 +1,10 @@
 <script lang="ts">
-    import type {Action} from "../Data/action";
+    import type {Action, UIComponent} from "../Data/action";
+    import {isActionFullyDefined} from "../Data/action";
     import IconMinus from "@tabler/icons-svelte/dist/svelte/icons/IconMinus.svelte"
     import IconArrowBarToUp from "@tabler/icons-svelte/dist/svelte/icons/IconArrowBarToUp.svelte"
     import IconArrowBarToDown from "@tabler/icons-svelte/dist/svelte/icons/IconArrowBarToDown.svelte"
-    import {capitalize, getPrimaryThemeColor} from "../../utilities";
+    import {getPrimaryThemeColor} from "../../utilities";
     import {createEventDispatcher} from "svelte";
     import Popup from "../../Components/Popup.svelte";
 
@@ -17,12 +18,55 @@
 
     export let ordinal: number;
 
+    let values: { [id: string]: object } = {};
+    action.metaData = {};
+
+    $: {
+        action.metaData = values;
+    }
+
+    action.ui.forEach((uiComponent: UIComponent) => {
+        uiComponent.id = uiComponent.id + ordinal;
+        console.log(uiComponent.id);
+
+        console.log(uiComponent);
+    })
+
+    action.id += ordinal;
+
+    action.ui.forEach((c) => console.log(c))
+
+    let fullyDefined = false;
+    $: {
+        if (!fullyDefined) {
+            fullyDefined = isActionFullyDefined(action);
+            console.log(`${action.id} fullyDefined: ${fullyDefined}`);
+        }
+    }
+
+    $: {
+        for (let metaDataKey in action.metaData) {
+            let val: string = action.metaData[metaDataKey];
+
+            if (val.length <= 0) {
+                fullyDefined = false;
+            }
+        }
+    }
+
     let showPopup = false;
 </script>
 
-<div class="action">
-    <button on:click={() => showPopup = true}>
-        {ordinal + 1}. {action.displayName}
+<div>
+    <div class="action" on:click={() => showPopup = true}
+         on:keydown={() => {}}>
+        <div>
+            {ordinal + 1}. {action.displayName}
+
+            {#if !fullyDefined}
+                <img src="../src/Images/Icons/Error.svg" alt="">
+            {/if}
+        </div>
 
         <div class="buttons">
             <button on:click={() => dispatch('delete')}>
@@ -35,22 +79,37 @@
                 <IconArrowBarToDown color={iconColor} size={iconSize} stroke={iconStroke}/>
             </button>
         </div>
-    </button>
+    </div>
 
     <Popup bind:show={showPopup}>
         <div class="popup">
-            {#each action.ui as {type, id}}
-                {id.split("-").map((s) => capitalize(s))}
+            {#each action.ui as {type, id, label, options}}
+                <h3>{label}</h3>
+
+                {#if type === "string"}
+                    <input id={id} bind:value={values[id]} type="text">
+                {:else if type === "number"}
+                    <input id={id} bind:value={values[id]} type="number">
+                {:else if type === "options-select"}
+                    <select id={id} bind:value={values[id]}>
+                        <option hidden disabled selected></option>
+
+                        {#each options as option}
+                            <option value={option}>{option}</option>
+                        {/each}
+                    </select>
+                {:else if type === "checkbox"}
+                    <input id={id} bind:value={values[id]} type="checkbox">
+                {:else}
+                    The type property for this UIComponent is not one of the acceptable types. Please try again and see
+                    the documentation.
+                {/if}
             {/each}
         </div>
     </Popup>
 </div>
 
 <style>
-    .popup {
-
-    }
-
     .buttons {
         display: inline-flex;
         opacity: 0;

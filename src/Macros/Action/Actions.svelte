@@ -1,13 +1,19 @@
 <script lang="ts">
     import type {Action as ActionData} from "../Data/action"
-    import {getRegistry} from "../Data/action";
+    import {getRegistry, isActionFullyDefined} from "../Data/action";
     import Action from "./Action.svelte";
     import FloatingPopup from "../../Components/FloatingPopup.svelte";
 
     export let actions: ActionData[] = [];
 
+    export let canLeave: boolean = false;
     $: {
-        console.log(actions);
+        canLeave = true;
+        for (let action of actions) {
+            if (!isActionFullyDefined(action)) {
+                canLeave = false;
+            }
+        }
     }
 
     let popupIsShowing = false;
@@ -25,10 +31,7 @@
     let selectAction = (actionData: ActionData) => {
         popupIsShowing = false;
 
-        // actions.push(actionData);
-        // actions = actions;
-
-        actions = [...actions, actionData];
+        actions = [...actions, JSON.parse(JSON.stringify(actionData))];
     }
 
     function deleteAction(index: number): void {
