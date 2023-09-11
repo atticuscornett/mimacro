@@ -60,11 +60,11 @@
 <div>
     <div class="action" on:click={() => showPopup = true}
          on:keydown={() => {}}>
-        <div>
+        <div style="display: inline-flex; align-items: inherit;">
             {ordinal + 1}. {action.displayName}
 
             {#if !fullyDefined}
-                <img src="../src/Images/Icons/Error.svg" alt="">
+                <img style="width: 30px; padding-left: 15px;" src="../src/Images/Icons/Error.svg" alt="">
             {/if}
         </div>
 
