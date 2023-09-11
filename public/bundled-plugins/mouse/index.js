@@ -58,7 +58,6 @@ async function onAction(actionId) {
     if (actionId === "doubleRightClick"){
         await mouse.doubleClick(Button.RIGHT);
     }
-    console.log("Run " + actionId);
 }
 
 module.exports = {onEnable, onDisable, onAction, onGetActions}
