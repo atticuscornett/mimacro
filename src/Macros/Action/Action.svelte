@@ -21,6 +21,8 @@
     let values: { [id: string]: object } = {};
     action.metaData = {};
 
+    action.ordinal = ordinal;
+
     $: {
         action.metaData = values;
     }
