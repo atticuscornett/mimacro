@@ -91,13 +91,16 @@
         canProgress =
             trigger != null &&
             trigger.name != null &&
-            !trigger.parameters.some((p: TriggerParameter) => p.value === null) &&
             actions != null &&
             actions.length > 0 &&
             pin != null &&
             macroName != null &&
             device != null &&
             part != null;
+
+        if (trigger.parameters && trigger.parameters.length > 0 && canProgress) {
+            canProgress = !trigger.parameters.some((p: TriggerParameter) => p.value == null || p.value.length < 1);
+        }
     }
 
     export let onProgress: () => void
