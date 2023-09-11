@@ -28,7 +28,7 @@ export async function getRegistry() {
 
 export function isActionFullyDefined(action: Action): boolean {
     for (let ui of action.ui) {
-        if (ui.required) {
+        if (ui.required || ui.required == null) {
             let component = document.getElementById(ui.id) as HTMLInputElement;
 
             if (!component) return false;

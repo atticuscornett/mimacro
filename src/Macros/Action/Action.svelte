@@ -24,6 +24,14 @@
 
     action.ui.forEach((uiComponent: UIComponent) => {
         uiComponent.id = uiComponent.id + action.id;
+
+        if (uiComponent.required == null) {
+            uiComponent.required = true;
+        }
+
+        if (uiComponent.type === "checkbox") {
+            uiComponent.required = false;
+        }
     })
 
     action.ui.forEach((c) => console.log(c))
@@ -36,11 +44,22 @@
     }
 
     $: {
+        let i = 0;
         for (let metaDataKey in action.metaData) {
             let val: string = action.metaData[metaDataKey].toString();
 
-            if (val.length <= 0) {
-                fullyDefined = false;
+            console.log(action.ui);
+            console.log(i);
+
+            let required = action.ui[i].required;
+            i++;
+
+            console.log(required);
+
+            if (required) {
+                if (val.length <= 0) {
+                    fullyDefined = false;
+                }
             }
         }
     }
