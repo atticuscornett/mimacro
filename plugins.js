@@ -262,6 +262,9 @@ function addPluginFromFile(event, filePath){
 function handleTriggers(input, device){
     let command = input.split(" ");
     console.log(command);
+    if (command[0] === "BUTTON" && command[2] === "UP"){
+        clearHold(device.serialNumber, command[1]);
+    }
     for (let i = 0; i < global.userMacros.length; i++){
         let thisMacro = global.userMacros[i];
         if (thisMacro.device.serialNumber === device.serialNumber){
@@ -280,6 +283,9 @@ function handleTriggers(input, device){
                     if (thisMacro.trigger.name === "Down" && command[2] === "DOWN"){
                         runActions(thisMacro.actions);
                     }
+                    if (thisMacro.trigger.name === "Hold" && command[2] === "DOWN"){
+                        handleHolds(device.serialNumber, command[1], thisMacro.actions, thisMacro.trigger.parameters[0].value)
+                    }
                 }
             }
         }
@@ -288,12 +294,38 @@ function handleTriggers(input, device){
     fireEvent("onDeviceMessage", input, device);
 }
 
+function handleHolds(deviceSerial, pin, actions, duration){
+    if (!pinHolds[deviceSerial+"-"+pin]){
+        pinHolds[deviceSerial+"-"+pin] = [];
+    }
+    pinHolds[deviceSerial+"-"+pin].push(
+        setTimeout(()=>{
+            runActions(actions);
+        }, duration*1000
+    ));
+}
+
+function clearHold(deviceSerial, pin){
+    if (pinHolds[deviceSerial+"-"+pin]){
+        for (let i = 0; i < pinHolds[deviceSerial+"-"+pin].length; i++){
+            clearTimeout(pinHolds[deviceSerial+"-"+pin][i]);
+        }
+        pinHolds[deviceSerial+"-"+pin] = [];
+    }
+}
+
 function runActions(actions){
     for (let i = 0; i < actions.length; i++){
+        // Remove ordinals from actions
         let actionId = actions[i].id;
         let ordinal = actions[i].ordinal;
         actionId = actionId.slice(0, String(ordinal).length*-1);
-        fireEventForPlugin(actions[i].pluginId, "onAction", actionId);
+        let metaData = {};
+        for (let key in actions[i].metaData){
+            metaData[key.slice(0, String(ordinal).length*-1)] = actions[i].metaData[key];
+        }
+        console.log("Metadata: " + JSON.stringify(metaData))
+        fireEventForPlugin(actions[i].pluginId, "onAction", actionId, metaData);
     }
 }
 
@@ -366,6 +398,7 @@ let installedPlugins = store.get("installedPlugins");
 let pluginStorage = store.get("pluginStorage");
 let pluginSettings = store.get("pluginSettings");
 let loadedPlugins = [];
+let pinHolds = {};
 let pluginModules = {};
 
 loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/keyboard"));
