@@ -20,10 +20,11 @@
     export let ordinal: number;
 
     action.metaData = {};
-    action.id = v4();
+    let actionUUID = v4();
+    action.id += actionUUID;
 
     action.ui.forEach((uiComponent: UIComponent) => {
-        uiComponent.id = uiComponent.id + action.id;
+        uiComponent.id = uiComponent.id + actionUUID;
 
         if (uiComponent.required == null) {
             uiComponent.required = true;
@@ -31,6 +32,7 @@
 
         if (uiComponent.type === "checkbox") {
             uiComponent.required = false;
+            action.metaData[uiComponent.id] = {};
         }
     })
 
