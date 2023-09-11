@@ -1,0 +1,13 @@
+{
+  "name": "builtin-media-controls",
+  "displayName": "Media Controls",
+  "version": "0.0.1",
+  "description": "Media controls for mimacro",
+  "main": "index.js",
+  "icon": "icon.svg",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Atticus Cornett/mimacro Team",
+  "license": "MIT"
+}

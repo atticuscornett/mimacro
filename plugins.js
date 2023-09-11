@@ -267,16 +267,18 @@ function handleTriggers(input, device){
         if (thisMacro.device.serialNumber === device.serialNumber){
             if (command[0] === "POTENT" && thisMacro.part.id === "40"){
                 if (String(thisMacro.trigger.pin.pinNumber) === command[1]){
-                    console.log("Check trigger conditions")
+                    if (thisMacro.trigger.name === "Value Change"){
+                        runActions(thisMacro.actions);
+                    }
                 }
             }
             if (command[0] === "BUTTON" && thisMacro.part.id === "1"){
                 if (String(thisMacro.trigger.pin.pinNumber) === command[1]){
                     if (thisMacro.trigger.name === "Up" && command[2] === "UP"){
-                        runActions(thisMacro.actions)
+                        runActions(thisMacro.actions);
                     }
                     if (thisMacro.trigger.name === "Down" && command[2] === "DOWN"){
-                        runActions(thisMacro.actions)
+                        runActions(thisMacro.actions);
                     }
                 }
             }
@@ -365,6 +367,7 @@ let pluginModules = {};
 
 loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/keyboard"));
 loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/mouse"))
+loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/media-controls"))
 refreshInstalledPlugins();
 loadEnabledPlugins();
 
