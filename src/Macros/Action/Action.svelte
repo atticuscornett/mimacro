@@ -7,6 +7,7 @@
     import {getPrimaryThemeColor} from "../../utilities";
     import {createEventDispatcher} from "svelte";
     import Popup from "../../Components/Popup.svelte";
+    import {v4} from "uuid";
 
     export let action: Action;
 
@@ -18,20 +19,12 @@
 
     export let ordinal: number;
 
-    let values: { [id: string]: object } = {};
     action.metaData = {};
-
-    action.ordinal = ordinal;
-
-    $: {
-        action.metaData = values;
-    }
+    action.id = v4();
 
     action.ui.forEach((uiComponent: UIComponent) => {
-        uiComponent.id = uiComponent.id + ordinal;
+        uiComponent.id = uiComponent.id + action.id;
     })
-
-    action.id += ordinal;
 
     action.ui.forEach((c) => console.log(c))
 
@@ -39,7 +32,6 @@
     $: {
         if (!fullyDefined) {
             fullyDefined = isActionFullyDefined(action);
-            console.log(`${action.id} fullyDefined: ${fullyDefined}`);
         }
     }
 
@@ -86,11 +78,11 @@
                 <h3>{label}</h3>
 
                 {#if type === "string"}
-                    <input id={id} bind:value={values[id]} type="text">
+                    <input id={id} bind:value={action.metaData[id]} type="text">
                 {:else if type === "number"}
-                    <input id={id} bind:value={values[id]} type="number">
+                    <input id={id} bind:value={action.metaData[id]} type="number">
                 {:else if type === "options-select"}
-                    <select id={id} bind:value={values[id]}>
+                    <select id={id} bind:value={action.metaData[id]}>
                         <option hidden disabled selected></option>
 
                         {#each options as option}
@@ -98,7 +90,7 @@
                         {/each}
                     </select>
                 {:else if type === "checkbox"}
-                    <input id={id} bind:value={values[id]} type="checkbox">
+                    <input id={id} bind:value={action.metaData[id]} type="checkbox">
                 {:else}
                     The type property for this UIComponent is not one of the acceptable types. Please try again and see
                     the documentation.

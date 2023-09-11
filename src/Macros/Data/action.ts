@@ -5,7 +5,6 @@ export interface Action {
 
     ui: UIComponent[],
 
-    ordinal?: number,
     metaData?: { [id: string]: object }
 }
 
