@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {MacroData} from "./Data/macro";
     import {type ArduinoDevice, devices} from "./Data/device";
-    import type {Part, TriggerData} from "./Data/triggerData";
+    import type {Part, TriggerData, TriggerParameter} from "./Data/triggerData";
     import {getPart} from "./Data/triggerData";
     import type {Pin} from "./Data/pin"
     import {getPopulatedPins, parts, pinFromString, pinToString} from "./Data/pin";
@@ -91,6 +91,7 @@
         canProgress =
             trigger != null &&
             trigger.name != null &&
+            !trigger.parameters.some((p: TriggerParameter) => p.value === null) &&
             actions != null &&
             actions.length > 0 &&
             pin != null &&
@@ -184,11 +185,11 @@
                     {@const parameter = trigger.parameters[i]}
 
                     {#if parameter.type === "int"}
-                        <input type="number">
+                        <input bind:value={trigger.parameters[i].value} type="number">
                     {:else if parameter.type === "analogInt"}
-                        <input type="number">
+                        <input bind:value={trigger.parameters[i].value} type="number">
                     {:else if parameter.type === "boolean"}
-                        <input type="checkbox">
+                        <input bind:value={trigger.parameters[i].value} type="checkbox">
                     {/if}
 
                     {splitDescription[i + 1]}

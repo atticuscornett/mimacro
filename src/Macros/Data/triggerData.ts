@@ -11,7 +11,8 @@ export interface TriggerData {
 
 export interface TriggerParameter {
     name: string,
-    type: ParameterType
+    type: ParameterType,
+    value: object,
 }
 
 export type ParameterType = "int" | "analogInt" | "boolean"
