@@ -35,8 +35,7 @@
             uiComponent.required = false;
 
             // Checkboxes must default to not being checked
-            let metaData = action.metaData[uiComponent.id]
-            metaData = false;
+            action.metaData[uiComponent.id] = false;
         }
     })
 
@@ -50,7 +49,7 @@
     $: {
         let values = Object.values(action.metaData);
         for (let i = 0; i < values.length; i++) {
-            let value = values[i].toString();
+            let value = JSON.stringify(values[i]);
 
             let required = action.ui[i].required;
 
