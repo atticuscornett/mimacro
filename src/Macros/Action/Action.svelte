@@ -102,32 +102,35 @@
         </div>
     </div>
 
-    <Popup bind:show={showPopup}>
-        <div class="popup">
-            {#each action.ui as {type, id, label, options}}
-                <h3>{label}</h3>
+    {#if action.ui.length > 0}
+        <Popup bind:show={showPopup}>
+            <div class="popup">
+                {#each action.ui as {type, id, label, options}}
+                    <h3>{label}</h3>
 
-                {#if type === "string"}
-                    <input id={id} bind:value={action.metaData[id]} type="text">
-                {:else if type === "number"}
-                    <input id={id} bind:value={action.metaData[id]} type="number">
-                {:else if type === "options-select"}
-                    <select id={id} bind:value={action.metaData[id]}>
-                        <option hidden disabled selected></option>
+                    {#if type === "string"}
+                        <input id={id} bind:value={action.metaData[id]} type="text">
+                    {:else if type === "number"}
+                        <input id={id} bind:value={action.metaData[id]} type="number">
+                    {:else if type === "options-select"}
+                        <select id={id} bind:value={action.metaData[id]}>
+                            <option hidden disabled selected></option>
 
-                        {#each options as option}
-                            <option value={option}>{option}</option>
-                        {/each}
-                    </select>
-                {:else if type === "checkbox"}
-                    <input id={id} bind:value={action.metaData[id]} type="checkbox">
-                {:else}
-                    The type property for this UIComponent is not one of the acceptable types. Please try again and see
-                    the documentation.
-                {/if}
-            {/each}
-        </div>
-    </Popup>
+                            {#each options as option}
+                                <option value={option}>{option}</option>
+                            {/each}
+                        </select>
+                    {:else if type === "checkbox"}
+                        <input id={id} bind:value={action.metaData[id]} type="checkbox">
+                    {:else}
+                        The type property for this UIComponent is not one of the acceptable types. Please try again and
+                        see
+                        the documentation.
+                    {/if}
+                {/each}
+            </div>
+        </Popup>
+    {/if}
 </div>
 
 <style>
