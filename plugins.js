@@ -269,9 +269,13 @@ function handleTriggers(input, device){
         let thisMacro = global.userMacros[i];
         if (thisMacro.device.serialNumber === device.serialNumber){
             if (command[0] === "POTENT" && thisMacro.part.id === "40"){
+                let potentValue = Number(command[2]);
+                if (thisMacro.device.mimacroType === "Arduino Uno"){
+                    potentValue = potentValue/1024;
+                }
                 if (String(thisMacro.trigger.pin.pinNumber) === command[1]){
                     if (thisMacro.trigger.name === "Value Change"){
-                        runActions(thisMacro.actions);
+                        runActions(thisMacro.actions, potentValue);
                     }
                 }
             }
@@ -314,7 +318,7 @@ function clearHold(deviceSerial, pin){
     }
 }
 
-function runActions(actions){
+function runActions(actions, value=1){
     for (let i = 0; i < actions.length; i++){
         // Remove ordinals from actions
         let actionId = actions[i].id;
@@ -325,7 +329,7 @@ function runActions(actions){
             metaData[key.slice(0, -36)] = actions[i].metaData[key];
         }
         console.log("Metadata: " + JSON.stringify(metaData))
-        fireEventForPlugin(actions[i].pluginId, "onAction", actionId, metaData);
+        fireEventForPlugin(actions[i].pluginId, "onAction", actionId, metaData, value);
     }
 }
 
