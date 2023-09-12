@@ -319,10 +319,10 @@ function runActions(actions){
         // Remove ordinals from actions
         let actionId = actions[i].id;
         let ordinal = actions[i].ordinal;
-        actionId = actionId.slice(0, String(ordinal).length*-1);
+        actionId = actionId.slice(0, -36);
         let metaData = {};
         for (let key in actions[i].metaData){
-            metaData[key.slice(0, String(ordinal).length*-1)] = actions[i].metaData[key];
+            metaData[key.slice(0, -36)] = actions[i].metaData[key];
         }
         console.log("Metadata: " + JSON.stringify(metaData))
         fireEventForPlugin(actions[i].pluginId, "onAction", actionId, metaData);
