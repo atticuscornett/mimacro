@@ -31,12 +31,14 @@
         }
 
         if (uiComponent.type === "checkbox") {
+            // If a checkbox is set to required things get WACKY, so we just make sure that never ever happens
             uiComponent.required = false;
-            action.metaData[uiComponent.id] = {};
+
+            // Checkboxes must default to not being checked
+            let metaData = action.metaData[uiComponent.id]
+            metaData = false;
         }
     })
-
-    action.ui.forEach((c) => console.log(c))
 
     export let fullyDefined = false;
     $: {
@@ -46,23 +48,16 @@
     }
 
     $: {
-        let i = 0;
-        for (let metaDataKey in action.metaData) {
-            let val: string = action.metaData[metaDataKey].toString();
-
-            console.log(action.ui);
-            console.log(i);
+        let values = Object.values(action.metaData);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i].toString();
 
             let required = action.ui[i].required;
-            i++;
 
-            console.log(required);
+            if (!required) continue;
+            if (value.length > 0) continue;
 
-            if (required) {
-                if (val.length <= 0) {
-                    fullyDefined = false;
-                }
-            }
+            fullyDefined = false;
         }
     }
 
@@ -76,7 +71,8 @@
             {ordinal + 1}. {action.displayName}
 
             {#if !fullyDefined}
-                <img style="width: 30px; padding-left: 15px;" src="../src/Images/Icons/Error.svg" alt="">
+                <img style="width: 30px; padding-left: 15px;" src="../src/Images/Icons/Error.svg"
+                     alt="Action Not Fully Defined">
             {/if}
         </div>
 
@@ -87,12 +83,14 @@
             }}>
                 <IconMinus color={iconColor} size={iconSize} stroke={iconStroke}/>
             </button>
+
             <button on:click={(e) => {
                 e.stopPropagation();
                 dispatch('shiftup');
             }}>
                 <IconArrowBarToUp color={iconColor} size={iconSize} stroke={iconStroke}/>
             </button>
+
             <button on:click={(e) => {
                 e.stopPropagation();
                 dispatch('shiftdown');
@@ -121,19 +119,35 @@
                             {/each}
                         </select>
                     {:else if type === "checkbox"}
-                        <input id={id} bind:value={action.metaData[id]} type="checkbox">
+                        <input id={id} bind:checked={action.metaData[id]} type="checkbox">
                     {:else}
                         The type property for this UIComponent is not one of the acceptable types. Please try again and
-                        see
-                        the documentation.
+                        see the documentation.
                     {/if}
                 {/each}
+
+                <button class="popup-close" on:click={() => showPopup = false}>
+                    <img src="../src/Images/Icons/Close.svg" alt="Close">
+                </button>
             </div>
         </Popup>
     {/if}
 </div>
 
 <style>
+    .popup-close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 10px;
+        background: none;
+        border: none;
+    }
+
+    .popup-close > img {
+        width: 40px;
+    }
+
     .buttons {
         display: inline-flex;
         opacity: 0;
@@ -151,23 +165,6 @@
 
         background: var(--background-gray);
         border: none;
-    }
-
-    .action > button {
-        background: none;
-        display: flex;
-        width: 100%;
-        text-align: left;
-        justify-content: space-between;
-        align-items: center;
-        flex-direction: row;
-        color: white;
-        border: none;
-        margin: 0;
-    }
-
-    .action > button:active {
-        transform: none;
     }
 
     .buttons > button:hover {
