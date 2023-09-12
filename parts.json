@@ -53,7 +53,7 @@
                         "type": "analogInt"
                     }
                 ],
-                "description": "if Value is above %p"
+                "description": "if dial goes above %p percent"
             },
             {
                 "name": "Below",
@@ -64,7 +64,7 @@
                         "type": "analogInt"
                     }
                 ],
-                "description": "if Value is below %p"
+                "description": "if dial goes below %p percent"
             },
 
             {
@@ -80,7 +80,7 @@
                         "type": "analogInt"
                     }
                 ],
-                "description": "if Value is between %p and %p"
+                "description": "if dial goes between %p and %p percent"
             }
         ]
     }
