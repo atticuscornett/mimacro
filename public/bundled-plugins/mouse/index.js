@@ -13,7 +13,6 @@ function onGetActions(){
         {
             displayName: "Left Click",
             id: "leftClick",
-            pluginId: "default",
 
             ui: [
             ]
@@ -21,7 +20,6 @@ function onGetActions(){
         {
             displayName: "Right Click",
             id: "rightClick",
-            pluginId: "default",
 
             ui: [
             ]
@@ -29,7 +27,6 @@ function onGetActions(){
         {
             displayName: "Double Left Click",
             id: "doubleLeftClick",
-            pluginId: "default",
 
             ui: [
             ]
@@ -37,7 +34,6 @@ function onGetActions(){
         {
             displayName: "Double Right Click",
             id: "doubleRightClick",
-            pluginId: "default",
 
             ui: [
             ]

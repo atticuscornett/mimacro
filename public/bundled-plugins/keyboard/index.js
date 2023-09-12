@@ -20,7 +20,6 @@ function onGetActions(){
         {
             displayName: "Key Press",
             id: "keyPress",
-            pluginId: "default",
 
             ui: [
                 {
@@ -49,7 +48,6 @@ function onGetActions(){
         {
             displayName: "Type",
             id: "type",
-            pluginId: "default",
 
             ui: [
                 {
@@ -62,7 +60,6 @@ function onGetActions(){
         {
             displayName: "Key Down",
             id: "keyDown",
-            pluginId: "default",
 
             ui: [
                 {
@@ -76,7 +73,6 @@ function onGetActions(){
         {
             displayName: "Key Up",
             id: "keyUp",
-            pluginId: "default",
 
             ui: [
                 {
@@ -90,7 +86,6 @@ function onGetActions(){
         {
             displayName: "Set Typing Speed",
             id: "typeSpeed",
-            pluginId: "default",
 
             ui: [
                 {

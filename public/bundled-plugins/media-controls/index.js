@@ -13,7 +13,6 @@ function onGetActions(){
         {
             displayName: "Play/Pause Media",
             id: "playMedia",
-            pluginId: "default",
 
             ui: [
             ]
@@ -21,7 +20,6 @@ function onGetActions(){
         {
             displayName: "Mute/Unmute Media",
             id: "muteMedia",
-            pluginId: "default",
 
             ui: [
             ]
@@ -29,7 +27,6 @@ function onGetActions(){
         {
             displayName: "Volume Up",
             id: "volUp",
-            pluginId: "default",
 
             ui: [
             ]
@@ -37,7 +34,6 @@ function onGetActions(){
         {
             displayName: "Volume Down",
             id: "volDown",
-            pluginId: "default",
 
             ui: [
             ]
@@ -45,7 +41,6 @@ function onGetActions(){
         {
             displayName: "Next Song",
             id: "nextSong",
-            pluginId: "default",
 
             ui: [
             ]
@@ -53,7 +48,6 @@ function onGetActions(){
         {
             displayName: "Previous Song",
             id: "prevSong",
-            pluginId: "default",
 
             ui: [
             ]
