@@ -1,4 +1,5 @@
-const {keyboard, Key} = use("@nut-tree/nut-js")
+const {keyboard, Key} = use("@nut-tree/nut-js");
+const loudness = use("loudness");
 let thisPlugin;
 function onEnable(plugin){
     thisPlugin = plugin;
@@ -51,11 +52,19 @@ function onGetActions(){
 
             ui: [
             ]
+        },
+        {
+            displayName: "Volume Dial",
+            id: "volDial",
+
+            ui: [
+            ]
         }
     ]
 }
 
-async function onAction(actionId) {
+async function onAction(actionId, metadata, value) {
+    console.log(value);
     if (actionId === "playMedia") {
         await keyboard.type(Key.AudioPlay);
     }
@@ -73,6 +82,9 @@ async function onAction(actionId) {
     }
     if (actionId === "prevSong"){
         await keyboard.type(Key.AudioPrev);
+    }
+    if (actionId === "volDial"){
+        await loudness.setVolume(Math.floor(value*100));
     }
 }
 
