@@ -1,5 +1,5 @@
 let thisPlugin;
-const {keyboard, Key, sleep} = use("@nut-tree/nut-js")
+const {keyboard, Key} = use("@nut-tree/nut-js")
 const keyList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
     "T", "U", "V", "W", "X", "Y", "Z", "Num0", "Num1", "Num2", "Num3", "Num4", "Num5", "Num6", "Num7", "Num8", "Num9",
     "Left", "Right", "Up", "Down", "Space", "Enter", "Shift", "CapsLock", "Backspace", "Delete", "Backslash", "Comma",
@@ -19,7 +19,7 @@ function onGetActions(){
     return [
         {
             displayName: "Key Press",
-            id: "type",
+            id: "keyPress",
             pluginId: "default",
 
             ui: [
@@ -106,6 +106,28 @@ function onGetActions(){
 async function onAction(actionId, parameters) {
     if (actionId === "type") {
         await keyboard.type(parameters.typeString);
+    }
+    if (actionId === "keyPress"){
+        if (parameters.ctrl){
+            await keyboard.pressKey(Key.LeftControl);
+        }
+        if (parameters.win){
+            await keyboard.pressKey(Key.LeftWin);
+        }
+        if (parameters.shift){
+            await keyboard.pressKey(Key.LeftShift);
+        }
+        await keyboard.pressKey(Key[parameters.key]);
+        await keyboard.releaseKey(Key[parameters.key]);
+        if (parameters.ctrl){
+            await keyboard.releaseKey(Key.LeftControl);
+        }
+        if (parameters.win){
+            await keyboard.releaseKey(Key.LeftWin);
+        }
+        if (parameters.shift){
+            await keyboard.releaseKey(Key.LeftShift);
+        }
     }
     if (actionId === "keyDown"){
         await keyboard.pressKey(Key[parameters.key]);
