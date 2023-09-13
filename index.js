@@ -81,30 +81,36 @@ function addPluginDialog(){
 
 function flashDevice(event, index){
     if (serialPorts[index].isOpen){
-        serialPorts[index].close()
+        serialPorts[index].close();
     }
     devices[index].status = "updating";
-    refreshRendererDevices()
-    if (devices[index].mimacroType === "Arduino Uno"){
-        let avrgirl = new Avrgirl(
-            {
-                board: "uno",
-                port: devices[index].port
-            }
-        );
-        avrgirl.flash("./arduino/uno/build/arduino.avr.uno/uno.ino.hex", function(e){
-            refreshDevices();
-            if (e){
-                console.log(e);
-                mainWindow.webContents.send("flashResult", false);
-            }
-            else{
-                console.log("Flash complete.");
-                mainWindow.webContents.send("flashResult", true);
-            }
-        });
-            
-    }
+    refreshRendererDevices();
+    // Delay to ensure port is closed
+    setTimeout(()=>{
+        if (devices[index].mimacroType === "Arduino Uno"){
+            let avrgirl = new Avrgirl(
+                {
+                    board: "uno",
+                    port: devices[index].port
+                }
+            );
+            avrgirl.flash(join(app.getAppPath(), "/public/firmware/arduino/uno/build/arduino.avr.uno/uno.ino.hex"), function(e){
+                setTimeout(()=>{
+                    refreshDevices();
+                    if (e){
+                        console.log(e);
+                        mainWindow.webContents.send("flashResult", false);
+                    }
+                    else{
+                        console.log("Flash complete.");
+                        mainWindow.webContents.send("flashResult", true);
+                    }
+                }, 1000)
+            });
+
+        }
+    }, 1000);
+
 }
 
 function flashPort(event, port, type){
@@ -117,7 +123,7 @@ function flashPort(event, port, type){
             }
         );
         try{
-            avrgirl.flash("./arduino/uno/build/arduino.avr.uno/uno.ino.hex", function(e){
+            avrgirl.flash(join(app.getAppPath(), "/public/firmware/arduino/uno/build/arduino.avr.uno/uno.ino.hex"), function(e){
                 if (e){
                     console.log(e);
                     mainWindow.webContents.send("portFlashResult", false);
