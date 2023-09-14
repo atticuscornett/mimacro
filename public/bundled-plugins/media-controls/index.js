@@ -84,7 +84,10 @@ async function onAction(actionId, metadata, value) {
         await keyboard.type(Key.AudioPrev);
     }
     if (actionId === "volDial"){
-        await loudness.setVolume(Math.floor(value*100));
+        let volume = Math.floor(value*100);
+        if (!isNaN(volume)){
+            await loudness.setVolume(volume);
+        }
     }
 }
 
