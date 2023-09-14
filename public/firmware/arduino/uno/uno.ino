@@ -19,7 +19,7 @@ unsigned long digitalLastStateChange[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 */
 
 int analogConfig[] = { 0, 0, 0, 0, 0, 0 };
-int analogTimeout[] = { 20, 20, 20, 20, 20, 20 };
+int analogTimeout[] = { 40, 40, 40, 40, 40, 40 };
 int analogLastState[] = { 0, 0, 0, 0, 0, 0 };
 int analogChangeMin[] = { 25, 25, 25, 25, 25, 25 };
 unsigned long analogLastStateChange[] = { 0, 0, 0, 0, 0, 0 };
@@ -116,8 +116,8 @@ void EEPROMReset() {
     EEPROM.update(j, 20);
   }
   for (int j = 30; j < 36; j++) {
-    analogTimeout[j - 30] = 20;
-    EEPROM.update(j, 20);
+    analogTimeout[j - 30] = 40;
+    EEPROM.update(j, 40);
   }
   for (int j = 36; j < 42; j++) {
     analogChangeMin[j - 36] = 30;
