@@ -328,18 +328,18 @@ function clearHold(deviceSerial, pin){
     }
 }
 
-function runActions(actions, value=1){
-    for (let i = 0; i < actions.length; i++){
+async function runActions(actions, value = 1) {
+    for (let i = 0; i < actions.length; i++) {
         // Remove ordinals from actions
         let actionId = actions[i].id;
         let ordinal = actions[i].ordinal;
         actionId = actionId.slice(0, -36);
         let metaData = {};
-        for (let key in actions[i].metaData){
+        for (let key in actions[i].metaData) {
             metaData[key.slice(0, -36)] = actions[i].metaData[key];
         }
         console.log("Metadata: " + JSON.stringify(metaData))
-        fireEventForPlugin(actions[i].pluginId, "onAction", actionId, metaData, value);
+        await fireAction(actions[i].pluginId, actionId, metaData, value);
     }
 }
 
@@ -380,7 +380,13 @@ function fireEventForPlugin(pluginName, event, ...args){
         return modules;
     }
     if (event === "onAction" && pluginModules[pluginName].onAction){
-        return pluginModules[pluginName].onAction(...args);
+        return fireAction(pluginName, ...args);
+    }
+}
+
+async function fireAction(pluginName, ...args) {
+    if (pluginModules[pluginName].onAction){
+        await pluginModules[pluginName].onAction(...args);
     }
 }
 
