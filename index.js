@@ -27,6 +27,7 @@ else{
     });
 }
 
+onFirstRun();
 initializeStores();
 global.devices = store.get("devices");
 let serialPorts = {};
@@ -39,6 +40,13 @@ nativeTheme.themeSource = colorTheme;
 
 global.userMacros = store.get("userMacros");
 console.log("global test")
+
+function onFirstRun(){
+    if (!store.has("first-run")){
+        setOpenAtLogin(null, true);
+        store.set("first-run", true);
+    }
+}
 
 
 function initializeStores(){
