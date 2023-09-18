@@ -62,6 +62,9 @@ function initializeStores(){
     if (!store.has("installedPlugins")){
         store.set("installedPlugins", []);
     }
+    if (!store.has("autoUpdateFirmware")){
+        store.set("autoUpdateFirmware", true);
+    }
 }
 
 function addPluginDialog(){
@@ -337,6 +340,12 @@ function listenToDevice(index, devicePath){
                 if (!supportedVersions.includes(devices[index].mimacroVersion)){
                     outdated = true;
                     sp.close()
+                    // Automatically update an outdated device.
+                    if (store.get("autoUpdateFirmware")){
+                        setTimeout(()=>{
+                            flashDevice(null, index);
+                        }, 5000)
+                    }
                 }
             }
             if (line === 3){
@@ -493,6 +502,14 @@ function getOpenAtLogin(){
     return app.getLoginItemSettings().openAtLogin;
 }
 
+function getAutoUpdateFirmware(){
+    return store.get("autoUpdateFirmware");
+}
+
+function setAutoUpdateFirmware(event, value){
+    store.set("autoUpdateFirmware", value);
+}
+
 function getAllActions(){
     let allActions = PluginManager.fireEvent("onGetActions")
     let fullList = [];
@@ -533,6 +550,8 @@ ipcMain.handle("addPluginDialog", addPluginDialog);
 ipcMain.handle("addPluginFromFile", PluginManager.addPluginFromFile);
 ipcMain.handle("setOpenAtLogin", setOpenAtLogin);
 ipcMain.handle("getOpenAtLogin", getOpenAtLogin);
+ipcMain.handle("setAutoUpdateFirmware", setAutoUpdateFirmware);
+ipcMain.handle("getAutoUpdateFirmware", getAutoUpdateFirmware);
 ipcMain.handle("getPluginREADME", PluginManager.getPluginREADME);
 ipcMain.handle("getPlugin", (event, packageName)=>{return JSON.parse(JSON.stringify(PluginManager.getPlugin(packageName)))});
 ipcMain.handle("getPluginSettings", PluginManager.getPluginSettings);

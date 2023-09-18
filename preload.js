@@ -8,6 +8,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getDevices: () => ipcRenderer.invoke("getDevices"),
   setColorTheme: (color) => ipcRenderer.invoke("setColorTheme", color),
   getColorTheme: () => ipcRenderer.invoke("getColorTheme"),
+  setAutoUpdateFirmware: (value) => ipcRenderer.invoke("setAutoUpdateFirmware", value),
+  getAutoUpdateFirmware: () => ipcRenderer.invoke("getAutoUpdateFirmware"),
   saveMacro: (macro) => ipcRenderer.invoke("saveMacro", JSON.stringify(macro)),
   setMacros: (macros) => ipcRenderer.invoke("setMacros", JSON.stringify(macros)),
   removeMacro: (uuid) => ipcRenderer.invoke("removeMacro", uuid),

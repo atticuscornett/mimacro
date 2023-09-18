@@ -4,6 +4,7 @@
     onMount(async () => {
         document.getElementById("colorTheme").value = await electronAPI.getColorTheme();
         document.getElementById("runAtStartup").checked = await electronAPI.getOpenAtLogin();
+        document.getElementById("automaticallyUpdate").checked = await electronAPI.getAutoUpdateFirmware();
     })
 
     function updateColorTheme(){
@@ -12,6 +13,10 @@
 
     function updateStartup(){
         electronAPI.setOpenAtLogin(document.getElementById("runAtStartup").checked);
+    }
+
+    function updateFirmware(){
+        electronAPI.setAutoUpdateFirmware(document.getElementById("automaticallyUpdate").checked);
     }
 </script>
 <h1>Settings</h1>
@@ -26,7 +31,7 @@
 <input type="checkbox" id="runAtStartup" on:change={updateStartup}>
 <label for="runAtStartup">Run mimacro in background on startup</label>
 <br>
-<input type="checkbox" id="automaticallyUpdate">
+<input type="checkbox" id="automaticallyUpdate" on:change={updateFirmware}>
 <label for="automaticallyUpdate">Automatically update device firmware</label>
 <style>
     input, label {
