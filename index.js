@@ -1,6 +1,6 @@
 const { SerialPort } = require('serialport')
 const Avrgirl = require("@sienci/avrgirl-arduino");
-const { app, BrowserWindow, ipcMain, nativeTheme, Tray, Menu, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, nativeTheme, Tray, Menu, dialog, shell} = require("electron");
 const Store = require('electron-store');
 const store = new Store();
 const path = require("path");
@@ -521,6 +521,10 @@ function getAllActions(){
     return fullList;
 }
 
+function openLinkInBrowser(event, link){
+    shell.openExternal(link);
+}
+
 connectToDevices();
 global.writeDevice = writeDevice;
 
@@ -557,6 +561,7 @@ ipcMain.handle("getPlugin", (event, packageName)=>{return JSON.parse(JSON.string
 ipcMain.handle("getPluginSettings", PluginManager.getPluginSettings);
 ipcMain.handle("setPluginSettings", PluginManager.setPluginSettings);
 ipcMain.handle("getAllActions", getAllActions);
+ipcMain.handle("openLinkInBrowser", openLinkInBrowser);
 
 app.on("ready", () => {
     tray = new Tray(__dirname + "/icon.png");

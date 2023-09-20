@@ -1,2 +1,7 @@
-<h1>PLACEHOLDER</h1>
-<h2>Confirm with user that device may not be compatible. Cannot automatically flash.</h2>
+<h2>Unrecognized Device</h2>
+<h3>The selected device could not be recognized by mimacro, and may not be compatible at this time.<br>
+    Firmware must be flashed before this device can be used.<br>
+    <a href="#" on:click={()=>{electronAPI.openLinkInBrowser("https://atticuscornett.github.io/mimacro-docs/#/firmware")}}>
+        A list of firmware can be found in the mimacro docs.
+    </a>
+</h3>

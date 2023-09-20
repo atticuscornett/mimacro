@@ -43,6 +43,9 @@
         <DeviceConfig bind:viewingDevice={viewingDevice} device={currentDevice} devices={deviceList}></DeviceConfig>
     {:else}
         <div class="deviceList">
+            {#if deviceList.length === 0}
+                <h2>You haven't added any devices yet.</h2>
+            {/if}
             {#each deviceList as {nickname, mimacroVersion, mimacroType, status}, i}
                 <DeviceTile mimacroType={mimacroType} nickname={nickname} mimacroVersion={mimacroVersion} status={status} bind:action={action} index={i} on:click={() => {viewDevice({i})}}></DeviceTile>
             {/each}
