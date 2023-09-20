@@ -60,3 +60,18 @@
         <button on:click={nextStep}>Next</button>
     {/if}
 </main>
+
+<style>
+    button {
+        position: sticky;
+        bottom: 10px;
+        float: right;
+        padding-left: 25px;
+        padding-right: 25px;
+        border-radius: 15px;
+        font-weight: bold;
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+    }
+</style>
