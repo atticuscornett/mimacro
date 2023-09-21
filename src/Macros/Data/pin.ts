@@ -41,8 +41,8 @@ export type PinType = "analog" | "digital";
 export function getPopulatedPins(device: ArduinoDevice): Pin[] {
     if (!device) return [];
 
-    let digitalPins = device.pinOut.digital.filter(p => p != 0);
-    let analogPins = device.pinOut.analog.filter(p => p != 0);
+    let digitalPins = device.pinOut.digital;
+    let analogPins = device.pinOut.analog;
 
     let layout = getDeviceLayout(device);
 
@@ -63,6 +63,8 @@ export function getPopulatedPins(device: ArduinoDevice): Pin[] {
             part: value,
         })
     })
+
+    results = results.filter(r => r.part != 0);
 
     return results;
 }
