@@ -20,7 +20,7 @@ jobs:
           node-version: 16
 
       - name: Electron Builder Action
-        uses: coparse-inc/action-electron-builder@v1.0.0
+        uses: samuelmeuli/action-electron-builder@v1.6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
