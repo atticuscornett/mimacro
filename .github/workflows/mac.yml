@@ -1,4 +1,4 @@
-name: Build mimacro (Windows)
+name: Build mimacro (Mac)
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v3
