@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "rollup -c && electron .",
-    "build": "rollup -c",
+    "build": "yarn rollup -c",
     "dev": "rollup -c -w",
-    "pack": "rollup -c && yarn electron-builder --dir",
+    "pack": "yarn rollup -c && yarn electron-builder --dir",
     "dist": "rollup -c && electron-builder"
   },
   "author": "mimacro Team",
