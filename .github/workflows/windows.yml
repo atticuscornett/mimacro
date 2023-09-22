@@ -18,9 +18,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+		  
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Electron Builder Action
-        uses: coparse-inc/action-electron-builder@v1.0.0
+        uses: paneron/action-electron-builder@v1.8.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
