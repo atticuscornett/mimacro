@@ -11,7 +11,7 @@
     "pack": "yarn rollup -c && yarn electron-builder --dir",
     "dist": "rollup -c && electron-builder"
   },
-  "author": "mimacro Team",
+  "author": "mimacro Team <64325242+atticuscornett@users.noreply.github.com>",
   "license": "GPL-3.0",
   "dependencies": {
     "@nut-tree/nut-js": "^3.1.2",
