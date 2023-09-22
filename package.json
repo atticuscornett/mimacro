@@ -8,7 +8,7 @@
     "start": "rollup -c && electron .",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "pack": "rollup -c && electron-builder --dir",
+    "pack": "rollup -c && yarn electron-builder --dir",
     "dist": "rollup -c && electron-builder"
   },
   "author": "mimacro Team",
