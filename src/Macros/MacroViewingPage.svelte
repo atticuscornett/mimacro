@@ -37,17 +37,18 @@
         flex-direction: column;
     }
 
-    main {
-        margin: 5px;
-    }
-
     .header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        margin-top: 0;
     }
 
+    .header > * {
+        margin-top: 0;
+        padding: 0;
+    }
 
     .macro-button {
         background: none;
