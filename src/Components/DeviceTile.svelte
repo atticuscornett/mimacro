@@ -28,7 +28,7 @@
 
 <div class="DevTileWrap">
     <!-- svelte-ignore a11y-missing-attribute -->
-    <div class={(status == "connected") ? "DeviceTile":"DeviceTile disabled"}>
+    <div class={(status === "connected") ? "DeviceTile":"DeviceTile disabled"}>
         <div on:click>
             <img src={"../src/Images/MimacroTypes/" + mimacroType + ".webp"}>
             <hr>

@@ -6,12 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "rollup -c && electron .",
-    "build": "rollup -c",
+    "build": "yarn rollup -c",
     "dev": "rollup -c -w",
-    "pack": "rollup -c && electron-builder --dir",
+    "pack": "yarn rollup -c && yarn electron-builder --dir",
     "dist": "rollup -c && electron-builder"
   },
-  "author": "mimacro Team",
+  "author": "mimacro Team <64325242+atticuscornett@users.noreply.github.com>",
   "license": "GPL-3.0",
   "dependencies": {
     "@nut-tree/nut-js": "^3.1.2",
@@ -64,7 +64,6 @@
           "target": "deb",
           "arch": [
             "x64",
-            "arm64",
             "armv7l"
           ]
         },
@@ -72,8 +71,7 @@
         {
           "target": "AppImage",
           "arch": [
-            "x64",
-            "arm64"
+            "x64"
           ]
         }
       ],

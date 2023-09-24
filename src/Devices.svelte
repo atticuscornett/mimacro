@@ -4,6 +4,8 @@
     import Popup from "./Components/Popup.svelte";
     import DeviceConfig from "./Devices/DeviceConfig.svelte";
     import DeviceSetup from "./Devices/DeviceSetup.svelte";
+    import IconBolt from "@tabler/icons-svelte/dist/svelte/icons/IconBolt.svelte";
+    import {getPrimaryThemeColor} from "./utilities";
 
     let deviceList = [];
 
@@ -54,10 +56,14 @@
         {#if action !== ""}
             <Popup bind:show={action}>
                 {#if action.includes("flash")}
-                    <h1>Flashing "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
-                    <h2>Device Type: {deviceList[Number(action.split("-")[1])].mimacroType}</h2>
-                    <h2>Serial Number: {deviceList[Number(action.split("-")[1])].serialNumber}</h2>
-                    <h2>Device Port: {deviceList[Number(action.split("-")[1])].port}</h2>
+                    <div class="centered">
+                        <IconBolt color={getPrimaryThemeColor()} size="65"></IconBolt>
+                        <h1>Flashing "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
+                        <h2>This will take a few moments.</h2>
+                        <h3>Device Type: {deviceList[Number(action.split("-")[1])].mimacroType}</h3>
+                        <h3>Serial Number: {deviceList[Number(action.split("-")[1])].serialNumber}</h3>
+                        <h3>Device Port: {deviceList[Number(action.split("-")[1])].port}</h3>
+                    </div>
                 {/if}
                 {#if action.includes("rename")}
                     <h1>Rename "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
@@ -81,6 +87,18 @@
 
     .inline {
         display: inline;
+    }
+
+    .centered {
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .flashIcon {
+        width: 65px;
     }
 
     #newDeviceButton {
