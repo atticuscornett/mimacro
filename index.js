@@ -116,7 +116,7 @@ function flashDevice(event, index){
                         console.log("Flash complete.");
                         mainWindow.webContents.send("flashResult", true);
                     }
-                }, 1000)
+                }, 5000)
             });
 
         }
@@ -141,14 +141,14 @@ function flashPort(event, port, type){
                 }
                 else{
                     console.log("Flash complete.");
-                    let tempPort = new SerialPort({path: port, baudRate: 9600});
-                    tempPort.write("MEMRESET\n");
-                    setTimeout(()=> {
-                        if (tempPort.isOpen){
+                    setTimeout(() => {let tempPort = new SerialPort({path: port, baudRate: 9600});
+                        tempPort.write("MEMRESET\n");
+                        setTimeout(() => {if (tempPort.isOpen){
                             tempPort.close();
-                        }
+                        }}, 1000);}, 4000);
+                    setTimeout(()=> {
                         mainWindow.webContents.send("portFlashResult", true);
-                    }, 1000);
+                    }, 15000);
                 }
             });
         }
