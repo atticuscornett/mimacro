@@ -2,7 +2,7 @@
     import type {Action as ActionData} from "../Data/action"
     import {getRegistry} from "../Data/action";
     import Action from "./Action.svelte";
-    import FloatingPopup from "../../Components/FloatingPopup.svelte";
+    import Popup from "../../Components/Popup.svelte";
 
     export let actions: ActionData[] = [];
 
@@ -53,8 +53,28 @@
         deleteAction(index + 1)
     }
 
-    let availableActions: ActionData[] = [];
-    getRegistry().then((p) => availableActions = p);
+    let availableActions: {[x: string]: ActionData[]} = {}
+    getRegistry().then((actions) => {
+        actions.forEach(action => {
+            let plugin = availableActions[action.pluginId];
+
+            if (plugin == null) {
+                plugin = [];
+            }
+
+            plugin.push(action);
+
+            availableActions[action.pluginId] = plugin;
+        })
+    });
+
+    async function getPluginDisplayName(pluginId: string): Promise<string> {
+        let plugin = await electronAPI.getPlugin(pluginId);
+
+        return plugin.pluginName;
+    }
+
+    console.log(availableActions);
 </script>
 
 <main>
@@ -76,39 +96,82 @@
 
     <button on:click={showPopup}>Add New Action</button>
 
-    <FloatingPopup bind:show={popupIsShowing} x={mouseX} y={mouseY}>
+    <Popup bind:show={popupIsShowing}>
         <h2 style="margin-top: 5px;">Pick an Action To Add</h2>
 
-        <ul class="available-actions">
-            {#each availableActions as actionData}
-                <li>
-                    <button class="available-action"
-                            on:click={() => {selectAction(actionData)}}>{actionData.displayName}</button>
-                </li>
-            {/each}
-        </ul>
-    </FloatingPopup>
+<!--            {#each availableActions as actionData}-->
+<!--                <li>-->
+<!--                    <button class="available-action"-->
+<!--&lt;!&ndash;                            on:click={() => {selectAction(actionData)}}>{actionData.displayName}</button>&ndash;&gt;-->
+<!--                </li>-->
+<!--            {/each}-->
+
+        {#each Object.entries(availableActions) as [pluginId, actions]}
+            {#await getPluginDisplayName(pluginId)}
+                loading...
+            {:then name}
+                <details>
+                    <summary>{name}</summary>
+
+                    <div class="available-actions">
+                        <ul>
+                            {#each actions as action}
+                                <li>
+                                    <button
+                                            class="available-action"
+                                            on:click={() => selectAction(action)}
+                                    >
+                                        {action.displayName}
+                                    </button>
+                                </li>
+                            {/each}
+                        </ul>
+                    </div>
+                </details>
+            {:catch error}
+                {error.message}
+            {/await}
+        {/each}
+    </Popup>
 </main>
 
 <style>
     .available-actions {
         display: flex;
         flex-direction: column;
-        max-height: 250px;
-        overflow: auto;
+        width: 100px;
+        margin-left: 30px;
+        margin-top: 8px;
     }
 
     .available-action {
-        left: 110px;
-        top: 453px;
-        display: flex;
-        flex-direction: column;
-        padding: 15px;
-        background-color: var(--background-gray);
-        color: white;
         border: none;
+        background: none;
+        color: white;
+        text-align: justify;
+        width: max-content;
+        font-size: medium;
+    }
+
+    .available-action:hover {
+        background: rgba(92, 88, 88, 0.1);
+    }
+
+    summary {
+        background-color: var(--secondary-green);
+        padding: 15px;
         font-size: large;
-        max-height: 500px;
+        cursor: pointer;
+        border-radius: 10px;
+    }
+
+    details {
+        margin-bottom: 20px;
+    }
+
+    details[open] {
+        background-color: var(--background-gray);
+        border-radius: 10px;
     }
 
     .actions {
