@@ -283,8 +283,8 @@ function handleTriggers(input, device){
                     if (thisMacro.trigger.name === "Below" && potentValue < (Number(thisMacro.trigger.parameters[0].value)/100)){
                         runActions(thisMacro.actions, potentValue);
                     }
-                    if (thisMacro.trigger.name === "Below" && potentValue > (Number(thisMacro.trigger.parameters[0].value)/100)
-                    && potentValue > (Number(thisMacro.trigger.parameters[1].value)/100)){
+                    if (thisMacro.trigger.name === "Between" && potentValue > (Number(thisMacro.trigger.parameters[0].value)/100)
+                    && potentValue < (Number(thisMacro.trigger.parameters[1].value)/100)){
                         runActions(thisMacro.actions, potentValue);
                     }
                 }
