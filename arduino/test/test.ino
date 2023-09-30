@@ -1,8 +1,7 @@
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  Serial.println("mimacro");
-  Serial.println("mimacro old");
+  Serial.println("badfnjak");
 }
 
 void loop() {

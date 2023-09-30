@@ -144,7 +144,9 @@ function flashPort(event, port, type){
                     let tempPort = new SerialPort({path: port, baudRate: 9600});
                     tempPort.write("MEMRESET\n");
                     setTimeout(()=> {
-                        tempPort.close();
+                        if (tempPort.isOpen){
+                            tempPort.close();
+                        }
                         mainWindow.webContents.send("portFlashResult", true);
                     }, 1000);
                 }
@@ -264,7 +266,9 @@ function removeDevice(event, deviceIndex){
     devices.splice(deviceIndex, 1);
     store.set("devices", devices);
     try{
-        serialPorts[deviceIndex].close()
+        if (serialPorts[deviceIndex].isOpen){
+            serialPorts[deviceIndex].close()
+        }
     }
     catch(e){
         console.log(e);
@@ -339,7 +343,9 @@ function listenToDevice(index, devicePath){
                 devices[index].mimacroVersion = temp;
                 if (!supportedVersions.includes(devices[index].mimacroVersion)){
                     outdated = true;
-                    sp.close()
+                    if (sp.isOpen){
+                        sp.close()
+                    }
                     // Automatically update an outdated device.
                     if (store.get("autoUpdateFirmware")){
                         setTimeout(()=>{
@@ -369,7 +375,7 @@ function listenToDevice(index, devicePath){
             temp = data.toString().split("\n")[1];
         }
     });
-    sp.on("close", () => {
+    let onCloseListener = () => {
         if (outdated){
             devices[index].status = "outdated";
         }
@@ -377,7 +383,9 @@ function listenToDevice(index, devicePath){
             devices[index].status = "disconnected";
         }
         refreshRendererDevices();
-    });
+        sp.removeListener("close", onCloseListener);
+    }
+    sp.on("close", onCloseListener);
 }
 
 function deviceOpen(device){
