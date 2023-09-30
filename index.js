@@ -568,6 +568,7 @@ ipcMain.handle("getPluginREADME", PluginManager.getPluginREADME);
 ipcMain.handle("getPlugin", (event, packageName)=>{return JSON.parse(JSON.stringify(PluginManager.getPlugin(packageName)))});
 ipcMain.handle("getPluginSettings", PluginManager.getPluginSettings);
 ipcMain.handle("setPluginSettings", PluginManager.setPluginSettings);
+ipcMain.handle("getLoadedPlugins", PluginManager.getLoadedPlugins);
 ipcMain.handle("getAllActions", getAllActions);
 ipcMain.handle("openLinkInBrowser", openLinkInBrowser);
 
