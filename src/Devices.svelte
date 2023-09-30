@@ -73,6 +73,20 @@
                 {#if action === "newDevice"}
                     <DeviceSetup bind:action={action}></DeviceSetup>
                 {/if}
+                {#if action === "successFsh"}
+                    <div class="centered">
+                        <IconBolt color={getPrimaryThemeColor()} size="65"></IconBolt>
+                        <h1>Device flashed successfully.</h1>
+                    </div>
+                {/if}
+                {#if action === "failFsh"}
+                    <div class="centered">
+                        <IconBolt color={getPrimaryThemeColor()} size="65"></IconBolt>
+                        <h1>Device flash failed.</h1>
+                        <h3>The device could not be flashed.</h3>
+                        <h3>Check that no other software is using the device.</h3>
+                    </div>
+                {/if}
             </Popup>
         {/if}
     {/if}
@@ -95,10 +109,6 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-    }
-
-    .flashIcon {
-        width: 65px;
     }
 
     #newDeviceButton {

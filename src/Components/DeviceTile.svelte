@@ -22,7 +22,13 @@
 
     electronAPI.onFlashResult((event, result) => {
         console.log(result);
-        action="";
+        if (result){
+            action="successFsh";
+        }
+        else{
+            action="failFsh";
+        }
+
     });
 </script>
 
