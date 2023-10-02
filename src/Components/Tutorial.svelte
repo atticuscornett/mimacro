@@ -37,6 +37,7 @@
         user-select: none;
         background: none;
         color: black;
+        margin-top: 10px;
     }
     
     @media (prefers-color-scheme: dark) {

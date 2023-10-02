@@ -47,6 +47,11 @@
     <br>
     
     {#if viewingDevice}
+        <Tutorial name="Configuring Devices" x="300" y="100">
+            The device configuration page lets you set what parts are plugged into which pins on your device.
+            If a part is misbehaving (such as a button firing multiple times per press), you may need tweak the advanced
+            options.
+        </Tutorial>
         <DeviceConfig bind:viewingDevice={viewingDevice} device={currentDevice} devices={deviceList}></DeviceConfig>
     {:else}
         <div class="deviceList">
