@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import PluginTile from "./Components/PluginTile.svelte";
     import Popup from "./Components/Popup.svelte";
+    import Tutorial from "./Components/Tutorial.svelte";
 
     let plugins = [];
     let pluginDetails;
@@ -37,6 +38,11 @@
 
 <h1>Plugins</h1>
 <button on:click={addPlugin}>Add Plugin +</button>
+<Tutorial name="Plugins" x={window.innerWidth-10} y="100">
+    The plugins page allows you to manage your installed plugins.
+    Plugins can add additional features to mimacro.
+    Before installing a plugin, make sure you trust the plugin source.
+</Tutorial>
 <br>
 <br>
 {#each plugins as plugin}

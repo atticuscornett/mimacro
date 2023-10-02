@@ -6,6 +6,7 @@
     import DeviceSetup from "./Devices/DeviceSetup.svelte";
     import IconBolt from "@tabler/icons-svelte/dist/svelte/icons/IconBolt.svelte";
     import {getPrimaryThemeColor} from "./utilities";
+    import Tutorial from "./Components/Tutorial.svelte";
 
     let deviceList = [];
 
@@ -37,6 +38,10 @@
 <main>
     <h1 class="inline">Devices</h1>
     {#if !viewingDevice}
+        <Tutorial name="Devices" x={window.innerWidth-10} y="100">
+            The devices page lists and manages your microcontrollers.
+            After you add a device, click on the tile to manage the pin layout.
+        </Tutorial>
         <button id="newDeviceButton" on:click={()=>{action = "newDevice";}}>Add Device +</button>
     {/if}
     <br>
