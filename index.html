@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>mimacro</title>
+    </head>
+    <body>
+        <h1>mimacro</h1>
+        <a id="default_download">Download mimacro</a>
+        <details>
+            <summary>More Downloads</summary>
+            <ul id="downloadList">
+
+            </ul>
+        </details>
+    </body>
+    <script>
+        let releaseVersions = {};
+        let getLatestRelease = async () => {
+            let latestRelease = await fetch("https://api.github.com/repos/atticuscornett/mimacro/releases/latest");
+            latestRelease = await latestRelease.json();
+            let releaseAssets = latestRelease.assets;
+            console.log(releaseAssets)
+
+            // Sort assets by type and architecture
+            for (let i = 0; i < releaseAssets.length; i++){
+                let thisAsset = releaseAssets[i];
+                if (thisAsset.name.endsWith(".exe")){
+                    releaseVersions["win_x64"] = thisAsset;
+                }
+                else if (thisAsset.name.endsWith("arm64.dmg")){
+                    releaseVersions["mac_arm64"] = thisAsset;
+                }
+                else if (thisAsset.name.endsWith(".dmg")){
+                    releaseVersions["mac_x64"] = thisAsset;
+                }
+                else if (thisAsset.name.endsWith(".AppImage")){
+                    releaseVersions["appImage_x64"] = thisAsset;
+                }
+                else if (thisAsset.name.endsWith(".tar.gz")){
+                    releaseVersions["tar"] = thisAsset;
+                }
+                else if (thisAsset.name.endsWith("amd64.deb")){
+                    releaseVersions["deb_x64"] = thisAsset;
+                }
+                else if (thisAsset.name.endsWith("armv7l.deb")){
+                    releaseVersions["deb_armv7l"] = thisAsset;
+                }
+            }
+            console.log(releaseVersions);
+            let default_download = document.getElementById("default_download")
+            default_download.href = releaseVersions[decideBestDownload()].browser_download_url;
+            default_download.innerText = "Download mimacro " + latestRelease.tag_name + " (" + decideBestDownload() + ")";
+            default_download.download = "download";
+
+            for (let version in releaseVersions){
+                document.getElementById("downloadList").innerHTML += releaseVersions[version].name + "<br>";
+            }
+        }
+
+        let decideBestDownload = () => {
+            let userAgent = navigator.userAgent.toLowerCase();
+            if (userAgent.includes("mac")){
+                if (userAgent.includes("arm") || userAgent.includes("aarch64")){
+                    return "mac_arm64";
+                }
+                else {
+                    return "mac_x64";
+                }
+            }
+            else if (userAgent.includes("linux")){
+                if (userAgent.includes("v7l")){
+                    return "deb_armv7l";
+                }
+                else{
+                    return "deb_x64";
+                }
+            }
+            else {
+                return "win_x64";
+            }
+        }
+
+        getLatestRelease();
+    </script>
+</html>
