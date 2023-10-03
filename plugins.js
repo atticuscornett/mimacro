@@ -226,6 +226,7 @@ function disablePlugin(event, packageName){
     store.set("installedPlugins", installedPlugins);
     fireEventForPlugin(packageName, "onDisable");
     loadedPlugins.splice(getPluginIndexByPackageName(packageName), 1);
+    delete pluginModules[packageName];
 }
 
 function uninstallPlugin(event, pluginName){
