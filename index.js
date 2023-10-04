@@ -533,6 +533,10 @@ function openLinkInBrowser(event, link){
     shell.openExternal(link);
 }
 
+function isAppBundled(){
+    return app.getAppPath().endsWith(".asar");
+}
+
 connectToDevices();
 global.writeDevice = writeDevice;
 
@@ -571,6 +575,7 @@ ipcMain.handle("setPluginSettings", PluginManager.setPluginSettings);
 ipcMain.handle("getLoadedPlugins", PluginManager.getLoadedPlugins);
 ipcMain.handle("getAllActions", getAllActions);
 ipcMain.handle("openLinkInBrowser", openLinkInBrowser);
+ipcMain.handle("isAppBundled", isAppBundled);
 
 app.on("ready", () => {
     tray = new Tray(__dirname + "/icon.png");

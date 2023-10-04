@@ -7,6 +7,7 @@
     let plugins = [];
     let pluginDetails;
     let showPluginDetails = false;
+    let iconSrc = "";
     
     onMount(async () => {
         plugins = await electronAPI.getInstalledPlugins();
@@ -14,6 +15,10 @@
 
     async function addPlugin() {
         pluginDetails = await electronAPI.addPluginDialog();
+        iconSrc = "../temp/" + pluginDetails.icon;
+        if (await electronAPI.isAppBundled()){
+            iconSrc = "../../" + iconSrc;
+        }
         showPluginDetails = true;
         document.getElementById("installButton").innerText = "Install";
         document.getElementById("installButton").disabled = false;
@@ -58,7 +63,7 @@
         <button on:click={cancelInstall} id="cancelButton">Cancel</button>
     </div>
     <hr>
-    <img class="iconImage" src={"../temp/" + pluginDetails.icon} alt={pluginDetails.displayName}>
+    <img class="iconImage" src={iconSrc} alt={pluginDetails.displayName}>
     <h1 class="inline">{pluginDetails.displayName}</h1>
     <h4>Package Name: {pluginDetails.name}</h4>
     <h4>Package Author: {pluginDetails.author}</h4>
