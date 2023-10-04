@@ -3,15 +3,64 @@
     <head>
         <meta charset="UTF-8">
         <title>mimacro</title>
+        <link rel="icon" href="icon.png">
+        <style>
+            @font-face {
+                font-family: Kanit;
+                src: url("./src/fonts/Kanit-Regular.ttf");
+            }
+
+            :root{
+                --primary-dark: #001524;
+                --primary-blue: #15616D;
+                --secondary-blue: #48BEFF;
+                --primary-green: #399E5A;
+                --secondary-green: #23CE6B;
+                --background-gray: #171717;
+            }
+
+            body {
+                background-color: var(--background-gray);
+                color: white;
+                font-family: Kanit, sans-serif;
+            }
+
+            a {
+                color: white;
+                background-color: var(--primary-blue);
+                display: block;
+                font-size: 20px;
+                padding: 5px;
+                border-radius: 7px;
+                width: fit-content;
+                margin-bottom: 15px;
+                text-decoration: none;
+            }
+
+            details {
+                font-size: 20px;
+                margin-top: 15px;
+                cursor: pointer;
+            }
+
+            .buttonList {
+                display: inline;
+                margin-right: 15px;
+            }
+        </style>
     </head>
     <body>
         <h1>mimacro</h1>
-        <a id="default_download">Download mimacro</a>
+        <a id="default_download" class="buttonList">Download mimacro</a>
+        <a class="buttonList" href="https://atticuscornett.github.io/mimacro-docs/" target="_blank">Documentation</a>
+        <a class="buttonList" href="https://github.com/atticuscornett/mimacro" target="_blank">View on Github</a>
         <details>
             <summary>More Downloads</summary>
-            <ul id="downloadList">
+            <div id="downloadList">
 
-            </ul>
+            </div>
+            <a href="https://github.com/atticuscornett/mimacro/releases" target="_blank">View All Releases</a>
+            <a href="https://atticuscornett.github.io/mimacro-docs/#/firmware" target="_blank">View Device Firmware</a>
         </details>
     </body>
     <script>
@@ -54,7 +103,11 @@
             default_download.download = "download";
 
             for (let version in releaseVersions){
-                document.getElementById("downloadList").innerHTML += releaseVersions[version].name + "<br>";
+                let link = document.createElement("a");
+                link.href = releaseVersions[version].browser_download_url;
+                link.innerText = "mimacro " + latestRelease.tag_name + " (" + version + ")";
+                link.style.display = "block";
+                document.getElementById("downloadList").appendChild(link);
             }
         }
 
