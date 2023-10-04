@@ -28,7 +28,7 @@
 <style>
 	@font-face {
 		font-family: Kanit;
-		src: url("../../src/fonts/Kanit-Light.ttf");
+		src: url("../../src/fonts/Kanit-Regular.ttf");
 	}
 
 	:global(:root){
@@ -41,7 +41,7 @@
 	}
 
 	:global(body){
-		font-family: Kamit, sans-serif;
+		font-family: Kanit, sans-serif;
 		padding: 0;
 	}
 
