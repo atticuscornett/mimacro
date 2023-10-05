@@ -41,6 +41,7 @@
         padding-top: 8px;
         top: 0;
         background-color: white;
+        z-index: 5;
     }
 
     .NavBar {

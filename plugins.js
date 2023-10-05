@@ -303,6 +303,13 @@ function handleTriggers(input, device){
                     }
                 }
             }
+            if (command[0] === "IRGET" && thisMacro.part.id === "2"){
+                if (String(thisMacro.trigger.pin.pinNumber) === command[1]){
+                    if (thisMacro.trigger.name === "Receive Signal" && command[2] === thisMacro.trigger.parameters[0].value.toLowerCase()){
+                        runActions(thisMacro.actions);
+                    }
+                }
+            }
         }
         //console.log(userMacros[i]);
     }

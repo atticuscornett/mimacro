@@ -196,6 +196,8 @@
                         <input bind:value={trigger.parameters[i].value} type="number">
                     {:else if parameter.type === "boolean"}
                         <input bind:value={trigger.parameters[i].value} type="checkbox">
+                    {:else if parameter.type === "string"}
+                        <input bind:value={trigger.parameters[i].value}>
                     {/if}
 
                     {splitDescription[i + 1]}

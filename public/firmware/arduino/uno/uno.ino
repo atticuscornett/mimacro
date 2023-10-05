@@ -1,9 +1,11 @@
 #include <EEPROM.h>
+#include <IRremote.hpp>
 
 // Digital Pins 2-13 Setup
 /*
   0 - Empty
   1 - Button
+  2 - IR Receiver
 */
 
 int digitalConfig[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -25,7 +27,7 @@ int analogChangeMin[] = { 25, 25, 25, 25, 25, 25 };
 unsigned long analogLastStateChange[] = { 0, 0, 0, 0, 0, 0 };
 
 String serialBuffer = "";
-String version = "UNO 0.0.2";
+String version = "UNO 0.1.0";
 
 void setup() {
   Serial.begin(9600);
@@ -60,7 +62,7 @@ void loadEEPROM() {
   for (int i = 0; i < 12; i++) {
     read = EEPROM.read(i);
     // Check validity
-    if (read > 1) {
+    if (read > 2) {
       // Memory is invalid, reset memory;
       EEPROMReset();
       break;
@@ -143,6 +145,9 @@ void configureDigitalPin(int pin) {
     pinMode(pin, INPUT_PULLUP);
     digitalLastState[pin - 2] = (digitalRead(pin) == HIGH);
   }
+  if (digitalConfig[pin - 2] == 2){
+    IrReceiver.begin(pin);
+  }
 }
 
 void configureAnalogPin(int pin) {
@@ -150,6 +155,9 @@ void configureAnalogPin(int pin) {
   if (analogConfig[pin - 14] == 1) {
     pinMode(pin, INPUT_PULLUP);
     analogLastState[pin - 14] = (digitalRead(pin) == HIGH);
+  }
+  if (analogConfig[pin - 14] == 2){
+    IrReceiver.begin(pin);
   }
 }
 
@@ -257,6 +265,12 @@ void handleDigitalPin(int pin) {
       updateDigitalPinState(pin, state);
     }
   }
+  if (digitalConfig[pin - 2] == 2){
+    if (IrReceiver.decode()){
+      Serial.println("IRGET " + String(pin) + " " + String(IrReceiver.decodedIRData.decodedRawData, HEX));
+      IrReceiver.resume();
+    }
+  }
 }
 
 void handleAnalogPin(int pin) {
@@ -269,6 +283,12 @@ void handleAnalogPin(int pin) {
         Serial.println("BUTTON " + String(pin) + " UP");
       }
       updateAnalogPinState(pin, state);
+    }
+  }
+  if (digitalConfig[pin - 2] == 2){
+    if (IrReceiver.decode()){
+      Serial.println("IRGET " + String(pin) + " " + String(IrReceiver.decodedIRData.decodedRawData, HEX));
+      IrReceiver.resume();
     }
   }
   if (analogConfig[pin - 14] == 40) {
