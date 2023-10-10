@@ -13,6 +13,6 @@ mimacro can help you make any workflow more efficient, whether it be streaming, 
 
 ## Quick Links
 - Website
-- Help Docs
-- Plugin Docs
-- Issue Tracking
+- [Help Docs](https://atticuscornett.github.io/mimacro-docs/#/getting-started)
+- [Plugin Docs](https://atticuscornett.github.io/mimacro-docs/#/plugins/)
+- [Issue Tracking](https://github.com/atticuscornett/mimacro/issues)
