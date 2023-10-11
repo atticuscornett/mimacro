@@ -12,7 +12,7 @@ mimacro is macro software that lets you convert your microcontrollers (like an A
 mimacro can help you make any workflow more efficient, whether it be streaming, video editing, gaming, or more.
 
 ## Quick Links
-- Website
-- Help Docs
-- Plugin Docs
-- Issue Tracking
+- [Website](https://atticuscornett.github.io/mimacro/)
+- [Help Docs](https://atticuscornett.github.io/mimacro-docs/#/getting-started)
+- [Plugin Docs](https://atticuscornett.github.io/mimacro-docs/#/plugins/)
+- [Issue Tracking](https://github.com/atticuscornett/mimacro/issues)
