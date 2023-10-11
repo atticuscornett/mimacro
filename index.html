@@ -23,6 +23,7 @@
                 background-color: var(--background-gray);
                 color: white;
                 font-family: Kanit, sans-serif;
+                margin: 0;
             }
 
             a {
@@ -32,7 +33,6 @@
                 font-size: 20px;
                 padding: 5px;
                 border-radius: 7px;
-                width: fit-content;
                 margin-bottom: 15px;
                 text-decoration: none;
             }
@@ -47,21 +47,63 @@
                 display: inline;
                 margin-right: 15px;
             }
+
+            #logo {
+                width: 250px;
+            }
+
+            #downloads {
+                height: fit-content;
+                display: flex;
+                justify-content: center;
+                background-image: url("./src/Images/Backgrounds/dark.png");
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                width: 100%;
+            }
+
+            #centered {
+                text-align: center;
+                padding: 40px;
+            }
+
+            summary {
+                margin-bottom: 10px;
+            }
+
+            h1 {
+                font-size: 45px;
+            }
+
+            main {
+                text-align: center;
+            }
         </style>
     </head>
     <body>
-        <h1>mimacro</h1>
-        <a id="default_download" class="buttonList">Download mimacro</a>
-        <a class="buttonList" href="https://atticuscornett.github.io/mimacro-docs/" target="_blank">Documentation</a>
-        <a class="buttonList" href="https://github.com/atticuscornett/mimacro" target="_blank">View on Github</a>
-        <details>
-            <summary>More Downloads</summary>
-            <div id="downloadList">
+        <div id="downloads">
+            <div></div>
+            <div id="centered">
+                <img src="icon.png" alt="mimacro Logo" id="logo">
+                <h1>mimacro</h1>
+                <a id="default_download" class="buttonList">Download mimacro</a>
+                <a class="buttonList" href="https://atticuscornett.github.io/mimacro-docs/" target="_blank">Documentation</a>
+                <a class="buttonList" href="https://github.com/atticuscornett/mimacro" target="_blank">View on Github</a>
+                <details>
+                    <summary>More Downloads</summary>
+                    <div id="downloadList">
 
+                    </div>
+                    <a href="https://github.com/atticuscornett/mimacro/releases" target="_blank">View All Releases</a>
+                    <a href="https://atticuscornett.github.io/mimacro-docs/#/firmware" target="_blank">View Device Firmware</a>
+                </details>
             </div>
-            <a href="https://github.com/atticuscornett/mimacro/releases" target="_blank">View All Releases</a>
-            <a href="https://atticuscornett.github.io/mimacro-docs/#/firmware" target="_blank">View Device Firmware</a>
-        </details>
+        </div>
+        <main>
+            <h1>Supercharge your microcontroller.</h1>
+            <h2>With mimacro, you can turn your microcontroller into a powerful macro pad with just a few clicks.</h2>
+        </main>
     </body>
     <script>
         let releaseVersions = {};
