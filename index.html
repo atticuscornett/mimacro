@@ -75,7 +75,7 @@
                 width: 100%;
             }
 
-            #centered {
+            .centered {
                 text-align: center;
                 padding: 40px;
             }
@@ -104,12 +104,25 @@
             .noMargin {
                 margin-right: 0;
             }
+
+            #footerIcon {
+                width: 50px;
+            }
+
+            .footer {
+                background-color: #1C1C1C;
+
+            }
+
+            h5 {
+                margin-top: 0;
+            }
         </style>
     </head>
     <body>
         <div id="downloads">
             <div></div>
-            <div id="centered">
+            <div class="centered">
                 <img src="icon.png" alt="mimacro Logo" id="logo">
                 <h1 id="title">mimacro</h1>
                 <h2 id="subtitle">The ultimate microcontroller macro solution</h2>
@@ -146,6 +159,13 @@
             <h1>Add more functionality.</h1>
             <h2>With the plugin system, you can add more features to mimacro for your specific needs.</h2>
         </main>
+        <div class="centered footer">
+            <img src="icon.png" alt="mimacro Logo" id="footerIcon">
+            <h5>mimacro</h5>
+            <h5>Created by <a href="https://github.com/atticuscornett" class="link">Atticus Cornett</a>,
+                <a href="https://github.com/djtpj" class="link">Roark McKibben</a>,
+                and <a href="https://github.com/atticuscornett/mimacro/graphs/contributors" class="link">contributors</a></h5>
+        </div>
     </body>
     <script>
         let releaseVersions = {};
