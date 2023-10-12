@@ -37,6 +37,18 @@
                 text-decoration: none;
             }
 
+            .link {
+                background: none;
+                color: var(--secondary-blue);
+                text-decoration: underline;
+                font-size: inherit;
+                padding: 0;
+                margin-bottom: 0;
+                border: none;
+                border-radius: 0;
+                display: inline;
+            }
+
             details {
                 font-size: 20px;
                 margin-top: 15px;
@@ -79,6 +91,15 @@
             main {
                 text-align: center;
             }
+
+            #title {
+                margin-bottom: 15px;
+            }
+            
+            #subtitle {
+                margin-top: 0;
+                margin-bottom: 15px;
+            }
         </style>
     </head>
     <body>
@@ -86,7 +107,8 @@
             <div></div>
             <div id="centered">
                 <img src="icon.png" alt="mimacro Logo" id="logo">
-                <h1>mimacro</h1>
+                <h1 id="title">mimacro</h1>
+                <h2 id="subtitle">The ultimate microcontroller macro solution</h2>
                 <a id="default_download" class="buttonList">Download mimacro</a>
                 <a class="buttonList" href="https://atticuscornett.github.io/mimacro-docs/" target="_blank">Documentation</a>
                 <a class="buttonList" href="https://github.com/atticuscornett/mimacro" target="_blank">View on Github</a>
@@ -101,8 +123,24 @@
             </div>
         </div>
         <main>
-            <h1>Supercharge your microcontroller.</h1>
+            <h1>Supercharge your productivity.</h1>
             <h2>With mimacro, you can turn your microcontroller into a powerful macro pad with just a few clicks.</h2>
+            <br>
+            <h1>Set up in seconds.</h1>
+            <h2>mimacro walks you through the device setup process, and firmware is automatically flashed on
+                <a class="link" href="https://atticuscornett.github.io/mimacro-docs/#/getting-started?id=supported-microcontrollers" target="_blank">
+                    supported devices.
+                </a>
+            </h2>
+            <br>
+            <h1>Customize your layout.</h1>
+            <h2>mimacro allows you to configure your controls and use supported parts in any device port.</h2>
+            <br>
+            <h1>Simplify your workflow.</h1>
+            <h2>The macro editor can turn a complicated series of steps into a single button press.</h2>
+            <br>
+            <h1>Add more functionality.</h1>
+            <h2>With the plugin system, you can add more features to mimacro for your specific needs.</h2>
         </main>
     </body>
     <script>
