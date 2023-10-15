@@ -76,9 +76,11 @@
                     </div>
                 {/if}
                 {#if action.includes("rename")}
-                    <h1>Rename "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
-                    <input id="deviceName">
-                    <button on:click={renameDevice}>Save</button>
+                    <div class="centered">
+                        <h1 class="noTopMargin">Rename "{deviceList[Number(action.split("-")[1])].nickname}"...</h1>
+                        <input id="deviceName" class="rounded" value={deviceList[Number(action.split("-")[1])].nickname}>
+                        <button class="saveRename rounded" on:click={renameDevice}>Save</button>
+                    </div>
                 {/if}
                 {#if action === "newDevice"}
                     <DeviceSetup bind:action={action}></DeviceSetup>
@@ -133,5 +135,19 @@
         color: white;
         border: none;
         user-select: none;
+    }
+
+    .saveRename {
+        background-color: var(--primary-blue);
+        color: white;
+        border: 2px var(--primary-blue) solid;
+    }
+
+    .rounded {
+        border-radius: 7px;
+    }
+
+    .noTopMargin {
+        margin-top: 0;
     }
 </style>
