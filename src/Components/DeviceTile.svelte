@@ -145,4 +145,11 @@
     .disabled {
         opacity: 0.7;
     }
+
+    button {
+        background-color: var(--background-gray);
+        color: white;
+        border: none;
+        border-radius: 3px;
+    }
 </style>
