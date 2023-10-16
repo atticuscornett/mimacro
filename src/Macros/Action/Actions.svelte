@@ -85,7 +85,7 @@
 
     <hr>
 
-    <ul class="actions">
+    <ul class="actions" style="margin-bottom: 60px">
         {#if actions.length > 0}
             {#each actions as actionData, i}
                 <li>
@@ -101,7 +101,7 @@
         {/if}
     </ul>
 
-    <Popup bind:show={popupIsShowing}>
+    <Popup bind:show={popupIsShowing} style="overflow-x: hidden">
         <h2 style="margin-top: 5px;">Pick an Action To Add</h2>
 
         {#each Object.entries(availableActions) as [pluginId, actions]}
