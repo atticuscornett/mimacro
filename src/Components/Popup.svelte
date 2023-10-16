@@ -14,6 +14,7 @@
     }
 
     export let show = true;
+    export let style = "";
 
     function hide(){
         if (show instanceof String){
@@ -26,7 +27,7 @@
 </script>
 
 {#if show}
-    <div class="container" on:click={hide}>
+    <div class="container" on:click={hide} style="{style}">
         <div class="popup" on:click={(event) => {event.stopPropagation();}}>
             <slot></slot>
         </div>
