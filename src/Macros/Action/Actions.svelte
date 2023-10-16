@@ -101,17 +101,8 @@
         {/if}
     </ul>
 
-    <button on:click={showPopup}>Add New Action</button>
-
     <Popup bind:show={popupIsShowing}>
         <h2 style="margin-top: 5px;">Pick an Action To Add</h2>
-
-        <!--            {#each availableActions as actionData}-->
-        <!--                <li>-->
-        <!--                    <button class="available-action"-->
-        <!--&lt;!&ndash;                            on:click={() => {selectAction(actionData)}}>{actionData.displayName}</button>&ndash;&gt;-->
-        <!--                </li>-->
-        <!--            {/each}-->
 
         {#each Object.entries(availableActions) as [pluginId, actions]}
             {#await getPluginDisplayName(pluginId)}
@@ -123,7 +114,7 @@
                     <div class="available-actions">
                         <ul>
                             {#each actions as action}
-                                <li>
+                                <li style="width: calc(100% - 50px)">
                                     <button
                                             class="available-action"
                                             on:click={() => selectAction(action)}
@@ -146,9 +137,10 @@
     .available-actions {
         display: flex;
         flex-direction: column;
-        width: 100px;
-        margin-left: 30px;
-        margin-top: 8px;
+    }
+
+    .available-actions > ul {
+        width: 100%;
     }
 
     .available-action {
@@ -156,8 +148,12 @@
         background: none;
         color: white;
         text-align: justify;
-        width: max-content;
         font-size: medium;
+        margin-bottom: 5px;
+    }
+
+    button {
+        width: 100%;
     }
 
     .available-action:hover {
@@ -165,7 +161,7 @@
     }
 
     summary {
-        background-color: var(--secondary-green);
+        background-color: var(--primary-blue);
         padding: 15px;
         font-size: large;
         cursor: pointer;
@@ -186,10 +182,6 @@
         padding-left: 0;
     }
 
-    li:has(> .available-action) {
-        font-size: x-large;
-    }
-
     .header {
         display: flex;
     }
@@ -200,7 +192,7 @@
         border: none;
         margin-bottom: 0;
         padding-bottom: 0;
-        width: 50px;
+        width: 45px;
     }
 
     .header > button > img {
