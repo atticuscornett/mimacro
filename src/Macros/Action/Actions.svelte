@@ -58,6 +58,13 @@
 </script>
 
 <main>
+    <div class="header">
+        <h2>Actions</h2>
+        <button on:click={showPopup}><img alt="Add an Action" src="../src/Images/Icons/New.svg"></button>
+    </div>
+
+    <hr>
+
     <ul class="actions">
         {#if actions.length > 0}
             {#each actions as actionData, i}
@@ -73,8 +80,6 @@
             You have not selected any actions for this Macro! You must define at least one action.
         {/if}
     </ul>
-
-    <button on:click={showPopup}>Add New Action</button>
 
     <FloatingPopup bind:show={popupIsShowing} x={mouseX} y={mouseY}>
         <h2 style="margin-top: 5px;">Pick an Action To Add</h2>
@@ -118,5 +123,22 @@
 
     li:has(> .available-action) {
         font-size: x-large;
+    }
+
+    .header {
+        display: flex;
+    }
+
+    .header > button {
+        margin-left: 5px;
+        background: none;
+        border: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+        width: 50px;
+    }
+
+    .header > button > img {
+        width: 100%;
     }
 </style>

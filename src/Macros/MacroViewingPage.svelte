@@ -58,6 +58,11 @@
     .macro-button {
         background: none;
         border: none;
+        width: 50px;
+    }
+
+    .macro-button > img {
+        width: 100%;
     }
 
     .macro-button:active {
