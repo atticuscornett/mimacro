@@ -26,24 +26,6 @@ export async function getRegistry() {
     return results;
 }
 
-export function getSortedRegistry() {
-    let results: Map<string, Action[]> = new Map();
-
-    getRegistry().then(p => p.forEach(a => {
-        let array = results.get(a.pluginId);
-
-        if (array == null) {
-            array = []
-        }
-
-        array.push(a);
-
-        results.set(a.pluginId, array);
-    }))
-
-    return results;
-}
-
 export function isActionFullyDefined(action: Action): boolean {
     for (let ui of action.ui) {
         if (ui.required || ui.required == null) {
