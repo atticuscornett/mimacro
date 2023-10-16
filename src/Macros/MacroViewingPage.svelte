@@ -2,7 +2,7 @@
     import Macro from "./Components/Macro.svelte";
     import type {MacroData} from "./Data/macro";
     import {getContext} from "svelte";
-    import {writable} from "svelte/store";
+    import Tutorial from "../Components/Tutorial.svelte";
 
     export let next: () => void;
 
@@ -14,6 +14,11 @@
         <h1>Macros</h1>
         <button class="macro-button unselectable" on:click={next}><img src="../src/Images/Icons/New.svg"></button>
     </div>
+
+    <Tutorial name="Macro Creation" x={window.innerWidth - 10} y="130">
+        Pressing this button takes you to the Macro Creation Page. Here you can create a new macro and add triggers or
+        actions.
+    </Tutorial>
 
     <ul>
         {#if $macros.length === 0}
