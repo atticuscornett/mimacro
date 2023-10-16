@@ -148,8 +148,6 @@
 
             receives a signal
 
-            <br>
-
             from
             <select bind:value={stringPin} class="dropdown" disabled={populatedPins.length < 1} id="pin-dropdown">
                 {#each populatedPins as pin}
@@ -161,8 +159,6 @@
             </select>
 
             then
-
-            <br>
 
             when trigger
 
@@ -204,7 +200,7 @@
                 {/each}
             {/if}
 
-            run these actions in order:
+            run actions.
 
             <Actions bind:actions={actions} bind:canLeave={actionsDefined}/>
         </p>
