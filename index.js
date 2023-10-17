@@ -14,6 +14,7 @@ const fs = require("fs");
 const AdmZip = require("adm-zip");
 const PluginManager = require("./plugins")
 const {autoUpdater}  = require("electron-updater");
+const os = require("os");
 
 let mainWindow;
 
@@ -539,6 +540,10 @@ function isAppBundled(){
 }
 
 function installUpdates(){
+    if (os.platform() !== "win32"){
+        openLinkInBrowser(null, "https://github.com/atticuscornett/mimacro/releases/latest");
+        return;
+    }
     autoUpdater.checkForUpdates();
     autoUpdater.on("update-downloaded", () => {
         autoUpdater.quitAndInstall();
