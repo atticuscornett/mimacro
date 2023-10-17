@@ -13,6 +13,7 @@ const { join } = require('path');
 const fs = require("fs");
 const AdmZip = require("adm-zip");
 const PluginManager = require("./plugins")
+const {autoUpdater}  = require("electron-updater");
 
 let mainWindow;
 
@@ -537,6 +538,13 @@ function isAppBundled(){
     return app.getAppPath().endsWith(".asar");
 }
 
+function installUpdates(){
+    autoUpdater.checkForUpdates();
+    autoUpdater.on("update-downloaded", () => {
+        autoUpdater.quitAndInstall();
+    });
+}
+
 connectToDevices();
 global.writeDevice = writeDevice;
 
@@ -576,6 +584,8 @@ ipcMain.handle("getLoadedPlugins", PluginManager.getLoadedPlugins);
 ipcMain.handle("getAllActions", getAllActions);
 ipcMain.handle("openLinkInBrowser", openLinkInBrowser);
 ipcMain.handle("isAppBundled", isAppBundled);
+ipcMain.handle("getAppVersion", app.getVersion);
+ipcMain.handle("installUpdates", installUpdates);
 
 app.on("ready", () => {
     tray = new Tray(__dirname + "/icon.png");

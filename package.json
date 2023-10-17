@@ -20,6 +20,7 @@
     "@tabler/icons-svelte": "^2.30.0",
     "adm-zip": "^0.5.10",
     "electron-store": "^8.1.0",
+    "electron-updater": "^6.1.4",
     "loudness": "^0.4.2",
     "marked": "^7.0.2",
     "quickjs-emscripten": "^0.23.0",

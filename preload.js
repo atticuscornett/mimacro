@@ -41,5 +41,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getLoadedPlugins: () => ipcRenderer.invoke("getLoadedPlugins"),
   getAllActions: () => ipcRenderer.invoke("getAllActions"),
   openLinkInBrowser: (link) => ipcRenderer.invoke("openLinkInBrowser", link),
-  isAppBundled: () => ipcRenderer.invoke("isAppBundled")
+  isAppBundled: () => ipcRenderer.invoke("isAppBundled"),
+  getAppVersion: () => ipcRenderer.invoke("getAppVersion"),
+  installUpdates: () => ipcRenderer.invoke("installUpdates")
 });
