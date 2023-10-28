@@ -38,8 +38,8 @@
         if ((Number(x) + popup.offsetWidth) > window.innerWidth){
             modX -= popup.offsetWidth;
         }
-        if (Number(modX) + popup.offsetWidth > window.innerWidth){
-            modX = window.innerWidth - 10 - popup.offsetWidth;
+        if (Number(modX) + popup.offsetWidth > document.body.clientWidth){
+            modX = document.body.clientWidth - 10 - popup.offsetWidth;
         }
         if ((Number(y) + popup.offsetHeight) > (window.innerHeight + window.scrollY)){
             modY -= popup.offsetHeight;
@@ -54,7 +54,7 @@
     $: {
         if (show){
             placePopup();
-            setTimeout(() => {document.addEventListener("click", clickListener);}, 10);
+            setTimeout(() => {placePopup(); document.addEventListener("click", clickListener);}, 50);
         }
         else{
             document.removeEventListener("click", clickListener);
