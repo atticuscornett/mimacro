@@ -18,11 +18,17 @@
         checked = true;
         page = id;
     }
+
+    function handleKeydown(event){
+        if (event.key === "Enter"){
+            setPage();
+        }
+    }
 </script>
 
 <div>
     <input type="radio" value={id} checked={checked} name="NavBarButton">
-    <label for={id} on:click={setPage}><div>{name}</div></label>
+    <label for={id} on:click={setPage} tabindex="0" on:keydown={handleKeydown}><div>{name}</div></label>
 </div>
 
 <style>
