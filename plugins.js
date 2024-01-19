@@ -238,6 +238,8 @@ function uninstallPlugin(event, pluginName){
             console.log("Could not disable plugin.");
         }
     }
+    // Clear module cache (allows plugin to be reloaded)
+    delete require.cache[require.resolve(installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].path)];
     fs.rmSync(installedPlugins[getInstalledPluginIndexByPackageName(pluginName)].path, { recursive: true, force: true });
     refreshInstalledPlugins();
 }
