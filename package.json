@@ -34,7 +34,7 @@
     "@rollup/plugin-commonjs": "^25.0.1",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-terser": "^0.4.0",
-    "@tsconfig/svelte": "^4.0.1",
+    "@tsconfig/svelte": "^5.0.2",
     "@types/uuid": "^9.0.2",
     "electron": "^25.1.1",
     "electron-builder": "^24.6.4",
@@ -42,7 +42,7 @@
     "rollup-plugin-css-only": "^4.3.0",
     "rollup-plugin-livereload": "^2.0.0",
     "rollup-plugin-svelte": "^7.1.2",
-    "svelte": "^3.55.0",
+    "svelte": "^4.2.12",
     "svelte-check": "^3.4.3",
     "svelte-preprocess": "^5.0.4",
     "typescript": "^5.1.3"
