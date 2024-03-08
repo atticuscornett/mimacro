@@ -143,6 +143,14 @@ function createPluginAPI(){
         }
     }
 
+    global.registerSettingObj = (plugin, settingObj) => {
+        if (!pluginSettings[plugin.packageName][settingObj.options]){
+            settingObj.options = null;
+        }
+        registerSetting(plugin, settingObj.id, settingObj.label,settingObj.description, settingObj.type,
+            settingObj.default, settingObj.options);
+    }
+
     global.getSetting = (plugin, settingID) => {
         if (pluginSettings[plugin.packageName][settingID]) {
             return pluginSettings[plugin.packageName][settingID];
@@ -184,13 +192,21 @@ function loadPlugin(pluginPath) {
     try {
         const packageJson = JSON.parse(readFileSync(join(pluginPath, "package.json"), 'utf-8'));
         pluginName = packageJson.name;
+        if (packageJson.pluginAPIVersion === undefined){
+            packageJson.pluginAPIVersion = 1;
+        }
         const pluginObj = {
             packageName: packageJson.name,
             pluginName: packageJson.displayName,
             version: packageJson.version,
             description: packageJson.description,
             author: packageJson.author,
+            pluginAPIVersion: packageJson.pluginAPIVersion,
             events: {}
+        }
+        // Check that plugin is compatible with current plugin API
+        if (packageJson.pluginAPIVersion !== 1){
+            throw new Error("Plugin API version not supported.");
         }
         loadedPlugins.push(pluginObj);
         if (!pluginStorage[pluginName]){
