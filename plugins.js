@@ -378,14 +378,21 @@ function getLoadedPlugins(){
 }
 
 function fireEvent(event, ...args){
+    console.log("- Global Plugin Event -")
+    console.log("Firing event: " + event);
+    console.log("Args: " + args);
+    console.log("-----------------");
     let returns = [];
     for (let pluginName in pluginModules){
         returns.push(fireEventForPlugin(pluginName, event, ...args));
     }
+    console.log("Event `" + event + "` fired.");
+    console.log("-----------------")
     return returns;
 }
 
 function fireEventForPlugin(pluginName, event, ...args){
+    console.log("Firing event for plugin: " + pluginName);
     if (event === "onEnable" && pluginModules[pluginName].onEnable){
         return pluginModules[pluginName].onEnable(...args);
     }
