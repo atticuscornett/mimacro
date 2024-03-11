@@ -41,7 +41,6 @@ let colorTheme = store.get("colorTheme");
 nativeTheme.themeSource = colorTheme;
 
 global.userMacros = store.get("userMacros");
-console.log("global test")
 
 function onFirstRun(){
     if (!store.has("first-run")){
