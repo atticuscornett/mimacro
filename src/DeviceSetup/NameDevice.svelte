@@ -33,4 +33,8 @@
         color: white;
         border: none;
     }
+
+    button:focus-visible {
+        outline: white solid 2px;
+    }
 </style>

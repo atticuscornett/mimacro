@@ -74,4 +74,8 @@
         color: white;
         border: none;
     }
+
+    button:focus-visible {
+        outline: white 2px solid;
+    }
 </style>

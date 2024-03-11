@@ -69,6 +69,10 @@
         background: none;
     }
 
+    button:focus-visible {
+        outline: orange solid 2px;
+    }
+
     .closeImg {
         width: 30px;
     }

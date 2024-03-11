@@ -2,10 +2,16 @@
     export let name;
     export let id;
     export let label;
+
+    function handleInput(event){
+        if (event.key === "Enter"){
+            document.getElementById(id).checked = true;
+        }
+    }
 </script>
 
 <input type="radio" value={id} id={id} name={name}>
-<label for={id}><div>{label}</div></label>
+<label for={id}><div tabindex="0" on:keydown={handleInput}>{label}</div></label>
 
 <style>
     input {
