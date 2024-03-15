@@ -145,7 +145,7 @@
         margin-bottom: 15px;
     }
 
-    .DeviceTile:focus {
+    .DeviceTile:focus-visible {
         outline: darkorange solid 3px;
     }
     
