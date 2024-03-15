@@ -7,6 +7,8 @@
     export let action;
     export let index;
 
+    export let viewDevice;
+
     async function flashDevice(){
         action = "flash-"+index;
         await electronAPI.flashDevice(index);
@@ -30,11 +32,23 @@
         }
 
     });
+
+    function handleKeypress(event){
+        console.log(event.key)
+        if (event.key === "Tab"){
+            console.log("test");
+            event.preventDefault();
+            document.getElementById("device-hover-options-"+index).focus();
+        }
+        if (event.key === "Enter"){
+            viewDevice({"i": index});
+        }
+    }
 </script>
 
-<div class="DevTileWrap">
+<div class="DevTileWrap" on:keydown={handleKeypress}>
     <!-- svelte-ignore a11y-missing-attribute -->
-    <div class={(status === "connected") ? "DeviceTile":"DeviceTile disabled"}>
+    <div class={(status === "connected") ? "DeviceTile":"DeviceTile disabled"} tabindex="0">
         <div on:click>
             <img src={"../src/Images/MimacroTypes/" + mimacroType + ".webp"}>
             <hr>
@@ -42,7 +56,7 @@
             <h5 style="{(status == "outdated") ? "color: yellow;" : ""}">{mimacroVersion}{(status == "outdated") ? " (outdated)":""}</h5>
         </div>
         {#if hoverOptions}
-            <div class="HoverOpt">
+            <div class="HoverOpt" id="device-hover-options-{index}" tabindex="1">
                 <svg xmlns="http://www.w3.org/2000/svg" class="HoverOptIcon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
@@ -51,13 +65,13 @@
                     <path d="M16 12l0 .01"></path>
                 </svg>
                 <div>
-                    <button on:click={renameDevice}>Rename</button>
+                    <button id="device-hover-options-rename-{index}" on:click={renameDevice}>Rename</button>
                     <br>
                     {#if status !== "disconnected" && status !== "updating"}
-                        <button on:click={flashDevice}>{(status === "connected") ? "Reflash":""}{(status === "outdated") ? "Flash Update":""}</button>
+                        <button id="device-hover-options-flash-{index}" on:click={flashDevice}>{(status === "connected") ? "Reflash":""}{(status === "outdated") ? "Flash Update":""}</button>
                         <br>
                     {/if}
-                    <button on:click={removeDevice}>Remove</button>
+                    <button id="device-hover-options-remove-{index}" on:click={removeDevice}>Remove</button>
                 </div>
             </div>
         {/if}
@@ -83,7 +97,7 @@
         position: absolute;
         top: 3px;
         right: 33px;
-        display: none;
+        opacity: 0;
     }
 
     .HoverOptIcon {
@@ -91,7 +105,15 @@
     }
 
     .DevTileWrap:hover .HoverOpt{
-        display: block;
+        opacity: 1;
+    }
+
+    .DeviceTile:focus .HoverOpt{
+        opacity: 1;
+    }
+
+    .HoverOpt:focus {
+        opacity: 1;
     }
 
     .HoverOpt > div {
@@ -100,6 +122,11 @@
     }
 
     .HoverOpt:hover > div {
+        display: block;
+        margin-top: 30px;
+    }
+
+    .HoverOpt:focus > div {
         display: block;
         margin-top: 30px;
     }
@@ -116,6 +143,10 @@
         margin-right: 30px;
         cursor: pointer;
         margin-bottom: 15px;
+    }
+
+    .DeviceTile:focus {
+        outline: darkorange solid 3px;
     }
     
     img {
