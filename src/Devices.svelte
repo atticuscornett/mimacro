@@ -59,7 +59,9 @@
                 <h2>You haven't added any devices yet.</h2>
             {/if}
             {#each deviceList as {nickname, mimacroVersion, mimacroType, status}, i}
-                <DeviceTile mimacroType={mimacroType} nickname={nickname} mimacroVersion={mimacroVersion} status={status} bind:action={action} index={i} viewDevice={viewDevice} on:click={() => {viewDevice({i})}}></DeviceTile>
+                <DeviceTile mimacroType={mimacroType} nickname={nickname} mimacroVersion={mimacroVersion} status={status}
+                            bind:action={action} index={i} viewDevice={viewDevice} totalDevices={deviceList.length}
+                            on:click={() => {viewDevice({i})}}></DeviceTile>
             {/each}
         </div>
 
@@ -145,6 +147,10 @@
         background-color: var(--primary-blue);
         color: white;
         border: 2px var(--primary-blue) solid;
+    }
+
+    .saveRename:focus-visible {
+        outline: white 2px solid;
     }
 
     .rounded {

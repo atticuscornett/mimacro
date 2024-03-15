@@ -6,6 +6,7 @@
     export let hoverOptions = true;
     export let action;
     export let index;
+    export let totalDevices;
 
     export let viewDevice;
 
@@ -34,15 +35,31 @@
     });
 
     function handleKeypress(event){
-        console.log(event.key)
         if (event.key === "Tab"){
-            console.log("test");
             event.preventDefault();
             document.getElementById("device-hover-options-"+index).focus();
         }
         if (event.key === "Enter"){
             viewDevice({"i": index});
         }
+    }
+
+    function handleHoverKeypress(event){
+        if (event.key === "Tab"){
+            event.preventDefault();
+            event.stopPropagation();
+            document.getElementById("device-hover-options-rename-"+index).focus();
+        }
+    }
+
+    function handleHoverButtonKeypress(event){
+        console.log(action)
+        if (event.target.id === "device-hover-options-remove-"+index && (index === totalDevices-1) && (action === "" ||
+            action === false)){
+            document.getElementById("nav-Devices").focus();
+            event.preventDefault();
+        }
+        event.stopPropagation();
     }
 </script>
 
@@ -56,7 +73,7 @@
             <h5 style="{(status == "outdated") ? "color: yellow;" : ""}">{mimacroVersion}{(status == "outdated") ? " (outdated)":""}</h5>
         </div>
         {#if hoverOptions}
-            <div class="HoverOpt" id="device-hover-options-{index}" tabindex="1">
+            <div class="HoverOpt" id="device-hover-options-{index}" tabindex="1" on:keydown={handleHoverKeypress}>
                 <svg xmlns="http://www.w3.org/2000/svg" class="HoverOptIcon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
@@ -65,13 +82,13 @@
                     <path d="M16 12l0 .01"></path>
                 </svg>
                 <div>
-                    <button id="device-hover-options-rename-{index}" on:click={renameDevice}>Rename</button>
+                    <button id="device-hover-options-rename-{index}" on:click={renameDevice} on:keydown={handleHoverButtonKeypress}>Rename</button>
                     <br>
                     {#if status !== "disconnected" && status !== "updating"}
-                        <button id="device-hover-options-flash-{index}" on:click={flashDevice}>{(status === "connected") ? "Reflash":""}{(status === "outdated") ? "Flash Update":""}</button>
+                        <button id="device-hover-options-flash-{index}" on:click={flashDevice} on:keydown={handleHoverButtonKeypress}>{(status === "connected") ? "Reflash":""}{(status === "outdated") ? "Flash Update":""}</button>
                         <br>
                     {/if}
-                    <button id="device-hover-options-remove-{index}" on:click={removeDevice}>Remove</button>
+                    <button id="device-hover-options-remove-{index}" on:click={removeDevice} on:keydown={handleHoverButtonKeypress}>Remove</button>
                 </div>
             </div>
         {/if}
@@ -116,9 +133,17 @@
         opacity: 1;
     }
 
+    .HoverOpt:focus-within {
+        opacity: 1;
+    }
+
     .HoverOpt > div {
         display: none;
         font-size: 10px;
+    }
+
+    .HoverOpt:focus-within {
+        display: block;
     }
 
     .HoverOpt:hover > div {
@@ -126,7 +151,7 @@
         margin-top: 30px;
     }
 
-    .HoverOpt:focus > div {
+    .HoverOpt:focus-within > div {
         display: block;
         margin-top: 30px;
     }
@@ -182,5 +207,9 @@
         color: white;
         border: none;
         border-radius: 3px;
+    }
+
+    button:focus {
+        outline: white solid 2px;
     }
 </style>
