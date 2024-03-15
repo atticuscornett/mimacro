@@ -132,7 +132,7 @@
         </div>
     </div>
     <button style="position:fixed; bottom: 10px; left: 20px;" on:click={()=>{showAdvanced=true;}}>Show Advanced Options</button>
-    <button style="position:fixed; bottom: 10px; right: 20px;" on:click={()=>{viewingDevice=false;}}>Save Config</button>
+    <button style="position:fixed; bottom: 10px; right: 20px;" on:click={()=>{viewingDevice=false;}}>Close Device Config</button>
     <Popup bind:show={showAdvanced} id="advancedOptions">
         <h2 style="margin-top:0;">Advanced Options</h2>
         <h3>Digital Pins</h3>
@@ -204,5 +204,9 @@
         color: white;
         border: none;
         user-select: none;
+    }
+
+    button:focus-visible {
+        outline: white 2px solid;
     }
 </style>
