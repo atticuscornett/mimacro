@@ -39,6 +39,10 @@
         font-weight: bold;
     }
 
+    button:focus-visible {
+        outline: dashed orange 2px;
+    }
+
     button[disabled] {
         background-color: var(--background-gray);
         opacity: 0.6;
