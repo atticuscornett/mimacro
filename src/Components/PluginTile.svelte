@@ -64,6 +64,7 @@
         document.getElementById("uninstallButton").innerText = "Uninstalling...";
         await electronAPI.uninstallPlugin(plugin.packageName);
         pluginList = await electronAPI.getInstalledPlugins();
+        toggleDetails();
     }
 </script>
 <div class="PluginTileWrapper">
