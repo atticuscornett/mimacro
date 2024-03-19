@@ -110,6 +110,10 @@
         user-select: none;
     }
 
+    button:focus-visible {
+        outline: 2px white solid;
+    }
+
     .inline {
         display: inline-block;
     }

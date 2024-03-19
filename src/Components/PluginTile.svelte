@@ -173,6 +173,10 @@
         background-color: white;
     }
 
+    button:focus-visible {
+        border: orange dashed 2px;
+    }
+
     label {
         font-size: 25px;
         margin-right: 10px;
@@ -220,42 +224,42 @@
         visibility: visible;
     }
 
-        .enabled {
-            border: 0;
-            background-color: darkred;
+    .enabled {
+        border: 0;
+        background-color: darkred;
+        color: white;
+    }
+
+    .disabled {
+        border: 0;
+        background-color: darkgreen;
+        color: white;
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        border: none;
+        background: none;
+    }
+
+    .closeImg {
+        width: 30px;
+    }
+
+    .errorIcon {
+        position: absolute;
+        right: 33px;
+        top: 3px;
+        width: 25px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        button {
             color: white;
+            background-color: black;
+            border: white 2px solid;
         }
-
-        .disabled {
-            border: 0;
-            background-color: darkgreen;
-            color: white;
-        }
-
-        .close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            border: none;
-            background: none;
-        }
-
-        .closeImg {
-            width: 30px;
-        }
-
-        .errorIcon {
-            position: absolute;
-            right: 33px;
-            top: 3px;
-            width: 25px;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            button {
-                color: white;
-                background-color: black;
-                border: white 2px solid;
-            }
-        }
+    }
 </style>
