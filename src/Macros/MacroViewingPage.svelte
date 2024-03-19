@@ -73,6 +73,10 @@
         border: none;
     }
 
+    button:focus-visible {
+        outline: orange dashed 2px;
+    }
+
     @media (prefers-color-scheme: light) {
         .macro-button {
             background-color: var(--primary-blue);

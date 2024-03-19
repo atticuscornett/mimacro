@@ -198,4 +198,8 @@
     .header > button > img {
         width: 100%;
     }
+
+    button:focus-visible {
+        outline: dashed orange 2px;
+    }
 </style>

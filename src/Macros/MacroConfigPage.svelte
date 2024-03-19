@@ -327,4 +327,8 @@
     button {
         border: none;
     }
+
+    button:focus-visible {
+        border: dashed orange 2px;
+    }
 </style>

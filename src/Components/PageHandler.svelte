@@ -133,4 +133,8 @@
         background: none;
         border: none;
     }
+
+    button:focus-visible {
+        outline: dashed orange 2px;
+    }
 </style>

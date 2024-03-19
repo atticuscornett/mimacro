@@ -190,7 +190,15 @@
         opacity: 1;
     }
 
+    .buttons:focus-within {
+        opacity: 1;
+    }
+
     .action:hover {
         background: var(--background-gray);
+    }
+
+    button:focus-visible {
+        outline: dashed orange 2px;
     }
 </style>
