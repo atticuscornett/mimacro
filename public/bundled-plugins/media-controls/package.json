@@ -1,7 +1,8 @@
 {
   "name": "builtin-media-controls",
   "displayName": "Media Controls",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "pluginAPIVersion": 2,
   "description": "Media controls for mimacro",
   "main": "index.js",
   "icon": "icon.svg",
