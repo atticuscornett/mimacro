@@ -1,4 +1,5 @@
 const {mouse, Button, straightTo, Point} = use("@nut-tree/nut-js")
+const robotjs = use("@jitsi/robotjs");
 let thisPlugin;
 function onEnable(plugin){
     thisPlugin = plugin;
@@ -130,22 +131,24 @@ function onGetActions(){
 
 async function onAction(actionId, parameters) {
     if (actionId === "leftClick") {
-        await mouse.click(Button.LEFT);
+        robotjs.mouseClick("left");
     }
     if (actionId === "rightClick"){
-        await mouse.click(Button.RIGHT);
+        robotjs.mouseClick("right");
     }
     if (actionId === "doubleLeftClick") {
-        await mouse.doubleClick(Button.LEFT);
+        robotjs.mouseClick("left", true);
     }
     if (actionId === "doubleRightClick"){
-        await mouse.doubleClick(Button.RIGHT);
+        robotjs.mouseClick("right", true);
     }
     if (actionId === "setPosition"){
         await mouse.setPosition(new Point(parameters.x, parameters.y));
+        robotjs.moveMouse(parameters.x, parameters.y);
     }
     if (actionId === "movePosition"){
         await mouse.move(straightTo(new Point(parameters.x, parameters.y)));
+
     }
     if (actionId === "mouseSpeed"){
         mouse.config.mouseSpeed = parameters.mouseSpeed;
