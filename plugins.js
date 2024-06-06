@@ -205,7 +205,7 @@ function loadPlugin(pluginPath) {
             events: {}
         }
         // Check that plugin is compatible with current plugin API
-        if (packageJson.pluginAPIVersion !== 1){
+        if (packageJson.pluginAPIVersion !== 2){
             throw new Error("Plugin API version not supported.");
         }
         loadedPlugins.push(pluginObj);
