@@ -26,7 +26,7 @@
     "serialport": "^12.0.0",
     "sirv-cli": "^2.0.0",
     "tslib": "^2.5.3",
-    "usb": "^2.9.0",
+    "usb": "^2.13.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
