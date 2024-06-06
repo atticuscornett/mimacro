@@ -1,5 +1,6 @@
 let thisPlugin;
-const {keyboard, Key} = use("@nut-tree/nut-js")
+let defaultDelay = 10;
+const robotjs = use("@jitsi/robotjs");
 const keyList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
     "T", "U", "V", "W", "X", "Y", "Z", "Num0", "Num1", "Num2", "Num3", "Num4", "Num5", "Num6", "Num7", "Num8", "Num9",
     "Left", "Right", "Up", "Down", "Space", "Enter", "Shift", "CapsLock", "Backspace", "Delete", "Backslash", "Comma",
@@ -9,6 +10,7 @@ const keyList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
 
 function onEnable(plugin){
     thisPlugin = plugin;
+    robotjs.setKeyboardDelay(defaultDelay);
     console.log("Keyboard plugin is ready.")
 }
 function onDisable(){
@@ -100,38 +102,38 @@ function onGetActions(){
 
 async function onAction(actionId, parameters) {
     if (actionId === "type") {
-        await keyboard.type(parameters.typeString);
+        robotjs.typeStringDelayed(parameters.typeString, 60000/defaultDelay);
     }
     if (actionId === "keyPress"){
         if (parameters.ctrl){
-            await keyboard.pressKey(Key.LeftControl);
+            robotjs.keyToggle("control", "down");
         }
         if (parameters.win){
-            await keyboard.pressKey(Key.LeftWin);
+            robotjs.keyToggle("command", "down");
         }
         if (parameters.shift){
-            await keyboard.pressKey(Key.LeftShift);
+            robotjs.keyToggle("shift", "down");
         }
-        await keyboard.pressKey(Key[parameters.key]);
-        await keyboard.releaseKey(Key[parameters.key]);
+        robotjs.keyTap(parameters.key);
         if (parameters.ctrl){
-            await keyboard.releaseKey(Key.LeftControl);
+            robotjs.keyToggle("control", "up");
         }
         if (parameters.win){
-            await keyboard.releaseKey(Key.LeftWin);
+            robotjs.keyToggle("command", "up");
         }
         if (parameters.shift){
-            await keyboard.releaseKey(Key.LeftShift);
+            robotjs.keyToggle("shift", "up");
         }
     }
     if (actionId === "keyDown"){
-        await keyboard.pressKey(Key[parameters.key]);
+        robotjs.keyToggle(parameters.key, "down");
     }
     if (actionId === "keyUp"){
-        await keyboard.releaseKey(Key[parameters.key]);
+        robotjs.keyToggle(parameters.key, "up");
     }
     if (actionId === "typeSpeed"){
-        keyboard.config.autoDelayMs = Number(parameters.speed);
+        robotjs.setKeyboardDelay(Number(parameters.speed));
+        defaultDelay = Number(parameters.speed);
     }
 }
 

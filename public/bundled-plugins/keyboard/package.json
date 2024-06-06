@@ -1,7 +1,8 @@
 {
   "name": "builtin-keyboard",
   "displayName": "Keyboard",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "pluginAPIVersion": 2,
   "description": "Keyboard automation for mimacro",
   "main": "index.js",
   "icon": "icon.svg",
