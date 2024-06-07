@@ -67,7 +67,13 @@
             "armv7l"
           ]
         },
-        "tar.gz"
+        "tar.gz",
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
       "icon": "icon.png"
     },
