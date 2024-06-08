@@ -1,6 +1,15 @@
 // This #include statement was automatically added by the Particle IDE.
 #include <IRremote.h>
 
+STARTUP(System.enableFeature(FEATURE_RETAINED_MEMORY));
+
+
+// Fun workaround for IRRemote not allowing dynamically switching the IR port.
+retained int IRpin = -1;
+
+IRrecv irrecv(1);
+decode_results results;
+
 // Digital Pins 0-7 Setup
 /*
   0 - Empty
@@ -29,24 +38,24 @@ unsigned long analogLastStateChange[] = { 0, 0, 0, 0, 0, 0 };
 String serialBuffer = "";
 String version = "PHOTON 0.0.1";
 
-IRrecv irrecv = 0;
-decode_results results;
-
 
 void setup() {
   Serial.begin(9600);
   Serial.println("mimacro");
   Serial.println(version);
-  Serial.println(D6);
-  Serial.println(D7);
+  if (IRpin != -1){
+      //irrecv.enableIRIn();
+  }
   loadEEPROM();
 }
 
 void loop() {
   handleSerialCommands();
+
   for (int i = 0; i < 8; i++) {
     handleDigitalPin(i);
   }
+
   for (int i = 10; i < 16; i++) {
     handleAnalogPin(i);
   }
@@ -64,14 +73,26 @@ void loop() {
 
 void loadEEPROM() {
   int read;
+  int correctIRPin = -1;
   // Load button config from EEPROM
   for (int i = 0; i < 8; i++) {
     read = EEPROM.read(i);
     // Check validity -- REMOVED
     digitalConfig[i] = read;
-    // Configure digital pins (2-13)
+    // Configure digital pins
     configureDigitalPin(i);
+    if (digitalConfig[i] == 2){
+        correctIRPin = i;
+    }
   }
+
+  if (correctIRPin != IRpin) {
+      IRpin = correctIRPin;
+      Serial.println("Reconfiguring IR pin requires a restart.");
+      delay(3000);
+      System.reset();
+  }
+
 
   Serial.println(intArrayToString(digitalConfig, 8));
 
@@ -85,7 +106,7 @@ void loadEEPROM() {
     }
     analogConfig[i - 8] = read;
     // Configure analog pins
-    configureAnalogPin(i);
+    configureAnalogPin(i+2);
   }
   Serial.println(intArrayToString(analogConfig, 6));
 
@@ -146,9 +167,7 @@ void configureDigitalPin(int pin) {
     pinMode(pin, INPUT_PULLUP);
     digitalLastState[pin] = (digitalRead(pin) == HIGH);
   }
-  if (digitalConfig[pin] == 2){
-    IRrecv irrecv(pin);
-  }
+  // 2 - IR Receivers are not configured by this function.
 }
 
 void configureAnalogPin(int pin) {
@@ -158,7 +177,7 @@ void configureAnalogPin(int pin) {
     analogLastState[pin - 10] = (digitalRead(pin) == HIGH);
   }
   if (analogConfig[pin - 10] == 2){
-    IRrecv irrecv(pin);
+    //IRrecv irrecv(pin);
   }
 }
 
@@ -180,6 +199,12 @@ void handleSerialCommands() {
             EEPROM.update(pin, mode);
             configureDigitalPin(pin);
             Serial.println("DIGITAL PIN " + String(pin) + " IS NOW MODE " + String(mode));
+            if (mode == 2){
+                IRpin = pin;
+                Serial.println("Changing the IR receiver port requires a device restart. Please wait.");
+                delay(3000);
+                System.reset();
+            }
           }
         } else if (serialBuffer.substring(5, 7) == "T ") {
           int pin = serialBuffer.substring(7, 9).toInt();
