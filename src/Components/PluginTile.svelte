@@ -81,7 +81,7 @@
             <button on:click={togglePlugin} class={plugin.enabled ? "enabled" : "disabled"}>{plugin.enabled ? "Disable" : "Enable"}</button>
         </div>
         {#if plugin.error}
-            <img class="errorIcon" src={"../src/Images/Icons/Error.svg"} alt="Plugin error." title="Errors occurred on plugin load.">
+            <img class="errorIcon" src={"../src/Images/Icons/Error.svg"} alt="Plugin error." title="Errors occurred on plugin load - {plugin.errorDetails}">
         {/if}
     </div>
 </div>

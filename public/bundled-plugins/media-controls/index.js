@@ -1,4 +1,4 @@
-const {keyboard, Key} = use("@nut-tree/nut-js");
+const robotjs = use("@jitsi/robotjs");
 const loudness = use("loudness");
 let thisPlugin;
 function onEnable(plugin){
@@ -66,22 +66,22 @@ function onGetActions(){
 async function onAction(actionId, metadata, value) {
     console.log(value);
     if (actionId === "playMedia") {
-        await keyboard.type(Key.AudioPlay);
+        robotjs.keyTap("audio_play");
     }
     if (actionId === "muteMedia"){
-        await keyboard.type(Key.AudioMute);
+        robotjs.keyTap("audio_mute");
     }
     if (actionId === "volUp"){
-        await keyboard.type(Key.AudioVolUp);
+        robotjs.keyTap("audio_vol_up");
     }
     if (actionId === "volDown"){
-        await keyboard.type(Key.AudioVolDown);
+        robotjs.keyTap("audio_vol_down");
     }
     if (actionId === "nextSong"){
-        await keyboard.type(Key.AudioNext);
+        robotjs.keyTap("audio_next");
     }
     if (actionId === "prevSong"){
-        await keyboard.type(Key.AudioPrev);
+        robotjs.keyTap("audio_prev");
     }
     if (actionId === "volDial"){
         let volume = Math.floor(value*100);

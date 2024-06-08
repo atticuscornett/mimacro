@@ -1,6 +1,6 @@
 {
   "name": "mimacro",
-  "version": "1.0.1",
+  "version": "1.1.0-beta.1",
   "description": "The ultimate microcontroller macro solution",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "author": "mimacro Team <64325242+atticuscornett@users.noreply.github.com>",
   "license": "GPL-3.0",
   "dependencies": {
-    "@nut-tree/nut-js": "^4.0.0",
+    "@jitsi/robotjs": "^0.6.13",
     "@rollup/plugin-typescript": "^11.1.1",
     "@sienci/avrgirl-arduino": "^5.0.3",
     "@tabler/icons-svelte": "^2.30.0",
@@ -26,7 +26,7 @@
     "serialport": "^12.0.0",
     "sirv-cli": "^2.0.0",
     "tslib": "^2.5.3",
-    "usb": "^2.9.0",
+    "usb": "^2.13.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
