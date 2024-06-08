@@ -44,10 +44,10 @@ void setup() {
 
 void loop() {
   handleSerialCommands();
-  for (int i = 2; i < 14; i++) {
+  for (int i = 0; i < 8; i++) {
     handleDigitalPin(i);
   }
-  for (int i = 14; i < 20; i++) {
+  for (int i = 10; i < 16; i++) {
     handleAnalogPin(i);
   }
 }
@@ -84,8 +84,8 @@ void loadEEPROM() {
       break;
     }
     analogConfig[i - 8] = read;
-    // Configure analog pins (14-19/A0-A5)
-    configureAnalogPin(i + 2);
+    // Configure analog pins
+    configureAnalogPin(i);
   }
   Serial.println(intArrayToString(analogConfig, 6));
 
@@ -106,23 +106,23 @@ void loadEEPROM() {
 }
 
 void EEPROMReset() {
-  for (int j = 0; j < 12; j++) {
+  for (int j = 0; j < 8; j++) {
     digitalConfig[j] = 0;
     EEPROM.update(j, 0);
   }
-  for (int j = 12; j < 18; j++) {
+  for (int j = 8; j < 14; j++) {
     analogConfig[j - 12] = 0;
     EEPROM.update(j, 0);
   }
-  for (int j = 18; j < 30; j++) {
+  for (int j = 14; j < 22; j++) {
     digitalTimeout[j - 18] = 20;
     EEPROM.update(j, 20);
   }
-  for (int j = 30; j < 36; j++) {
+  for (int j = 22; j < 28; j++) {
     analogTimeout[j - 30] = 40;
     EEPROM.update(j, 40);
   }
-  for (int j = 36; j < 42; j++) {
+  for (int j = 28; j < 34; j++) {
     analogChangeMin[j - 36] = 30;
     EEPROM.update(j, 30);
   }
@@ -153,11 +153,11 @@ void configureDigitalPin(int pin) {
 
 void configureAnalogPin(int pin) {
   // 1 - Button to ground
-  if (analogConfig[pin - 14] == 1) {
+  if (analogConfig[pin - 10] == 1) {
     pinMode(pin, INPUT_PULLUP);
-    analogLastState[pin - 14] = (digitalRead(pin) == HIGH);
+    analogLastState[pin - 10] = (digitalRead(pin) == HIGH);
   }
-  if (analogConfig[pin - 14] == 2){
+  if (analogConfig[pin - 10] == 2){
     IRrecv irrecv(pin);
   }
 }
@@ -199,36 +199,36 @@ void handleSerialCommands() {
           // Usage - "APIN S <PIN (two digit)> <MODE>"
           int pin = serialBuffer.substring(7, 9).toInt();
           int mode = serialBuffer.substring(10).toInt();
-          if (pin < 0 || pin > 5) {
+          if (pin < 10 || pin > 15) {
             Serial.println("Malfored command. Invalid pin.");
           } else {
-            analogConfig[pin] = mode;
-            EEPROM.update(pin + 12, mode);
-            configureAnalogPin(pin + 14);
+            analogConfig[pin - 10] = mode;
+            EEPROM.update(pin - 2, mode);
+            configureAnalogPin(pin);
             Serial.println("ANALOG PIN " + String(pin) + " IS NOW MODE " + String(mode));
           }
         } else if (serialBuffer.substring(5, 7) == "T ") {
           int pin = serialBuffer.substring(7, 9).toInt();
           int time = serialBuffer.substring(10).toInt();
-          if (pin < 0 || pin > 5) {
+          if (pin < 10 || pin > 15) {
             Serial.println("Malfored command. Invalid pin.");
           } else if (time > 255) {
             Serial.println("Malformed command. Time above max (255).");
           } else {
-            analogTimeout[pin] = time;
-            EEPROM.update(pin + 30, time);
+            analogTimeout[pin - 10] = time;
+            EEPROM.update(pin + 12, time);
             Serial.println("ANALOG PIN " + String(pin) + " NOW HAS TIMEOUT OF " + String(time));
           }
         } else if (serialBuffer.substring(5, 7) == "V ") {
           int pin = serialBuffer.substring(7, 9).toInt();
           int val = serialBuffer.substring(10).toInt();
-          if (pin < 0 || pin > 5) {
+          if (pin < 10 || pin > 15) {
             Serial.println("Malfored command. Invalid pin.");
           } else if (val > 255) {
-            Serial.println("Malformed command. Time above max (255).");
+            Serial.println("Malformed command. Change value above max (255).");
           } else {
-            analogChangeMin[pin] = val;
-            EEPROM.update(pin + 36, val);
+            analogChangeMin[pin - 10] = val;
+            EEPROM.update(pin + 18, val);
             Serial.println("ANALOG PIN " + String(pin) + " HAS VALUE CHANGE MINIMUM OF " + String(val));
           }
         }
@@ -275,9 +275,9 @@ void handleDigitalPin(int pin) {
 }
 
 void handleAnalogPin(int pin) {
-  if (analogConfig[pin - 14] == 1) {
+  if (analogConfig[pin - 10] == 1) {
     bool state = (digitalRead(pin) == HIGH);
-    if ((state != analogLastState[pin - 14]) && pastTimeoutAnalog(pin)) {
+    if ((state != analogLastState[pin - 10]) && pastTimeoutAnalog(pin)) {
       if (!state) {
         Serial.println("BUTTON " + String(pin) + " DOWN");
       } else {
@@ -286,17 +286,17 @@ void handleAnalogPin(int pin) {
       updateAnalogPinState(pin, state);
     }
   }
-  if (digitalConfig[pin - 2] == 2){
+  if (digitalConfig[pin - 10] == 2){
     if (irrecv.decode(&results)){
       Serial.println("IRGET " + String(pin) + " " + String(results.value, HEX));
       irrecv.resume();
     }
   }
-  if (analogConfig[pin - 14] == 40) {
+  if (analogConfig[pin - 10] == 40) {
     // Check if past timeout first to prevent reading too fast
     if (pastTimeoutAnalog(pin)) {
       int state = analogRead(pin);
-      if (minDifference(analogLastState[pin - 14], state, analogChangeMin[pin - 14])) {
+      if (minDifference(analogLastState[pin - 10], state, analogChangeMin[pin - 10])) {
         Serial.println("POTENT " + String(pin) + " " + String(state));
         updateAnalogPinState(pin, state);
       }
@@ -310,8 +310,8 @@ void updateDigitalPinState(int pin, bool state) {
 }
 
 void updateAnalogPinState(int pin, int state) {
-  analogLastStateChange[pin - 14] = millis();
-  analogLastState[pin - 14] = state;
+  analogLastStateChange[pin - 10] = millis();
+  analogLastState[pin - 10] = state;
 }
 
 bool pastTimeoutDigital(int pin) {
@@ -326,11 +326,11 @@ bool pastTimeoutDigital(int pin) {
 }
 
 bool pastTimeoutAnalog(int pin) {
-  long lastChange = analogLastStateChange[pin - 14];
+  long lastChange = analogLastStateChange[pin - 10];
   long time = millis();
   if (time < lastChange) {
     return true;
-  } else if (time > (lastChange + analogTimeout[pin - 14])) {
+  } else if (time > (lastChange + analogTimeout[pin - 10])) {
     return true;
   }
   return false;
