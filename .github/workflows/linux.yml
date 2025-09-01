@@ -20,7 +20,7 @@ jobs:
           node-version: 20
           
       - name: Install X11 dev libraries
-        run: sudo apt-get update && sudo apt-get install -y libx11-dev libxtst-dev
+        run: sudo apt-get update && sudo apt-get install -y libx11-dev libxtst-dev libpng++-dev
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
