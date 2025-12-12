@@ -457,6 +457,7 @@ let pluginModules = {};
 loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/keyboard"));
 loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/mouse"))
 loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/media-controls"))
+loadPlugin(join(app.getAppPath(), "/public/bundled-plugins/timing"))
 refreshInstalledPlugins();
 loadEnabledPlugins();
 
