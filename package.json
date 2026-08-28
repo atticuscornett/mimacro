@@ -17,7 +17,7 @@
     "@jitsi/robotjs": "^0.6.13",
     "@rollup/plugin-typescript": "^11.1.1",
     "@sienci/avrgirl-arduino": "^5.0.3",
-    "@tabler/icons-svelte": "^2.30.0",
+    "@tabler/icons-svelte": "^3.46.0",
     "adm-zip": "^0.6.0",
     "electron-store": "^8.1.0",
     "electron-updater": "^6.1.4",
