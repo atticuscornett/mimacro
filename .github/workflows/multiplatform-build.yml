@@ -36,15 +36,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
-      - uses: actions/cache@v4
-        with:
-          path: ~\AppData\Local\electron
-          key: win-electron-${{ hashFiles('**/package-lock.json') }}
-      - run: npm ci
-        working-directory: ./electron
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
       - run: npx electron-builder --win --publish always
-        working-directory: ./electron
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
