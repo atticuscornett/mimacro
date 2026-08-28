@@ -27,7 +27,7 @@
     "sirv-cli": "^2.0.0",
     "tslib": "^2.5.3",
     "usb": "^3.1.0",
-    "uuid": "^9.0.0"
+    "uuid": "^14.0.2"
   },
   "devDependencies": {
     "@electron/rebuild": "^4.2.0",
