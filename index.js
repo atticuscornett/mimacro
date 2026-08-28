@@ -477,7 +477,8 @@ function setDevicePinProperties(event, device, config){
     devices[device].pinProperties = config;
 }
 
-usb.on('attach', () => {
+usb.addEventListener("connect", () => {
+    console.log("Attach event detected.");
     refreshDevices();
 });
 
