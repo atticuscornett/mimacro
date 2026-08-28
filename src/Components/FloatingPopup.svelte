@@ -1,6 +1,5 @@
 <script>
     import {afterUpdate, onDestroy, onMount} from "svelte";
-    import {get_current_component} from "svelte/internal";
 
     export let x;
     export let y;
